@@ -37,12 +37,12 @@ class EnvReplacerTest extends TestCase
 {
     public function testReplace()
     {
-        $envReplacer = $this->newEnvReplacer();
-
-        $data   = 'dbname: "${env.FOO}"';
-        $actual = $envReplacer->replace($data, [
+        $envReplacer = $this->newEnvReplacer([
             'FOO' => 'bar'
         ]);
+
+        $data   = 'dbname: "${env.FOO}"';
+        $actual = $envReplacer->replace($data);
         $expect = 'dbname: "bar"';
 
         $this->assertEquals($expect, $actual, $actual);
@@ -50,7 +50,12 @@ class EnvReplacerTest extends TestCase
 
     public function testReplaceMultiple()
     {
-        $envReplacer = $this->newEnvReplacer();
+        $envReplacer = $this->newEnvReplacer([
+            'APIOO_DB_NAME' => 'db_name',
+            'APIOO_DB_USER' => 'db_user',
+            'APIOO_DB_PW'   => 'db_pw',
+            'MYSQL_HOST'    => 'host',
+        ]);
 
         $data = <<<'YAML'
 Default-Connection:
@@ -64,12 +69,7 @@ Default-Connection:
 
 YAML;
 
-        $actual = $envReplacer->replace($data, [
-            'APIOO_DB_NAME' => 'db_name',
-            'APIOO_DB_USER' => 'db_user',
-            'APIOO_DB_PW'   => 'db_pw',
-            'MYSQL_HOST'    => 'host',
-        ]);
+        $actual = $envReplacer->replace($data);
         $data   = Yaml::parse($actual);
         $config = $data['Default-Connection']['config'];
 
@@ -81,12 +81,12 @@ YAML;
 
     public function testReplaceCase()
     {
-        $envReplacer = $this->newEnvReplacer();
-
-        $data   = 'dbname: "${env.FOO}"';
-        $actual = $envReplacer->replace($data, [
+        $envReplacer = $this->newEnvReplacer([
             'foo' => 'bar'
         ]);
+
+        $data   = 'dbname: "${env.FOO}"';
+        $actual = $envReplacer->replace($data);
         $expect = 'dbname: "bar"';
 
         $this->assertEquals($expect, $actual, $actual);
@@ -94,12 +94,12 @@ YAML;
 
     public function testReplaceEscape()
     {
-        $envReplacer = $this->newEnvReplacer();
-
-        $data   = 'dbname: "${env.FOO}"';
-        $actual = $envReplacer->replace($data, [
+        $envReplacer = $this->newEnvReplacer([
             'foo' => 'foo' . "\n" . 'bar"test'
         ]);
+
+        $data   = 'dbname: "${env.FOO}"';
+        $actual = $envReplacer->replace($data);
         $expect = 'dbname: "foo\nbar\"test"';
 
         $this->assertEquals($expect, $actual, $actual);
@@ -110,21 +110,21 @@ YAML;
         $this->expectException(\RuntimeException::class);
 
         $envReplacer = $this->newEnvReplacer();
-        $envReplacer->replace('dbname: "${foo.FOO}"', []);
+        $envReplacer->replace('dbname: "${foo.FOO}"');
     }
 
     public function testReplaceUnknownKey()
     {
         $this->expectException(\RuntimeException::class);
 
-        $envReplacer = $this->newEnvReplacer();
-        $envReplacer->replace('dbname: "${env.FOO}"', [
+        $envReplacer = $this->newEnvReplacer([
             'baz' => 'bar'
         ]);
+        $envReplacer->replace('dbname: "${env.FOO}"');
     }
 
-    private function newEnvReplacer(): EnvReplacerInterface
+    private function newEnvReplacer(?array $env = null): EnvReplacerInterface
     {
-        return new EnvReplacer();
+        return new EnvReplacer($env);
     }
 }

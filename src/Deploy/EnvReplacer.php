@@ -31,21 +31,36 @@ namespace Fusio\Cli\Deploy;
 class EnvReplacer implements EnvReplacerInterface
 {
     /**
+     * @var \Closure[] 
+     */
+    private $properties;
+
+    public function __construct(?array $env = null)
+    {
+        $this->addProperties('env', function() use ($env){
+            return $env === null ? $_SERVER : $env;
+        });
+    }
+
+    public function addProperties(string $category, \Closure $resolver)
+    {
+        $this->properties[$category] = $resolver;
+    }
+
+    /**
      * @inheritDoc
      */
-    public function replace(string $data, array $env = null): string
+    public function replace(string $data): string
     {
         $vars = [];
+        foreach ($this->properties as $category => $resolver) {
+            $properties = $resolver();
 
-        // env properties
-        if ($env === null) {
-            $env = $_SERVER;
-        }
-
-        $vars['env'] = [];
-        foreach ($env as $key => $value) {
-            if (is_scalar($value)) {
-                $vars['env'][strtolower($key)] = $value;
+            $vars[$category] = [];
+            foreach ($properties as $key => $value) {
+                if (is_scalar($value)) {
+                    $vars[$category][strtolower($key)] = $value;
+                }
             }
         }
 

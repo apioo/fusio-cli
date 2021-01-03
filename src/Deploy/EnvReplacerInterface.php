@@ -32,8 +32,7 @@ interface EnvReplacerInterface
 {
     /**
      * @param string $data
-     * @param array|null $env
      * @return string
      */
-    public function replace(string $data, array $env = null): string;
+    public function replace(string $data): string;
 }
