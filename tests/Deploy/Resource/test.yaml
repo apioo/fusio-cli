@@ -1,0 +1,2 @@
+foo:
+  bar: !my_tag test
