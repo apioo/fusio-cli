@@ -19,7 +19,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace Fusio\Cli\Command\Authentication;
+namespace Fusio\Cli\Command\Auth;
 
 use Fusio\Cli\Command\ErrorRenderer;
 use Fusio\Cli\Exception\TransportException;
@@ -54,8 +54,9 @@ class LoginCommand extends Command
     protected function configure()
     {
         $this
-            ->setName('login')
-            ->setDescription('Login at the remote instance')
+            ->setName('auth:login')
+            ->setAliases(['login'])
+            ->setDescription('Login at the Fusio instance')
             ->addOption('url', 'r', InputOption::VALUE_OPTIONAL, 'The Fusio URL')
             ->addOption('username', 'u', InputOption::VALUE_OPTIONAL, 'The username')
             ->addOption('password', 'p', InputOption::VALUE_OPTIONAL, 'The password');
@@ -65,11 +66,15 @@ class LoginCommand extends Command
     {
         $helper = $this->getHelper('question');
 
-        // uri
-        $uri = $input->getOption('url');
-        if ($uri === null) {
-            $question = new Question('Enter the URL: ');
-            $uri = $helper->ask($input, $output, $question);
+        // base uri
+        if ($this->authenticator->isRemote()) {
+            $baseUri = $input->getOption('url');
+            if ($baseUri === null) {
+                $question = new Question('Enter the URL: ');
+                $baseUri = $helper->ask($input, $output, $question);
+            }
+        } else {
+            $baseUri = '';
         }
 
         // username
@@ -88,7 +93,7 @@ class LoginCommand extends Command
         }
 
         try {
-            $this->authenticator->requestAccessToken($uri, $username, $password);
+            $this->authenticator->requestAccessToken($baseUri, $username, $password);
         } catch (TransportException $e) {
             return ErrorRenderer::render($e, $output);
         }

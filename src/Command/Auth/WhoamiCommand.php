@@ -19,7 +19,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace Fusio\Cli\Command\Authentication;
+namespace Fusio\Cli\Command\Auth;
 
 use Fusio\Cli\Command\ErrorRenderer;
 use Fusio\Cli\Exception\TransportException;
@@ -27,15 +27,16 @@ use Fusio\Cli\Service\Authenticator;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Yaml\Yaml;
 
 /**
- * LogoutCommand
+ * WhoamiCommand
  *
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
  * @license http://www.gnu.org/licenses/agpl-3.0
  * @link    http://fusio-project.org
  */
-class LogoutCommand extends Command
+class WhoamiCommand extends Command
 {
     /**
      * @var Authenticator
@@ -52,20 +53,21 @@ class LogoutCommand extends Command
     protected function configure()
     {
         $this
-            ->setName('logout')
-            ->setDescription('Logout from the remote instance');
+            ->setName('auth:whoami')
+            ->setAliases(['whoami'])
+            ->setDescription('Returns the current logged in user');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         try {
-            $this->authenticator->removeAccessToken();
+            $response = $this->authenticator->whoami();
         } catch (TransportException $e) {
             return ErrorRenderer::render($e, $output);
         }
 
         $output->writeln('');
-        $output->writeln('Logout successful');
+        $output->writeln(Yaml::dump($response));
         $output->writeln('');
 
         return 0;

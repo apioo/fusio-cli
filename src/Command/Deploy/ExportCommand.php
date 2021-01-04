@@ -52,8 +52,9 @@ class ExportCommand extends Command
     protected function configure()
     {
         $this
-            ->setName('export')
-            ->setDescription('Exports the complete Fusio configuration');
+            ->setName('deploy:export')
+            ->setAliases(['export'])
+            ->setDescription('Exports the complete Fusio configuration to stdout');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)

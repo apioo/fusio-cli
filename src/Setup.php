@@ -66,9 +66,9 @@ class Setup
         $application->add(new Command\App\UpdateCommand($client));
         $application->add(new Command\App\DeleteCommand($client));
 
-        $application->add(new Command\Authentication\LoginCommand($authenticator));
-        $application->add(new Command\Authentication\LogoutCommand($authenticator));
-        $application->add(new Command\Authentication\WhoamiCommand($authenticator));
+        $application->add(new Command\Auth\LoginCommand($authenticator));
+        $application->add(new Command\Auth\LogoutCommand($authenticator));
+        $application->add(new Command\Auth\WhoamiCommand($authenticator));
 
         $application->add(new Command\Category\ListCommand($client));
         $application->add(new Command\Category\DetailCommand($client));

@@ -73,7 +73,8 @@ class DeployCommand extends Command
     protected function configure()
     {
         $this
-            ->setName('deploy')
+            ->setName('deploy:deploy')
+            ->setAliases(['deploy'])
             ->setDescription('Deploys a Fusio YAML definition')
             ->addArgument('file', InputArgument::OPTIONAL, 'Optional the definition file');
     }

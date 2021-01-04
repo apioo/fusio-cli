@@ -53,9 +53,10 @@ class ImportCommand extends Command
     protected function configure()
     {
         $this
-            ->setName('import')
+            ->setName('deploy:import')
+            ->setAliases(['import'])
             ->setDescription('Imports the complete Fusio configuration')
-            ->addArgument('file', InputArgument::OPTIONAL, 'Optional the definition file');
+            ->addArgument('file', InputArgument::REQUIRED, 'Exports a Fusio configuration file');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
