@@ -21,7 +21,7 @@
 
 namespace Fusio\Cli\Service;
 
-use Fusio\Cli\Model;
+use Fusio\Model\Backend;
 
 /**
  * Types
@@ -53,20 +53,20 @@ class Types
      * @var array
      */
     private static $types = [
-        self::TYPE_CATEGORY   => ['name', Model\Category::class],
-        self::TYPE_SCOPE      => ['name', Model\Scope::class],
-        self::TYPE_EVENT      => ['name', Model\Event::class],
-        self::TYPE_PLAN       => ['name', Model\Plan::class],
-        self::TYPE_CONNECTION => ['name', Model\Connection::class],
-        self::TYPE_SCHEMA     => ['name', Model\Schema::class],
-        self::TYPE_ACTION     => ['name', Model\Action::class],
-        self::TYPE_ROUTE      => ['path', Model\Route::class],
-        self::TYPE_CRONJOB    => ['name', Model\Cronjob::class],
-        self::TYPE_CONFIG     => ['name', Model\Config::class],
-        self::TYPE_RATE       => ['name', Model\Rate::class],
-        self::TYPE_USER       => ['name', Model\User::class],
-        self::TYPE_APP        => ['name', Model\App::class],
-        self::TYPE_ROLE       => ['name', Model\Role::class],
+        self::TYPE_CATEGORY   => ['name', Backend\Category::class],
+        self::TYPE_SCOPE      => ['name', Backend\Scope::class],
+        self::TYPE_EVENT      => ['name', Backend\Event::class],
+        self::TYPE_PLAN       => ['name', Backend\Plan::class],
+        self::TYPE_CONNECTION => ['name', Backend\Connection::class],
+        self::TYPE_SCHEMA     => ['name', Backend\Schema::class],
+        self::TYPE_ACTION     => ['name', Backend\Action::class],
+        self::TYPE_ROUTE      => ['path', Backend\Route::class],
+        self::TYPE_CRONJOB    => ['name', Backend\Cronjob::class],
+        self::TYPE_CONFIG     => ['name', Backend\Config::class],
+        self::TYPE_RATE       => ['name', Backend\Rate::class],
+        self::TYPE_USER       => ['name', Backend\User::class],
+        self::TYPE_APP        => ['name', Backend\App::class],
+        self::TYPE_ROLE       => ['name', Backend\Role::class],
     ];
 
     public static function getTypes(): array

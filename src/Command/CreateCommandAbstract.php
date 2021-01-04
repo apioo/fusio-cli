@@ -49,7 +49,7 @@ abstract class CreateCommandAbstract extends ClientCommandAbstract
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $type = $this->getType();
-        $modelClass = '\\Fusio\\Cli\\Model\\' . ucfirst($type) . '_Create'; 
+        $modelClass = '\\Fusio\\Model\\Backend\\' . ucfirst($type) . '_Create'; 
 
         try {
             $response = $this->client->create(
