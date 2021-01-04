@@ -1,0 +1,4 @@
+New-Connection:
+  class: Fusio\Adapter\Sql\Connection\SqlAdvanced
+  config:
+    url: "sqlite:///:memory:"

@@ -30,8 +30,8 @@ use Symfony\Component\Yaml\Yaml;
  * EnvReplacerTest
  *
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
- * @license http://www.apache.org/licenses/LICENSE-2.0
- * @link    http://phpsx.org
+ * @license http://www.gnu.org/licenses/agpl-3.0
+ * @link    http://fusio-project.org
  */
 class EnvReplacerTest extends TestCase
 {

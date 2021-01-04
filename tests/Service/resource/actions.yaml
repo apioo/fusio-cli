@@ -1,0 +1,4 @@
+Test-Action:
+  class: Fusio\Adapter\Util\Action\UtilStaticResponse
+  config:
+    response: '{"foo": "bar"}'

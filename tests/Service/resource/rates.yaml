@@ -1,0 +1,7 @@
+New-Rate:
+  priority: 16
+  rateLimit: 3600
+  timespan: "PT1H"
+  allocation:
+    - authenticated: true
+      parameters: "foo=bar"

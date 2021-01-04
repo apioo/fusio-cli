@@ -1,0 +1,6 @@
+routes: !include routes.yaml
+schema: !include schemas.yaml
+action: !include actions.yaml
+connection: !include connections.yaml
+event: !include events.yaml
+config: !include config.yaml
