@@ -23,6 +23,7 @@ namespace Fusio\Cli\Service;
 
 use Fusio\Cli\Exception\TokenException;
 use Fusio\Cli\Exception\TransportException;
+use Fusio\Cli\Transport\Http;
 use Fusio\Cli\Transport\ResponseParser;
 use Fusio\Cli\Transport\TransportInterface;
 
@@ -81,6 +82,11 @@ class Authenticator
         }
 
         return $data['access_token'];
+    }
+
+    public function isRemote(): bool
+    {
+        return $this->transport instanceof Http;
     }
 
     /**
