@@ -111,7 +111,7 @@ class Import
 
         if (isset($response['success']) && $response['success'] === false) {
             $result->add($type, Result::ACTION_FAILED, $name . ': ' . $response['message']);
-        } elseif (!empty($id)) {
+        } elseif (isset($existing['id'])) {
             $result->add($type, Result::ACTION_UPDATED, $name);
         } else {
             $result->add($type, Result::ACTION_CREATED, $name);
