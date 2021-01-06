@@ -37,12 +37,19 @@ class ErrorRenderer
     {
         $response = $exception->getResponse();
 
-        $output->writeln('');
-        $output->writeln('The server returned a non successful status code: ' . $response->getStatusCode());
+        $body = (string) $response->getBody();
+        $data = json_decode($body, true);
 
-        if ($output->isVerbose()) {
+        $output->writeln('');
+
+        if (isset($data['success'])) {
+            $output->writeln($data['message']);
             $output->writeln('');
-            $output->writeln((string) $response->getBody());
+            $output->writeln($data['trace'] ?? '');
+        } else {
+            $output->writeln('The server returned a non successful status code: ' . $response->getStatusCode());
+            $output->writeln('');
+            $output->writeln($body);
         }
 
         $output->writeln('');
