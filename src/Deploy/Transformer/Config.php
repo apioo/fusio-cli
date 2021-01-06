@@ -38,7 +38,21 @@ class Config extends TransformerAbstract
         $config = isset($data[Types::TYPE_CONFIG]) ? $data[Types::TYPE_CONFIG] : [];
 
         if (!empty($config) && is_array($config)) {
-            $import->config = $config;
+            $result = [];
+            foreach ($config as $key => $value) {
+                $result[] = $this->transformConfig($key, $value, $basePath);
+            }
+
+            $import->config = $result;
         }
+    }
+
+    protected function transformConfig($name, $data, $basePath)
+    {
+        $data = $this->includeDirective->resolve($data, $basePath, Types::TYPE_CONFIG);
+        $data['name'] = $name;
+        $data['value'] = $data;
+
+        return $data;
     }
 }
