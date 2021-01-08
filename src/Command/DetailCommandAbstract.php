@@ -51,10 +51,14 @@ abstract class DetailCommandAbstract extends ClientCommandAbstract
         $type = $this->getType();
 
         try {
-            $response = $this->client->get(
-                $type,
-                $input->getArgument('id')
-            );
+            $rawId = $input->getArgument('id');
+            $actualId = (int) $rawId;
+
+            if ($actualId === 0) {
+                $response = $this->client->getByName($type, $rawId);
+            } else {
+                $response = $this->client->get($type, $actualId);
+            }
         } catch (TransportException $e) {
             return ErrorRenderer::render($e, $output);
         }
