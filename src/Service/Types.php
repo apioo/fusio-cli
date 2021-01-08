@@ -34,39 +34,33 @@ class Types
 {
     public const COLLECTION_SIZE = 64;
 
-    public const TYPE_SCOPE = 'scope';
-    public const TYPE_USER = 'user';
-    public const TYPE_APP = 'app';
+    public const TYPE_ACTION = 'action';
     public const TYPE_CONFIG = 'config';
     public const TYPE_CONNECTION = 'connection';
-    public const TYPE_SCHEMA = 'schema';
-    public const TYPE_ACTION = 'action';
-    public const TYPE_ROUTE = 'routes';
     public const TYPE_CRONJOB = 'cronjob';
-    public const TYPE_RATE = 'rate';
     public const TYPE_EVENT = 'event';
     public const TYPE_PLAN = 'plan';
-    public const TYPE_CATEGORY = 'category';
+    public const TYPE_RATE = 'rate';
     public const TYPE_ROLE = 'role';
+    public const TYPE_ROUTE = 'routes';
+    public const TYPE_SCHEMA = 'schema';
+    public const TYPE_SCOPE = 'scope';
 
     /**
      * @var array
      */
     private static $types = [
-        self::TYPE_CATEGORY   => ['name', Backend\Category::class],
-        self::TYPE_SCOPE      => ['name', Backend\Scope::class],
+        self::TYPE_ACTION     => ['name', Backend\Action::class],
+        self::TYPE_CONFIG     => ['name', Backend\Config::class],
+        self::TYPE_CONNECTION => ['name', Backend\Connection::class],
+        self::TYPE_CRONJOB    => ['name', Backend\Cronjob::class],
         self::TYPE_EVENT      => ['name', Backend\Event::class],
         self::TYPE_PLAN       => ['name', Backend\Plan::class],
-        self::TYPE_CONNECTION => ['name', Backend\Connection::class],
-        self::TYPE_SCHEMA     => ['name', Backend\Schema::class],
-        self::TYPE_ACTION     => ['name', Backend\Action::class],
-        self::TYPE_ROUTE      => ['path', Backend\Route::class],
-        self::TYPE_CRONJOB    => ['name', Backend\Cronjob::class],
-        self::TYPE_CONFIG     => ['name', Backend\Config::class],
         self::TYPE_RATE       => ['name', Backend\Rate::class],
-        self::TYPE_USER       => ['name', Backend\User::class],
-        self::TYPE_APP        => ['name', Backend\App::class],
         self::TYPE_ROLE       => ['name', Backend\Role::class],
+        self::TYPE_SCHEMA     => ['name', Backend\Schema::class],
+        self::TYPE_SCOPE      => ['name', Backend\Scope::class],
+        self::TYPE_ROUTE      => ['path', Backend\Route::class],
     ];
 
     public static function getTypes(): array

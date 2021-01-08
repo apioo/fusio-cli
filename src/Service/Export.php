@@ -91,50 +91,31 @@ class Export
 
     private function transform(string $type, array $entity): array
     {
-        if ($type === Types::TYPE_SCOPE) {
-            return $this->transformScope($entity);
-        } elseif ($type === Types::TYPE_USER) {
-            return $this->transformUser($entity);
-        } elseif ($type === Types::TYPE_APP) {
-            return $this->transformApp($entity);
+        if ($type === Types::TYPE_ACTION) {
+            return $this->transformAction($entity);
+        } elseif ($type === Types::TYPE_CONFIG) {
+            return $this->transformConfig($entity);
         } elseif ($type === Types::TYPE_CONNECTION) {
             return $this->transformConnection($entity);
-        } elseif ($type === Types::TYPE_SCHEMA) {
-            return $this->transformSchema($entity);
-        } elseif ($type === Types::TYPE_ACTION) {
-            return $this->transformAction($entity);
-        } elseif ($type === Types::TYPE_ROUTE) {
-            return $this->transformRoute($entity);
         } elseif ($type === Types::TYPE_CRONJOB) {
             return $this->transformCronjob($entity);
-        } elseif ($type === Types::TYPE_RATE) {
-            return $this->transformRate($entity);
         } elseif ($type === Types::TYPE_EVENT) {
             return $this->transformEvent($entity);
-        } elseif ($type === Types::TYPE_CATEGORY) {
-            return $this->transformCategory($entity);
         } elseif ($type === Types::TYPE_PLAN) {
             return $this->transformPlan($entity);
+        } elseif ($type === Types::TYPE_RATE) {
+            return $this->transformRate($entity);
         } elseif ($type === Types::TYPE_ROLE) {
             return $this->transformRole($entity);
+        } elseif ($type === Types::TYPE_ROUTE) {
+            return $this->transformRoute($entity);
+        } elseif ($type === Types::TYPE_SCHEMA) {
+            return $this->transformSchema($entity);
+        } elseif ($type === Types::TYPE_SCOPE) {
+            return $this->transformScope($entity);
         } else {
             return $entity;
         }
-    }
-
-    private function transformConnection(array $entity)
-    {
-        unset($entity['id']);
-
-        return $entity;
-    }
-
-    private function transformSchema(array $entity)
-    {
-        unset($entity['id']);
-        unset($entity['status']);
-
-        return $entity;
     }
 
     private function transformAction(array $entity)
@@ -145,7 +126,14 @@ class Export
         return $entity;
     }
 
-    private function transformRoute(array $entity)
+    private function transformConfig(array $entity)
+    {
+        unset($entity['id']);
+
+        return $entity;
+    }
+
+    private function transformConnection(array $entity)
     {
         unset($entity['id']);
 
@@ -163,48 +151,7 @@ class Export
         return $entity;
     }
 
-    private function transformRate(array $entity)
-    {
-        unset($entity['id']);
-        unset($entity['status']);
-
-        return $entity;
-    }
-
-    private function transformApp(array $entity)
-    {
-        unset($entity['id']);
-        unset($entity['appKey']);
-        unset($entity['appSecret']);
-        unset($entity['tokens']);
-
-        return $entity;
-    }
-
-    private function transformUser(array $entity)
-    {
-        unset($entity['id']);
-        unset($entity['apps']);
-
-        return $entity;
-    }
-
-    private function transformScope(array $entity)
-    {
-        unset($entity['id']);
-        unset($entity['routes']);
-
-        return $entity;
-    }
-
     private function transformEvent(array $entity)
-    {
-        unset($entity['id']);
-
-        return $entity;
-    }
-
-    private function transformCategory(array $entity)
     {
         unset($entity['id']);
 
@@ -218,9 +165,40 @@ class Export
         return $entity;
     }
 
+    private function transformRate(array $entity)
+    {
+        unset($entity['id']);
+        unset($entity['status']);
+
+        return $entity;
+    }
+
     private function transformRole(array $entity)
     {
         unset($entity['id']);
+
+        return $entity;
+    }
+
+    private function transformRoute(array $entity)
+    {
+        unset($entity['id']);
+
+        return $entity;
+    }
+
+    private function transformSchema(array $entity)
+    {
+        unset($entity['id']);
+        unset($entity['status']);
+
+        return $entity;
+    }
+
+    private function transformScope(array $entity)
+    {
+        unset($entity['id']);
+        unset($entity['routes']);
 
         return $entity;
     }
