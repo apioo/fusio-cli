@@ -71,17 +71,16 @@ class Deploy
         }
 
         $transformers = [
-            Types::TYPE_SCOPE      => $this->newTransformer(Transformer\Scope::class, [$includeDirective]),
-            Types::TYPE_USER       => $this->newTransformer(Transformer\User::class, [$includeDirective]),
-            Types::TYPE_APP        => $this->newTransformer(Transformer\App::class, [$includeDirective]),
+            Types::TYPE_ACTION     => $this->newTransformer(Transformer\Action::class, [$includeDirective]),
             Types::TYPE_CONFIG     => $this->newTransformer(Transformer\Config::class, [$includeDirective]),
             Types::TYPE_CONNECTION => $this->newTransformer(Transformer\Connection::class, [$includeDirective]),
-            Types::TYPE_SCHEMA     => $this->newTransformer(Transformer\Schema::class, [$includeDirective, $importResolver]),
-            Types::TYPE_ACTION     => $this->newTransformer(Transformer\Action::class, [$includeDirective]),
-            Types::TYPE_ROUTE      => $this->newTransformer(Transformer\Route::class, [$includeDirective]),
             Types::TYPE_CRONJOB    => $this->newTransformer(Transformer\Cronjob::class, [$includeDirective]),
-            Types::TYPE_RATE       => $this->newTransformer(Transformer\Rate::class, [$includeDirective]),
             Types::TYPE_EVENT      => $this->newTransformer(Transformer\Event::class, [$includeDirective]),
+            Types::TYPE_PLAN       => $this->newTransformer(Transformer\Plan::class, [$includeDirective]),
+            Types::TYPE_RATE       => $this->newTransformer(Transformer\Rate::class, [$includeDirective]),
+            Types::TYPE_ROUTE      => $this->newTransformer(Transformer\Route::class, [$includeDirective]),
+            Types::TYPE_SCHEMA     => $this->newTransformer(Transformer\Schema::class, [$includeDirective, $importResolver]),
+            Types::TYPE_SCOPE      => $this->newTransformer(Transformer\Scope::class, [$includeDirective]),
         ];
 
         // resolve includes
