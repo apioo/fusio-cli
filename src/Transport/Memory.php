@@ -43,15 +43,18 @@ class Memory implements TransportInterface
     private $responses = [];
 
     /**
+     * @var int
+     */
+    private $i = 0;
+
+    /**
      * @inheritDoc
      */
     public function request(string $baseUri, string $method, string $path, ?array $query = null, ?array $headers = null, $body = null): HttpResponseInterface
     {
-        static $i = 0;
-
         $this->requests[] = func_get_args();
 
-        return $this->responses[$i++];
+        return $this->responses[$this->i++];
     }
 
     public function addResponse(HttpResponseInterface $response)
