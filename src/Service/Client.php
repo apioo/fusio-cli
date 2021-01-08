@@ -90,6 +90,13 @@ class Client
         return ResponseParser::parse($response);
     }
 
+    public function getByName(string $type, string $name): array
+    {
+        $response = $this->request('GET', $type . '/~' . urlencode($name));
+
+        return ResponseParser::parse($response);
+    }
+
     public function create(string $type, string $payload, string $modelClass): array
     {
         $body     = $this->parsePayload($payload, $modelClass);

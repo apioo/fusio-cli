@@ -126,8 +126,7 @@ class Import
      */
     private function resolveId(string $type, string $name): int
     {
-        $data = $this->client->getAll($type, 0, 1, $name);
-
-        return $data['entry'][0]['id'] ?? 0;
+        $data = $this->client->getByName($type, $name);
+        return $data['id'] ?? 0;
     }
 }
