@@ -1,6 +1,11 @@
+action: !include actions.yaml
+config: !include config.yaml
+connection: !include connections.yaml
+cronjob: !include cronjobs.yaml
+event: !include events.yaml
+plan: !include plans.yaml
+rate: !include rates.yaml
+role: !include roles.yaml
 routes: !include routes.yaml
 schema: !include schemas.yaml
-action: !include actions.yaml
-connection: !include connections.yaml
-event: !include events.yaml
-config: !include config.yaml
+scope: !include scopes.yaml

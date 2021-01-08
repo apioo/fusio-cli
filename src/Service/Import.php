@@ -24,6 +24,7 @@ namespace Fusio\Cli\Service;
 use Fusio\Cli\Exception\TransportException;
 use Fusio\Cli\Service\Import\Result;
 use PSX\Json\Parser;
+use PSX\Schema\InvalidSchemaException;
 use RuntimeException;
 use stdClass;
 
@@ -95,38 +96,30 @@ class Import
         try {
             $actualId = (int) $name;
             if ($actualId === 0) {
-                $actualId = $this->resolveId($type, $name);
+                $existing = $this->client->getByName($type, $name);
+            } else {
+                $existing = $this->client->get($type, $actualId);
             }
-
-            $existing = $this->client->get($type, $actualId);
         } catch (TransportException $e) {
             // 404 not found that means we can create the resource
         }
 
-        if (isset($existing['id'])) {
-            $response = $this->client->update($type, $existing['id'], \json_encode($data), $modelClass . '_Update');
-        } else {
-            $response = $this->client->create($type, \json_encode($data), $modelClass . '_Create');
-        }
+        try {
+            if (isset($existing['id'])) {
+                $response = $this->client->update($type, $existing['id'], \json_encode($data), $modelClass . '_Update');
+            } else {
+                $response = $this->client->create($type, \json_encode($data), $modelClass . '_Create');
+            }
 
-        if (isset($response['success']) && $response['success'] === false) {
-            $result->add($type, Result::ACTION_FAILED, $name . ': ' . $response['message']);
-        } elseif (isset($existing['id'])) {
-            $result->add($type, Result::ACTION_UPDATED, $name);
-        } else {
-            $result->add($type, Result::ACTION_CREATED, $name);
+            if (isset($response['success']) && $response['success'] === false) {
+                $result->add($type, Result::ACTION_FAILED, $name . ': ' . $response['message']);
+            } elseif (isset($existing['id'])) {
+                $result->add($type, Result::ACTION_UPDATED, $name);
+            } else {
+                $result->add($type, Result::ACTION_CREATED, $name);
+            }
+        } catch (\Throwable $e) {
+            $result->add($type, Result::ACTION_FAILED, $name . ': ' . $e->getMessage());
         }
-    }
-
-    /**
-     * In case we have received a name we need to resolve the actual id
-     * 
-     * @param string $type
-     * @param string $name
-     */
-    private function resolveId(string $type, string $name): int
-    {
-        $data = $this->client->getByName($type, $name);
-        return $data['id'] ?? 0;
     }
 }

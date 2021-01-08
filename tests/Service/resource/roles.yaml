@@ -1,0 +1,5 @@
+Dev-Role:
+  categoryId: 1
+  scopes:
+    - foo
+    - bar
