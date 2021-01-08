@@ -25,30 +25,30 @@ use Fusio\Cli\Deploy\TransformerAbstract;
 use Fusio\Cli\Service\Types;
 
 /**
- * App
+ * Role
  *
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
  * @license http://www.gnu.org/licenses/agpl-3.0
  * @link    http://fusio-project.org
  */
-class App extends TransformerAbstract
+class Role extends TransformerAbstract
 {
     public function transform(array $data, \stdClass $import, $basePath)
     {
-        $app = isset($data[Types::TYPE_APP]) ? $data[Types::TYPE_APP] : [];
+        $role = isset($data[Types::TYPE_ROLE]) ? $data[Types::TYPE_ROLE] : [];
 
-        if (!empty($app) && is_array($app)) {
+        if (!empty($role) && is_array($role)) {
             $result = [];
-            foreach ($app as $name => $entry) {
-                $result[] = $this->transformApp($name, $entry, $basePath);
+            foreach ($role as $name => $entry) {
+                $result[] = $this->transformRole($name, $entry, $basePath);
             }
-            $import->app = $result;
+            $import->role = $result;
         }
     }
 
-    protected function transformApp($name, $data, $basePath)
+    protected function transformRole($name, $data, $basePath)
     {
-        $data = $this->includeDirective->resolve($data, $basePath, Types::TYPE_APP);
+        $data = $this->includeDirective->resolve($data, $basePath, Types::TYPE_ROLE);
         $data['name'] = $name;
 
         return $data;

@@ -47,11 +47,11 @@ class Config extends TransformerAbstract
         }
     }
 
-    protected function transformConfig($name, $data, $basePath)
+    protected function transformConfig($name, $value, $basePath)
     {
-        $data = $this->includeDirective->resolve($data, $basePath, Types::TYPE_CONFIG);
+        $data = [];
         $data['name'] = $name;
-        $data['value'] = $data;
+        $data['value'] = $value;
 
         return $data;
     }

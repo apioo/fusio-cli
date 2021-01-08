@@ -25,30 +25,30 @@ use Fusio\Cli\Deploy\TransformerAbstract;
 use Fusio\Cli\Service\Types;
 
 /**
- * User
+ * Plan
  *
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
  * @license http://www.gnu.org/licenses/agpl-3.0
  * @link    http://fusio-project.org
  */
-class User extends TransformerAbstract
+class Plan extends TransformerAbstract
 {
     public function transform(array $data, \stdClass $import, $basePath)
     {
-        $user = isset($data[Types::TYPE_USER]) ? $data[Types::TYPE_USER] : [];
+        $plan = isset($data[Types::TYPE_PLAN]) ? $data[Types::TYPE_PLAN] : [];
 
-        if (!empty($user) && is_array($user)) {
+        if (!empty($plan) && is_array($plan)) {
             $result = [];
-            foreach ($user as $name => $entry) {
-                $result[] = $this->transformUser($name, $entry, $basePath);
+            foreach ($plan as $name => $entry) {
+                $result[] = $this->transformPlan($name, $entry, $basePath);
             }
-            $import->user = $result;
+            $import->plan = $result;
         }
     }
 
-    protected function transformUser($name, $data, $basePath)
+    protected function transformPlan($name, $data, $basePath)
     {
-        $data = $this->includeDirective->resolve($data, $basePath, Types::TYPE_USER);
+        $data = $this->includeDirective->resolve($data, $basePath, Types::TYPE_PLAN);
         $data['name'] = $name;
 
         return $data;
