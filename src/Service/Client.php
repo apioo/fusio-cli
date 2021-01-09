@@ -231,7 +231,7 @@ class Client
      * @param string $method
      * @param string $path
      * @param array|null $query
-     * @param null $body
+     * @param mixed $body
      * @return HttpResponseInterface
      * @throws TokenException
      */
