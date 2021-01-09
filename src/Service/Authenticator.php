@@ -107,6 +107,9 @@ class Authenticator
         return $this->getTokenValue('access_token');
     }
 
+    /**
+     * @return bool
+     */
     public function hasAccessToken(): bool
     {
         try {
@@ -137,6 +140,11 @@ class Authenticator
         unlink($tokenFile);
     }
 
+    /**
+     * @return array
+     * @throws TokenException
+     * @throws TransportException
+     */
     public function whoami(): array
     {
         $response = $this->transport->request(

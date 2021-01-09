@@ -21,6 +21,7 @@
 
 namespace Fusio\Cli\Service;
 
+use Fusio\Cli\Exception\TokenException;
 use Fusio\Cli\Exception\TransportException;
 use Fusio\Cli\Service\Import\Result;
 use PSX\Json\Parser;
@@ -52,6 +53,7 @@ class Import
     /**
      * @param string $data
      * @return \Generator
+     * @throws TokenException
      */
     public function import(string $data): \Generator
     {
@@ -80,8 +82,9 @@ class Import
      * @param string $type
      * @param string $id
      * @param string $modelClass
-     * @param \stdClass $data
+     * @param stdClass $data
      * @return \Generator
+     * @throws TokenException
      */
     private function importType(string $type, string $id, string $modelClass, stdClass $data): \Generator
     {
@@ -108,6 +111,8 @@ class Import
             } else {
                 yield new Result($type, Result::ACTION_CREATED, $name);
             }
+        } catch (TransportException $e) {
+            yield new Result($type, Result::ACTION_FAILED, $name . ': ' . $e->getMessage(), $e->getResponse());
         } catch (\Throwable $e) {
             yield new Result($type, Result::ACTION_FAILED, $name . ': ' . $e->getMessage());
         }

@@ -22,8 +22,8 @@
 namespace Fusio\Cli;
 
 use Fusio\Cli\Deploy\EnvReplacerInterface;
-use Fusio\Cli\Transport\TransportInterface;
 use Fusio\Cli\Service;
+use Fusio\Cli\Transport\TransportInterface;
 use PSX\Schema\Parser\TypeSchema\ImportResolver;
 use Symfony\Component\Console\Application;
 

@@ -33,10 +33,15 @@ use PSX\Http\Environment\HttpResponseInterface;
  */
 class ResponseParser
 {
+    /**
+     * @param HttpResponseInterface $response
+     * @return array
+     * @throws TransportException
+     */
     public static function parse(HttpResponseInterface $response): array
     {
         if ($response->getStatusCode() >= 400) {
-            throw new TransportException($response, 'API returned an invalid status code');
+            throw new TransportException($response, 'API returned a non successful status code ' . $response->getStatusCode());
         }
 
         $data = \json_decode((string) $response->getBody(), true);

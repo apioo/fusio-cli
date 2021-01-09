@@ -21,6 +21,8 @@
 
 namespace Fusio\Cli\Service\Import;
 
+use PSX\Http\Environment\HttpResponseInterface;
+
 /**
  * Result
  *
@@ -49,11 +51,17 @@ class Result
      */
     private $message;
 
-    public function __construct(string $type, string $action, string $message)
+    /**
+     * @var HttpResponseInterface|null
+     */
+    private $response;
+
+    public function __construct(string $type, string $action, string $message, ?HttpResponseInterface $response = null)
     {
         $this->type = $type;
         $this->action = $action;
         $this->message = $message;
+        $this->response = $response;
     }
 
     /**
@@ -78,6 +86,14 @@ class Result
     public function getMessage(): string
     {
         return $this->message;
+    }
+
+    /**
+     * @return HttpResponseInterface|null
+     */
+    public function getResponse(): ?HttpResponseInterface
+    {
+        return $this->response;
     }
 
     public function toString(): string

@@ -26,6 +26,7 @@ use Fusio\Cli\Deploy\EnvReplacerInterface;
 use Fusio\Cli\Exception\TransportException;
 use Fusio\Cli\Service\Deploy;
 use Fusio\Cli\Service\Import\Result;
+use PSX\Http\Environment\HttpResponseInterface;
 use PSX\Schema\Parser\TypeSchema\ImportResolver;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -100,6 +101,12 @@ class DeployCommand extends Command
                 }
 
                 $output->writeln('- ' . $result->toString());
+
+                $response = $result->getResponse();
+                if ($response instanceof HttpResponseInterface && $output->isVerbose()) {
+                    $output->writeln((string) $response->getBody());
+                    $output->writeln('');
+                }
             }
 
             if ($count > 0) {

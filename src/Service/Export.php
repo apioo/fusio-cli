@@ -21,6 +21,8 @@
 
 namespace Fusio\Cli\Service;
 
+use Fusio\Cli\Exception\TokenException;
+use Fusio\Cli\Exception\TransportException;
 use PSX\Json\Parser;
 use stdClass;
 
@@ -46,6 +48,11 @@ class Export
         $this->client = $client;
     }
 
+    /**
+     * @return string
+     * @throws TokenException
+     * @throws TransportException
+     */
     public function export()
     {
         $data = new stdClass();
@@ -65,8 +72,10 @@ class Export
 
     /**
      * @param string $type
-     * @param integer $index
+     * @param int $index
      * @param array $result
+     * @throws TokenException
+     * @throws TransportException
      */
     private function exportType(string $type, int $index, array &$result)
     {

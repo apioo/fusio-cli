@@ -22,8 +22,12 @@
 namespace Fusio\Cli\Service;
 
 use Fusio\Cli\Exception\InputException;
+use Fusio\Cli\Exception\TokenException;
+use Fusio\Cli\Exception\TransportException;
 use Fusio\Cli\Transport\ResponseParser;
 use Fusio\Cli\Transport\TransportInterface;
+use PSX\Http\Environment\HttpResponseInterface;
+use PSX\Schema\InvalidSchemaException;
 use PSX\Schema\SchemaManager;
 use PSX\Schema\SchemaManagerInterface;
 use PSX\Schema\SchemaTraverser;
@@ -68,6 +72,17 @@ class Client
         $this->schemaTraverser = new SchemaTraverser();
     }
 
+    /**
+     * @param string $type
+     * @param int|null $startIndex
+     * @param int|null $count
+     * @param string|null $search
+     * @param string|null $sortBy
+     * @param int|null $sortOrder
+     * @return array
+     * @throws TokenException
+     * @throws TransportException
+     */
     public function getAll(string $type, ?int $startIndex = null, ?int $count = null, ?string $search = null, ?string $sortBy = null, ?int $sortOrder = null): array
     {
         $query = array_filter([
@@ -83,6 +98,13 @@ class Client
         return ResponseParser::parse($response);
     }
 
+    /**
+     * @param string $type
+     * @param string $id
+     * @return array
+     * @throws TokenException
+     * @throws TransportException
+     */
     public function get(string $type, string $id): array
     {
         $actualId = (int) $id;
@@ -93,6 +115,13 @@ class Client
         }
     }
 
+    /**
+     * @param string $type
+     * @param int $id
+     * @return array
+     * @throws TokenException
+     * @throws TransportException
+     */
     public function getById(string $type, int $id): array
     {
         $response = $this->request('GET', $type . '/' . $id);
@@ -100,6 +129,13 @@ class Client
         return ResponseParser::parse($response);
     }
 
+    /**
+     * @param string $type
+     * @param string $name
+     * @return array
+     * @throws TokenException
+     * @throws TransportException
+     */
     public function getByName(string $type, string $name): array
     {
         $response = $this->request('GET', $type . '/~' . urlencode($name));
@@ -107,6 +143,15 @@ class Client
         return ResponseParser::parse($response);
     }
 
+    /**
+     * @param string $type
+     * @param string $payload
+     * @param string $modelClass
+     * @return array
+     * @throws InputException
+     * @throws TokenException
+     * @throws TransportException
+     */
     public function create(string $type, string $payload, string $modelClass): array
     {
         $body     = $this->parsePayload($payload, $modelClass);
@@ -115,6 +160,16 @@ class Client
         return ResponseParser::parse($response);
     }
 
+    /**
+     * @param string $type
+     * @param int $id
+     * @param string $payload
+     * @param string $modelClass
+     * @return array
+     * @throws InputException
+     * @throws TokenException
+     * @throws TransportException
+     */
     public function update(string $type, int $id, string $payload, string $modelClass): array
     {
         $body     = $this->parsePayload($payload, $modelClass);
@@ -123,6 +178,13 @@ class Client
         return ResponseParser::parse($response);
     }
 
+    /**
+     * @param string $type
+     * @param int $id
+     * @return array
+     * @throws TokenException
+     * @throws TransportException
+     */
     public function delete(string $type, int $id): array
     {
         $response = $this->request('DELETE', $type . '/' . $id);
@@ -130,6 +192,12 @@ class Client
         return ResponseParser::parse($response);
     }
 
+    /**
+     * @param string $payload
+     * @param string $modelClass
+     * @return \JsonSerializable
+     * @throws InputException
+     */
     private function parsePayload(string $payload, string $modelClass): \JsonSerializable
     {
         if (is_file($payload)) {
@@ -152,12 +220,22 @@ class Client
                 $this->schemaManager->getSchema($modelClass),
                 new TypeVisitor()
             );
+        } catch (InvalidSchemaException $e) {
+            throw new InputException('Provided an invalid schema ' . $modelClass . ', got: ' . $e->getMessage(), 0, $e);
         } catch (ValidationException $e) {
             throw new InputException('Could not insert data into model ' . $modelClass . ', got: ' . $e->getMessage(), 0, $e);
         }
     }
 
-    private function request(string $method, string $path, ?array $query = null, $body = null)
+    /**
+     * @param string $method
+     * @param string $path
+     * @param array|null $query
+     * @param null $body
+     * @return HttpResponseInterface
+     * @throws TokenException
+     */
+    private function request(string $method, string $path, ?array $query = null, $body = null): HttpResponseInterface
     {
         $headers = [
             'Authorization' => 'Bearer ' . $this->authenticator->getAccessToken()
