@@ -60,7 +60,7 @@ class Http implements TransportInterface
             'base_uri' => $baseUri,
             'http_errors' => false,
             'headers' => [
-                'User-Agent' => 'Fusio CLI v' . InstalledVersions::getPrettyVersion('fusio/cli'),
+                'User-Agent' => 'Fusio CLI ' . InstalledVersions::getPrettyVersion('fusio/cli'),
             ],
         ]);
 
