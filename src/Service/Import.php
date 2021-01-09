@@ -51,7 +51,7 @@ class Import
 
     /**
      * @param string $data
-     * @return \Generator|Result[]
+     * @return \Generator
      */
     public function import(string $data): \Generator
     {

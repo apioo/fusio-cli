@@ -58,7 +58,7 @@ class Deploy
      * @param EnvReplacerInterface $envReplacer
      * @param ImportResolver $importResolver
      * @param string|null $basePath
-     * @return \Generator|Result[]
+     * @return \Generator
      */
     public function deploy(string $yaml, EnvReplacerInterface $envReplacer, ImportResolver $importResolver, $basePath = null): \Generator
     {

@@ -89,7 +89,7 @@ class Client
         if ($actualId === 0) {
             return $this->getByName($type, $id);
         } else {
-            return $this->get($type, $actualId);
+            return $this->getById($type, $actualId);
         }
     }
 
