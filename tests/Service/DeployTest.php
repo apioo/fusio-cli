@@ -61,6 +61,7 @@ class DeployTest extends TestCase
         $expect = [
             '[CREATED] action Test-Action',
             '[UPDATED] config mail_register_subject',
+            '[UPDATED] config app_approval',
             '[CREATED] connection New-Connection',
             '[CREATED] cronjob Cronjob-A',
             '[CREATED] event New-Event',
@@ -80,7 +81,7 @@ class DeployTest extends TestCase
             ['https://api.acme.com', 'POST', 'authorization/token', null, ['Authorization' => 'Basic Zm9vOmJhcg==', 'Content-Type' => 'application/x-www-form-urlencoded'], 'grant_type=client_credentials'],
         ];
 
-        $this->assertEquals(30, count($transport->getRequests()));
+        $this->assertEquals(33, count($transport->getRequests()));
         $this->assertEquals($expect[0], $transport->getRequests()[0]);
 
         $authenticator->removeAccessToken();
@@ -124,6 +125,9 @@ class DeployTest extends TestCase
         $transport = new Memory();
         $transport->addResponse(new HttpResponse(200, [], \json_encode(['access_token' => '2YotnFZFEjr1zCsicMWpAA'])));
         $transport->addResponse(new HttpResponse(404, [], \json_encode(['not_found' => true])));
+        $transport->addResponse(new HttpResponse(200, [], \json_encode(['success' => true])));
+        $transport->addResponse(new HttpResponse(200, [], \json_encode($config)));
+        $transport->addResponse(new HttpResponse(200, [], \json_encode($config)));
         $transport->addResponse(new HttpResponse(200, [], \json_encode(['success' => true])));
         $transport->addResponse(new HttpResponse(200, [], \json_encode($config)));
         $transport->addResponse(new HttpResponse(200, [], \json_encode($config)));
@@ -178,6 +182,7 @@ class DeployTest extends TestCase
         $expect = [
             '[UPDATED] action Test-Action',
             '[UPDATED] config mail_register_subject',
+            '[UPDATED] config app_approval',
             '[UPDATED] connection New-Connection',
             '[UPDATED] cronjob Cronjob-A',
             '[UPDATED] event New-Event',
@@ -197,7 +202,7 @@ class DeployTest extends TestCase
             ['https://api.acme.com', 'POST', 'authorization/token', null, ['Authorization' => 'Basic Zm9vOmJhcg==', 'Content-Type' => 'application/x-www-form-urlencoded'], 'grant_type=client_credentials'],
         ];
 
-        $this->assertEquals(43, count($transport->getRequests()));
+        $this->assertEquals(46, count($transport->getRequests()));
         $this->assertEquals($expect[0], $transport->getRequests()[0]);
 
         $authenticator->removeAccessToken();
@@ -242,6 +247,9 @@ class DeployTest extends TestCase
         $transport->addResponse(new HttpResponse(200, [], \json_encode(['access_token' => '2YotnFZFEjr1zCsicMWpAA'])));
         $transport->addResponse(new HttpResponse(200, [], \json_encode($action)));
         $transport->addResponse(new HttpResponse(200, [], \json_encode($action)));
+        $transport->addResponse(new HttpResponse(200, [], \json_encode(['success' => true])));
+        $transport->addResponse(new HttpResponse(200, [], \json_encode($config)));
+        $transport->addResponse(new HttpResponse(200, [], \json_encode($config)));
         $transport->addResponse(new HttpResponse(200, [], \json_encode(['success' => true])));
         $transport->addResponse(new HttpResponse(200, [], \json_encode($config)));
         $transport->addResponse(new HttpResponse(200, [], \json_encode($config)));

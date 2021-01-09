@@ -147,7 +147,7 @@ class Client
                 new TypeVisitor()
             );
         } catch (ValidationException $e) {
-            throw new InputException('Could not insert data into model ' . $modelClass, 0, $e);
+            throw new InputException('Could not insert data into model ' . $modelClass . ', got: ' . $e->getMessage(), 0, $e);
         }
     }
 
