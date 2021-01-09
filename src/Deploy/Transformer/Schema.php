@@ -136,7 +136,7 @@ class Schema extends TransformerAbstract
         // remove not needed schemas from the definitions
         (new SchemaResolver())->resolve($schema);
 
-        return (new Generator\TypeSchema())->generate($schema);
+        return (string) (new Generator\TypeSchema())->generate($schema);
     }
 
     /**

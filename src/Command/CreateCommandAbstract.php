@@ -54,7 +54,7 @@ abstract class CreateCommandAbstract extends ClientCommandAbstract
         try {
             $response = $this->client->create(
                 $type,
-                $input->getArgument('payload'),
+                $this->toString($input->getArgument('payload')) ?? '',
                 $modelClass
             );
         } catch (TransportException $e) {

@@ -25,6 +25,7 @@ use Fusio\Cli\Command\ErrorRenderer;
 use Fusio\Cli\Exception\TransportException;
 use Fusio\Cli\Service\Authenticator;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -64,14 +65,15 @@ class LoginCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        /** @var QuestionHelper $helper */
         $helper = $this->getHelper('question');
 
         // base uri
         if ($this->authenticator->isRemote()) {
             $baseUri = $input->getOption('url');
-            if ($baseUri === null) {
+            if (empty($baseUri) || !is_string($baseUri)) {
                 $question = new Question('Enter the URL: ');
-                $baseUri = $helper->ask($input, $output, $question);
+                $baseUri = (string) $helper->ask($input, $output, $question);
             }
         } else {
             $baseUri = '';
@@ -79,17 +81,17 @@ class LoginCommand extends Command
 
         // username
         $username = $input->getOption('username');
-        if ($username === null) {
+        if (empty($username) || !is_string($username)) {
             $question = new Question('Enter the username: ');
-            $username = $helper->ask($input, $output, $question);
+            $username = (string) $helper->ask($input, $output, $question);
         }
 
         // password
         $password = $input->getOption('password');
-        if ($password === null) {
+        if (empty($password) || !is_string($password)) {
             $question = new Question('Enter the password: ');
             $question->setHidden(true);
-            $password = $helper->ask($input, $output, $question);
+            $password = (string) $helper->ask($input, $output, $question);
         }
 
         try {

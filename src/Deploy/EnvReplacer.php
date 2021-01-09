@@ -65,7 +65,7 @@ class EnvReplacer implements EnvReplacerInterface
         }
 
         // replace
-        $data = preg_replace_callback('/\$\{([0-9A-Za-z_]+).([0-9A-Za-z_]+)\}/', function($matches) use ($vars){
+        $data = preg_replace_callback('/\$\{([0-9A-Za-z_]+).([0-9A-Za-z_]+)\}/', function(array $matches) use ($vars): string {
             $type = strtolower($matches[1]);
             $key  = strtolower($matches[2]);
 
@@ -77,7 +77,7 @@ class EnvReplacer implements EnvReplacerInterface
                         $value = trim(json_encode($value), '"');
                     }
 
-                    return $value;
+                    return (string) $value;
                 } else {
                     throw new \RuntimeException('Usage of unknown variable key "' . $key . '", allowed is (' . implode(', ', array_keys($vars[$type])) . ')');
                 }

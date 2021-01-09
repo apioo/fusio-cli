@@ -53,7 +53,7 @@ abstract class DeleteCommandAbstract extends ClientCommandAbstract
         try {
             $response = $this->client->delete(
                 $type,
-                $input->getArgument('id')
+                $this->toString($input->getArgument('id')) ?? ''
             );
         } catch (TransportException $e) {
             return ErrorRenderer::render($e, $output);

@@ -173,7 +173,7 @@ class Authenticator
     private function getTokenFile(): string
     {
         $homeDir = getenv('HOME');
-        if (!is_dir($homeDir)) {
+        if (!is_string($homeDir) || !is_dir($homeDir)) {
             $homeDir = sys_get_temp_dir();
         }
 

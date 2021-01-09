@@ -55,9 +55,9 @@ abstract class ListCommandAbstract extends ClientCommandAbstract
         try {
             $response = $this->client->getAll(
                 $type,
-                $input->getArgument('startIndex'),
-                $input->getArgument('count'),
-                $input->getArgument('search')
+                $this->toInt($input->getArgument('startIndex')),
+                $this->toInt($input->getArgument('count')),
+                $this->toString($input->getArgument('search'))
             );
         } catch (TransportException $e) {
             return ErrorRenderer::render($e, $output);

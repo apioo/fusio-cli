@@ -42,8 +42,9 @@ class NameGenerator
             }
 
             if (is_file($source)) {
+                $pos = (int) strpos($source, DIRECTORY_SEPARATOR . 'src');
                 $source = realpath($source);
-                $source = substr($source, strpos($source, DIRECTORY_SEPARATOR . 'src') + 4);
+                $source = substr($source, $pos + 4);
             }
 
             return preg_replace('/[^a-zA-Z0-9\-\_]/', '_', $source);

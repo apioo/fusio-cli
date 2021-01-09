@@ -62,7 +62,7 @@ class ImportCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $file = $input->getArgument('file');
-        if (!is_file($file)) {
+        if (!is_string($file) || !is_file($file)) {
             throw new \RuntimeException('Provided file does not exist');
         }
 

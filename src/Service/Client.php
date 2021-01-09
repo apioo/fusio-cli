@@ -68,7 +68,7 @@ class Client
         $this->schemaTraverser = new SchemaTraverser();
     }
 
-    public function getAll(string $type, ?string $startIndex = null, ?string $count = null, ?string $search = null, ?string $sortBy = null, ?string $sortOrder = null): array
+    public function getAll(string $type, ?int $startIndex = null, ?int $count = null, ?string $search = null, ?string $sortBy = null, ?int $sortOrder = null): array
     {
         $query = array_filter([
             'startIndex' => $startIndex,
@@ -83,7 +83,7 @@ class Client
         return ResponseParser::parse($response);
     }
 
-    public function get(string $type, string $id): array
+    public function get(string $type, int $id): array
     {
         $response = $this->request('GET', $type . '/' . $id);
 

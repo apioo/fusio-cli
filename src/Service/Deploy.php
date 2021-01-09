@@ -102,6 +102,11 @@ class Deploy
 
     private function newTransformer(string $class, array $arguments = []): TransformerInterface
     {
-        return new $class(...$arguments);
+        $transformer = new $class(...$arguments);
+        if (!$transformer instanceof TransformerInterface) {
+            throw new \InvalidArgumentException('Transformer must be an instance of ' . TransformerInterface::class);
+        }
+
+        return $transformer;
     }
 }

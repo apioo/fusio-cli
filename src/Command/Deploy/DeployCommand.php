@@ -82,7 +82,7 @@ class DeployCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $file = $input->getArgument('file');
-        if (empty($file)) {
+        if (empty($file) || !is_string($file)) {
             $file = $this->basePath . '/.fusio.yml';
         }
 

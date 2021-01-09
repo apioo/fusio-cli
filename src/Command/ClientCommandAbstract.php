@@ -44,4 +44,30 @@ abstract class ClientCommandAbstract extends Command
 
         $this->client = $client;
     }
+
+    protected function toInt($value): ?int
+    {
+        if (is_array($value)) {
+            throw new \InvalidArgumentException('Provided an invalid value');
+        }
+
+        if ($value === null || $value === '') {
+            return null;
+        }
+
+        return (int) $value;
+    }
+
+    protected function toString($value): ?string
+    {
+        if (is_array($value)) {
+            throw new \InvalidArgumentException('Provided an invalid value');
+        }
+
+        if ($value === null || $value === '') {
+            return null;
+        }
+
+        return (string) $value;
+    }
 }

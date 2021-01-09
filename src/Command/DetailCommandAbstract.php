@@ -51,7 +51,7 @@ abstract class DetailCommandAbstract extends ClientCommandAbstract
         $type = $this->getType();
 
         try {
-            $rawId = $input->getArgument('id');
+            $rawId = $this->toString($input->getArgument('id')) ?? '';
             $actualId = (int) $rawId;
 
             if ($actualId === 0) {
