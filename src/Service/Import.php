@@ -89,7 +89,7 @@ class Import
 
         $existing = null;
         try {
-            $existing = $this->client->get($type, $id);
+            $existing = $this->client->get($type, $name);
         } catch (TransportException $e) {
             // 404 not found that means we can create the resource
         }
