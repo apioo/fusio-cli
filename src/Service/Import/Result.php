@@ -79,4 +79,14 @@ class Result
     {
         return $this->message;
     }
+
+    public function toString(): string
+    {
+        return '[' . $this->getAction() . '] ' . $this->getType() . ' ' . $this->getMessage();
+    }
+
+    public function __toString()
+    {
+        return $this->toString();
+    }
 }

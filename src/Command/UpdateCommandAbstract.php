@@ -53,9 +53,14 @@ abstract class UpdateCommandAbstract extends ClientCommandAbstract
         $modelClass = '\\Fusio\\Model\\Backend\\' . ucfirst($type) . '_Update';
 
         try {
+            $data = $this->client->get(
+                $type,
+                $this->toString($input->getArgument('id')) ?? ''
+            );
+
             $response = $this->client->update(
                 $type,
-                $this->toString($input->getArgument('id')) ?? '',
+                $data['id'],
                 $this->toString($input->getArgument('payload')) ?? '',
                 $modelClass
             );

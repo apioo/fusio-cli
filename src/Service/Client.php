@@ -83,7 +83,17 @@ class Client
         return ResponseParser::parse($response);
     }
 
-    public function get(string $type, int $id): array
+    public function get(string $type, string $id): array
+    {
+        $actualId = (int) $id;
+        if ($actualId === 0) {
+            return $this->getByName($type, $id);
+        } else {
+            return $this->get($type, $actualId);
+        }
+    }
+
+    public function getById(string $type, int $id): array
     {
         $response = $this->request('GET', $type . '/' . $id);
 
@@ -105,20 +115,16 @@ class Client
         return ResponseParser::parse($response);
     }
 
-    public function update(string $type, string $id, string $payload, string $modelClass): array
+    public function update(string $type, int $id, string $payload, string $modelClass): array
     {
-        $id = $this->checkIdExists($type, $id);
-
         $body     = $this->parsePayload($payload, $modelClass);
         $response = $this->request('PUT', $type . '/' . $id, null, $body);
 
         return ResponseParser::parse($response);
     }
 
-    public function delete(string $type, string $id): array
+    public function delete(string $type, int $id): array
     {
-        $id = $this->checkIdExists($type, $id);
-
         $response = $this->request('DELETE', $type . '/' . $id);
 
         return ResponseParser::parse($response);
@@ -149,18 +155,6 @@ class Client
         } catch (ValidationException $e) {
             throw new InputException('Could not insert data into model ' . $modelClass . ', got: ' . $e->getMessage(), 0, $e);
         }
-    }
-
-    private function checkIdExists(string $type, string $rawId): int
-    {
-        $id = (int) $rawId;
-
-        if (empty($id)) {
-            throw new InputException('Provided id is not an integer ' . $rawId);
-        }
-
-        $data = $this->get($type, $id);
-        return (int) $data['id'];
     }
 
     private function request(string $method, string $path, ?array $query = null, $body = null)

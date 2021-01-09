@@ -75,7 +75,7 @@ class ImportCommand extends Command
                     $count++;
                 }
 
-                $output->writeln('- [' . $result->getType() . '] ' . $result->getAction() . ' ' . $result->getMessage());
+                $output->writeln('- ' . $result->toString());
             }
 
             if ($count > 0) {

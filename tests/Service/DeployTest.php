@@ -56,7 +56,8 @@ class DeployTest extends TestCase
         $envReplacer = new EnvReplacer();
         $importResolver = ImportResolver::createDefault();
 
-        $result = $deploy->deploy($yaml, $envReplacer, $importResolver, dirname($file));
+        $results = iterator_to_array($deploy->deploy($yaml, $envReplacer, $importResolver, dirname($file)), false);
+        $results = array_map('strval', $results);
 
         $expect = [
             '[CREATED] action Test-Action',
@@ -75,13 +76,13 @@ class DeployTest extends TestCase
             '[CREATED] scope Scope-B',
             '[CREATED] routes /bar',
         ];
-        $this->assertEquals($expect, $result->getLogs());
+        $this->assertEquals($expect, $results);
 
         $expect = [
             ['https://api.acme.com', 'POST', 'authorization/token', null, ['Authorization' => 'Basic Zm9vOmJhcg==', 'Content-Type' => 'application/x-www-form-urlencoded'], 'grant_type=client_credentials'],
         ];
 
-        $this->assertEquals(33, count($transport->getRequests()));
+        $this->assertEquals(31, count($transport->getRequests()));
         $this->assertEquals($expect[0], $transport->getRequests()[0]);
 
         $authenticator->removeAccessToken();
@@ -127,9 +128,7 @@ class DeployTest extends TestCase
         $transport->addResponse(new HttpResponse(404, [], \json_encode(['not_found' => true])));
         $transport->addResponse(new HttpResponse(200, [], \json_encode(['success' => true])));
         $transport->addResponse(new HttpResponse(200, [], \json_encode($config)));
-        $transport->addResponse(new HttpResponse(200, [], \json_encode($config)));
         $transport->addResponse(new HttpResponse(200, [], \json_encode(['success' => true])));
-        $transport->addResponse(new HttpResponse(200, [], \json_encode($config)));
         $transport->addResponse(new HttpResponse(200, [], \json_encode($config)));
         $transport->addResponse(new HttpResponse(200, [], \json_encode(['success' => true])));
         $transport->addResponse(new HttpResponse(404, [], \json_encode(['not_found' => true])));
@@ -177,7 +176,8 @@ class DeployTest extends TestCase
         $envReplacer = new EnvReplacer();
         $importResolver = ImportResolver::createDefault();
 
-        $result = $deploy->deploy($yaml, $envReplacer, $importResolver, dirname($file));
+        $results = iterator_to_array($deploy->deploy($yaml, $envReplacer, $importResolver, dirname($file)), false);
+        $results = array_map('strval', $results);
 
         $expect = [
             '[UPDATED] action Test-Action',
@@ -196,13 +196,13 @@ class DeployTest extends TestCase
             '[UPDATED] scope Scope-B',
             '[UPDATED] routes /bar',
         ];
-        $this->assertEquals($expect, $result->getLogs());
+        $this->assertEquals($expect, $results);
 
         $expect = [
             ['https://api.acme.com', 'POST', 'authorization/token', null, ['Authorization' => 'Basic Zm9vOmJhcg==', 'Content-Type' => 'application/x-www-form-urlencoded'], 'grant_type=client_credentials'],
         ];
 
-        $this->assertEquals(46, count($transport->getRequests()));
+        $this->assertEquals(31, count($transport->getRequests()));
         $this->assertEquals($expect[0], $transport->getRequests()[0]);
 
         $authenticator->removeAccessToken();
@@ -246,51 +246,35 @@ class DeployTest extends TestCase
         $transport = new Memory();
         $transport->addResponse(new HttpResponse(200, [], \json_encode(['access_token' => '2YotnFZFEjr1zCsicMWpAA'])));
         $transport->addResponse(new HttpResponse(200, [], \json_encode($action)));
-        $transport->addResponse(new HttpResponse(200, [], \json_encode($action)));
         $transport->addResponse(new HttpResponse(200, [], \json_encode(['success' => true])));
         $transport->addResponse(new HttpResponse(200, [], \json_encode($config)));
-        $transport->addResponse(new HttpResponse(200, [], \json_encode($config)));
         $transport->addResponse(new HttpResponse(200, [], \json_encode(['success' => true])));
-        $transport->addResponse(new HttpResponse(200, [], \json_encode($config)));
         $transport->addResponse(new HttpResponse(200, [], \json_encode($config)));
         $transport->addResponse(new HttpResponse(200, [], \json_encode(['success' => true])));
         $transport->addResponse(new HttpResponse(200, [], \json_encode($connection)));
-        $transport->addResponse(new HttpResponse(200, [], \json_encode($connection)));
         $transport->addResponse(new HttpResponse(200, [], \json_encode(['success' => true])));
-        $transport->addResponse(new HttpResponse(200, [], \json_encode($cronjob)));
         $transport->addResponse(new HttpResponse(200, [], \json_encode($cronjob)));
         $transport->addResponse(new HttpResponse(200, [], \json_encode(['success' => true])));
         $transport->addResponse(new HttpResponse(200, [], \json_encode($event)));
-        $transport->addResponse(new HttpResponse(200, [], \json_encode($event)));
         $transport->addResponse(new HttpResponse(200, [], \json_encode(['success' => true])));
-        $transport->addResponse(new HttpResponse(200, [], \json_encode($plan)));
         $transport->addResponse(new HttpResponse(200, [], \json_encode($plan)));
         $transport->addResponse(new HttpResponse(200, [], \json_encode(['success' => true])));
         $transport->addResponse(new HttpResponse(200, [], \json_encode($rate)));
-        $transport->addResponse(new HttpResponse(200, [], \json_encode($rate)));
         $transport->addResponse(new HttpResponse(200, [], \json_encode(['success' => true])));
-        $transport->addResponse(new HttpResponse(200, [], \json_encode($role)));
         $transport->addResponse(new HttpResponse(200, [], \json_encode($role)));
         $transport->addResponse(new HttpResponse(200, [], \json_encode(['success' => true])));
         $transport->addResponse(new HttpResponse(200, [], \json_encode($route)));
-        $transport->addResponse(new HttpResponse(200, [], \json_encode($route)));
         $transport->addResponse(new HttpResponse(200, [], \json_encode(['success' => true])));
-        $transport->addResponse(new HttpResponse(200, [], \json_encode($schema)));
-        $transport->addResponse(new HttpResponse(200, [], \json_encode($schema)));
-        $transport->addResponse(new HttpResponse(200, [], \json_encode(['success' => true])));
-        $transport->addResponse(new HttpResponse(200, [], \json_encode($schema)));
         $transport->addResponse(new HttpResponse(200, [], \json_encode($schema)));
         $transport->addResponse(new HttpResponse(200, [], \json_encode(['success' => true])));
         $transport->addResponse(new HttpResponse(200, [], \json_encode($schema)));
-        $transport->addResponse(new HttpResponse(200, [], \json_encode($schema)));
         $transport->addResponse(new HttpResponse(200, [], \json_encode(['success' => true])));
         $transport->addResponse(new HttpResponse(200, [], \json_encode($schema)));
+        $transport->addResponse(new HttpResponse(200, [], \json_encode(['success' => true])));
         $transport->addResponse(new HttpResponse(200, [], \json_encode($schema)));
         $transport->addResponse(new HttpResponse(200, [], \json_encode(['success' => true])));
         $transport->addResponse(new HttpResponse(200, [], \json_encode($scope)));
-        $transport->addResponse(new HttpResponse(200, [], \json_encode($scope)));
         $transport->addResponse(new HttpResponse(200, [], \json_encode(['success' => true])));
-        $transport->addResponse(new HttpResponse(200, [], \json_encode($scope)));
         $transport->addResponse(new HttpResponse(200, [], \json_encode($scope)));
         $transport->addResponse(new HttpResponse(200, [], \json_encode(['success' => true])));
 
