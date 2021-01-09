@@ -24,6 +24,7 @@ namespace Fusio\Cli\Command\Deploy;
 use Fusio\Cli\Command\ErrorRenderer;
 use Fusio\Cli\Exception\TransportException;
 use Fusio\Cli\Service\Import;
+use Fusio\Cli\Service\Import\Result;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -67,30 +68,27 @@ class ImportCommand extends Command
         }
 
         try {
-            $result = $this->import->import(file_get_contents($file));
+            $results = $this->import->import(file_get_contents($file));
+            $count = 0;
+            foreach ($results as $result) {
+                if ($result->getType() === Result::ACTION_FAILED) {
+                    $count++;
+                }
+
+                $output->writeln('- [' . $result->getType() . '] ' . $result->getAction() . ' ' . $result->getMessage());
+            }
+
+            if ($count > 0) {
+                $output->writeln('');
+                $output->writeln('Import contained ' . $count . ' errors!');
+                $output->writeln('');
+            } else {
+                $output->writeln('');
+                $output->writeln('Import successful!');
+                $output->writeln('');
+            }
         } catch (TransportException $e) {
             return ErrorRenderer::render($e, $output);
-        }
-
-        $logs = $result->getLogs();
-        foreach ($logs as $log) {
-            $output->writeln('- ' . $log);
-        }
-
-        if ($result->hasError()) {
-            $errors = $result->getErrors();
-
-            $output->writeln('');
-            $output->writeln('Import contained ' . count($errors) . ' errors!');
-            $output->writeln('');
-
-            foreach ($errors as $error) {
-                $output->writeln('- ' . $error);
-            }
-        } else {
-            $output->writeln('');
-            $output->writeln('Import successful!');
-            $output->writeln('');
         }
 
         return 0;

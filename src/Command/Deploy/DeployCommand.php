@@ -25,6 +25,7 @@ use Fusio\Cli\Command\ErrorRenderer;
 use Fusio\Cli\Deploy\EnvReplacerInterface;
 use Fusio\Cli\Exception\TransportException;
 use Fusio\Cli\Service\Deploy;
+use Fusio\Cli\Service\Import\Result;
 use PSX\Schema\Parser\TypeSchema\ImportResolver;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -91,23 +92,20 @@ class DeployCommand extends Command
         }
 
         try {
-            $result = $this->deploy->deploy(file_get_contents($file), $this->envReplacer, $this->importResolver, dirname($file));
-            $logs   = $result->getLogs();
+            $results = $this->deploy->deploy(file_get_contents($file), $this->envReplacer, $this->importResolver, dirname($file));
+            $count = 0;
+            foreach ($results as $result) {
+                if ($result->getType() === Result::ACTION_FAILED) {
+                    $count++;
+                }
 
-            foreach ($logs as $log) {
-                $output->writeln('- ' . $log);
+                $output->writeln('- [' . $result->getType() . '] ' . $result->getAction() . ' ' . $result->getMessage());
             }
 
-            if ($result->hasError()) {
-                $errors = $result->getErrors();
-
+            if ($count > 0) {
                 $output->writeln('');
-                $output->writeln('Deploy contained ' . count($errors) . ' errors!');
+                $output->writeln('Deploy contained ' . $count . ' errors!');
                 $output->writeln('');
-
-                foreach ($errors as $error) {
-                    $output->writeln('- ' . $error);
-                }
             } else {
                 $output->writeln('');
                 $output->writeln('Deploy successful!');

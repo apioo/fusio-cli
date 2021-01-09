@@ -25,6 +25,7 @@ use Fusio\Cli\Deploy\EnvReplacerInterface;
 use Fusio\Cli\Deploy\IncludeDirective;
 use Fusio\Cli\Deploy\Transformer;
 use Fusio\Cli\Deploy\TransformerInterface;
+use Fusio\Cli\Service\Import\Result;
 use PSX\Schema\Parser\TypeSchema\ImportResolver;
 use Symfony\Component\Yaml\Yaml;
 
@@ -57,9 +58,9 @@ class Deploy
      * @param EnvReplacerInterface $envReplacer
      * @param ImportResolver $importResolver
      * @param string|null $basePath
-     * @return Import\Result
+     * @return \Generator|Result[]
      */
-    public function deploy(string $yaml, EnvReplacerInterface $envReplacer, ImportResolver $importResolver, $basePath = null)
+    public function deploy(string $yaml, EnvReplacerInterface $envReplacer, ImportResolver $importResolver, $basePath = null): \Generator
     {
         $includeDirective = new IncludeDirective($envReplacer);
 
@@ -97,7 +98,7 @@ class Deploy
         }
 
         // import definition
-        return $this->import->import(json_encode($import));
+        yield from $this->import->import(json_encode($import));
     }
 
     private function newTransformer(string $class, array $arguments = []): TransformerInterface

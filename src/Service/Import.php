@@ -24,7 +24,6 @@ namespace Fusio\Cli\Service;
 use Fusio\Cli\Exception\TransportException;
 use Fusio\Cli\Service\Import\Result;
 use PSX\Json\Parser;
-use PSX\Schema\InvalidSchemaException;
 use RuntimeException;
 use stdClass;
 
@@ -52,13 +51,11 @@ class Import
 
     /**
      * @param string $data
-     * @return Import\Result
+     * @return \Generator|Result[]
      */
-    public function import(string $data)
+    public function import(string $data): \Generator
     {
-        $data   = Parser::decode($data, false);
-        $result = new Result();
-
+        $data = Parser::decode($data, false);
         if (!$data instanceof stdClass) {
             throw new RuntimeException('Data must be an object');
         }
@@ -73,12 +70,10 @@ class Import
                         continue;
                     }
 
-                    $this->importType($type, $id, $modelClass, $entry, $result);
+                    yield from $this->importType($type, $id, $modelClass, $entry);
                 }
             }
         }
-
-        return $result;
     }
 
     /**
@@ -86,9 +81,9 @@ class Import
      * @param string $id
      * @param string $modelClass
      * @param \stdClass $data
-     * @param Import\Result $result
+     * @return \Generator
      */
-    private function importType(string $type, string $id, string $modelClass, stdClass $data, Result $result)
+    private function importType(string $type, string $id, string $modelClass, stdClass $data): \Generator
     {
         $name = $data->{$id};
 
@@ -112,14 +107,14 @@ class Import
             }
 
             if (isset($response['success']) && $response['success'] === false) {
-                $result->add($type, Result::ACTION_FAILED, $name . ': ' . $response['message']);
+                yield new Result($type, Result::ACTION_FAILED, $name . ': ' . $response['message']);
             } elseif (isset($existing['id'])) {
-                $result->add($type, Result::ACTION_UPDATED, $name);
+                yield new Result($type, Result::ACTION_UPDATED, $name);
             } else {
-                $result->add($type, Result::ACTION_CREATED, $name);
+                yield new Result($type, Result::ACTION_CREATED, $name);
             }
         } catch (\Throwable $e) {
-            $result->add($type, Result::ACTION_FAILED, $name . ': ' . $e->getMessage());
+            yield new Result($type, Result::ACTION_FAILED, $name . ': ' . $e->getMessage());
         }
     }
 }

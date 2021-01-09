@@ -30,96 +30,53 @@ namespace Fusio\Cli\Service\Import;
  */
 class Result
 {
-    const ACTION_FAILED  = 'FAILED';
-    const ACTION_UPDATED = 'UPDATED';
-    const ACTION_CREATED = 'CREATED';
+    public const ACTION_FAILED  = 'FAILED';
+    public const ACTION_UPDATED = 'UPDATED';
+    public const ACTION_CREATED = 'CREATED';
 
     /**
-     * @var array
+     * @var string
      */
-    protected $result = [];
+    private $type;
 
     /**
-     * @param string $type
-     * @param string $action
-     * @param string $message
+     * @var string
      */
-    public function add(string $type, string $action, string $message)
+    private $action;
+
+    /**
+     * @var string
+     */
+    private $message;
+
+    public function __construct(string $type, string $action, string $message)
     {
-        if (!isset($this->result[$type])) {
-            $this->result[$type] = [];
-        }
-
-        $this->result[$type][] = [$action, $message];
+        $this->type = $type;
+        $this->action = $action;
+        $this->message = $message;
     }
 
     /**
-     * @param Result $result
+     * @return string
      */
-    public function merge(Result $result)
+    public function getType(): string
     {
-        $results = $result->getResults();
-        foreach ($results as $type => $rows) {
-            foreach ($rows as $row) {
-                $this->add($type, $row[0], $row[1]);
-            }
-        }
+        return $this->type;
     }
 
     /**
-     * @return boolean
+     * @return string
      */
-    public function hasError()
+    public function getAction(): string
     {
-        foreach ($this->result as $type => $rows) {
-            foreach ($rows as $row) {
-                if ($row[0] === self::ACTION_FAILED) {
-                    return true;
-                }
-            }
-        }
-
-        return false;
+        return $this->action;
     }
 
     /**
-     * @internal
-     * @return array
+     * @return string
      */
-    public function getResults()
+    public function getMessage(): string
     {
-        return $this->result;
-    }
-
-    /**
-     * @return array
-     */
-    public function getErrors()
-    {
-        $errors = [];
-        foreach ($this->result as $type => $rows) {
-            foreach ($rows as $row) {
-                if ($row[0] === self::ACTION_FAILED) {
-                    $errors[] = $row[1];
-                }
-            }
-        }
-
-        return $errors;
-    }
-
-    /**
-     * @return array
-     */
-    public function getLogs()
-    {
-        $logs = [];
-        foreach ($this->result as $type => $rows) {
-            foreach ($rows as $row) {
-                $logs[] = '[' . $row[0] . '] ' . $type . ' ' . $row[1];
-            }
-        }
-
-        return $logs;
+        return $this->message;
     }
 }
