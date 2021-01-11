@@ -124,7 +124,7 @@ class DeployTest extends TestCase
         $scope->setId(1);
 
         $transport = new Memory();
-        $transport->addResponse(new HttpResponse(200, [], \json_encode(['access_token' => '2YotnFZFEjr1zCsicMWpAA'])));
+        $transport->addResponse(new HttpResponse(200, [], \json_encode(['access_token' => '2YotnFZFEjr1zCsicMWpAA', 'expires_in' => time() + 60])));
         $transport->addResponse(new HttpResponse(404, [], \json_encode(['not_found' => true])));
         $transport->addResponse(new HttpResponse(200, [], \json_encode(['success' => true])));
         $transport->addResponse(new HttpResponse(200, [], \json_encode($config)));
@@ -244,7 +244,7 @@ class DeployTest extends TestCase
         $scope->setId(1);
 
         $transport = new Memory();
-        $transport->addResponse(new HttpResponse(200, [], \json_encode(['access_token' => '2YotnFZFEjr1zCsicMWpAA'])));
+        $transport->addResponse(new HttpResponse(200, [], \json_encode(['access_token' => '2YotnFZFEjr1zCsicMWpAA', 'expires_in' => time() + 60])));
         $transport->addResponse(new HttpResponse(200, [], \json_encode($action)));
         $transport->addResponse(new HttpResponse(200, [], \json_encode(['success' => true])));
         $transport->addResponse(new HttpResponse(200, [], \json_encode($config)));
