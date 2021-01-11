@@ -104,6 +104,12 @@ class Authenticator
      */
     public function getAccessToken(): string
     {
+        if ($this->isExpired()) {
+            $this->removeTokenFile();
+
+            throw new TokenException('Existing token is expired, please request a new token through the login command');
+        }
+
         return $this->getTokenValue('access_token');
     }
 
@@ -120,6 +126,9 @@ class Authenticator
         }
     }
 
+    /**
+     * @throws TokenException
+     */
     public function removeAccessToken(): void
     {
         $tokenFile = $this->getTokenFile();
@@ -128,16 +137,18 @@ class Authenticator
         }
 
         // send revoke
-        $this->transport->request(
-            $this->getBaseUri(),
-            'POST',
-            'authorization/revoke',
-            null,
-            ['Authorization' => 'Bearer ' . $this->getAccessToken()]
-        );
+        if ($this->hasAccessToken()) {
+            $this->transport->request(
+                $this->getBaseUri(),
+                'POST',
+                'authorization/revoke',
+                null,
+                ['Authorization' => 'Bearer ' . $this->getAccessToken()]
+            );
+        }
 
         // remove file
-        unlink($tokenFile);
+        $this->removeTokenFile();
     }
 
     /**
@@ -178,6 +189,15 @@ class Authenticator
         return $data[$key];
     }
 
+    /**
+     * @return bool
+     * @throws TokenException
+     */
+    private function isExpired(): bool
+    {
+        return time() > $this->getTokenValue('expires_in');
+    }
+
     private function getTokenFile(): string
     {
         $homeDir = getenv('HOME');
@@ -186,5 +206,15 @@ class Authenticator
         }
 
         return $homeDir . '/fusio_token.json';
+    }
+
+    private function removeTokenFile(): void
+    {
+        $tokenFile = $this->getTokenFile();
+        if (!is_file($tokenFile)) {
+            return;
+        }
+
+        unlink($tokenFile);
     }
 }
