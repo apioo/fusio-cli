@@ -62,11 +62,11 @@ class DeployCommand extends Command
      */
     private $importResolver;
 
-    public function __construct(Deploy $authenticator, string $basePath, EnvReplacerInterface $envReplacer, ImportResolver $importResolver)
+    public function __construct(Deploy $deploy, string $basePath, EnvReplacerInterface $envReplacer, ImportResolver $importResolver)
     {
         parent::__construct();
 
-        $this->deploy = $authenticator;
+        $this->deploy = $deploy;
         $this->basePath = $basePath;
         $this->envReplacer = $envReplacer;
         $this->importResolver = $importResolver;
