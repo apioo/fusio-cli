@@ -82,21 +82,26 @@ class NameGenerator
 
     private static function getNameFromSchema(string $schema)
     {
-        if (class_exists($schema)) {
-            return preg_replace('/[^a-zA-Z0-9\-\_]/', '_', $schema);
+        if (preg_match('/^[a-zA-Z0-9_\\\]+$/', $schema)) {
+            if (class_exists($schema)) {
+                return preg_replace('/[^a-zA-Z0-9\-\_]/', '_', $schema);
+            } else {
+                throw new RuntimeException('Provided class "' . $schema . '" does not exist');
+            }
+        } else {
+            $data = json_decode($schema);
+            if (!$data instanceof \stdClass) {
+                throw new RuntimeException('Schema must be a valid json schema');
+            }
+
+            if (isset($data->{'$ref'}) && is_string($data->{'$ref'})) {
+                return preg_replace('/[^A-z0-9\-\_]/', '_', $data->{'$ref'});
+            } elseif (isset($data->title) && is_string($data->title)) {
+                return preg_replace('/[^A-z0-9\-\_]/', '_', $data->title);
+            }
+
+            // at last fallback we can only use the md5 of the schema as name
+            return 'Schema-' . substr(md5($schema), 0, 8);
         }
-
-        $data = json_decode($schema);
-
-        if (!$data instanceof \stdClass) {
-            throw new RuntimeException('Schema must be a valid json schema');
-        }
-
-        if (isset($data->title) && is_string($data->title)) {
-            return preg_replace('/[^A-z0-9\-\_]/', '_', $data->title);
-        }
-
-        // at last fallback we can only use the md5 of the schema as name
-        return 'Schema-' . substr(md5($schema), 0, 8);
     }
 }
