@@ -24,6 +24,7 @@ namespace Fusio\Cli\Deploy\Transformer;
 use Fusio\Cli\Deploy\NameGenerator;
 use Fusio\Cli\Deploy\TransformerAbstract;
 use Fusio\Cli\Service\Types;
+use Symfony\Component\Yaml\Tag\TaggedValue;
 
 /**
  * Action
@@ -61,6 +62,24 @@ class Action extends TransformerAbstract
     {
         $data = $this->includeDirective->resolve($data, $basePath, Types::TYPE_ACTION);
         $data['name'] = $name;
+
+        // resolve include tags inside the action config
+        if (isset($data['config']) && is_array($data['config'])) {
+            $config = [];
+            foreach ($data['config'] as $key => $value) {
+                if ($value instanceof TaggedValue) {
+                    $file = $basePath . '/' . $value->getValue();
+                    if (is_file($file)) {
+                        $config[$key] = file_get_contents($file);
+                    } else {
+                        throw new \RuntimeException('Provided file ' . $file . ' does not exist');
+                    }
+                } else {
+                    $config[$key] = $value;
+                }
+            }
+            $data['config'] = $config;
+        }
 
         return $data;
     }
