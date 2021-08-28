@@ -41,9 +41,15 @@ class Authenticator
      */
     private $transport;
 
-    public function __construct(TransportInterface $transport)
+    /**
+     * @var string|null
+     */
+    private $basePath;
+
+    public function __construct(TransportInterface $transport, ?string $basePath = null)
     {
         $this->transport = $transport;
+        $this->basePath = $basePath;
     }
 
     /**
@@ -200,12 +206,7 @@ class Authenticator
 
     private function getTokenFile(): string
     {
-        $homeDir = getenv('HOME');
-        if (!is_string($homeDir) || !is_dir($homeDir)) {
-            $homeDir = sys_get_temp_dir();
-        }
-
-        return $homeDir . '/fusio_token.json';
+        return $this->getHomeDir() . '/fusio_token.json';
     }
 
     private function removeTokenFile(): void
@@ -216,5 +217,19 @@ class Authenticator
         }
 
         unlink($tokenFile);
+    }
+
+    private function getHomeDir(): string
+    {
+        if (!empty($this->basePath)) {
+            return $this->basePath;
+        }
+
+        $homeDir = getenv('HOME');
+        if (!empty($homeDir) && is_dir($homeDir)) {
+            return $homeDir;
+        }
+
+        return sys_get_temp_dir();
     }
 }

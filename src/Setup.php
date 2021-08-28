@@ -48,7 +48,7 @@ class Setup
      */
     public static function appendCommands(Application $application, TransportInterface $transport, string $basePath, EnvReplacerInterface $envReplacer, ImportResolver $importResolver)
     {
-        $authenticator = new Service\Authenticator($transport);
+        $authenticator = new Service\Authenticator($transport, $basePath);
         $client = new Service\Client($authenticator, $transport);
         $import = new Service\Import($client);
         $export = new Service\Export($client);
