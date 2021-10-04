@@ -65,8 +65,10 @@ class Deploy
     {
         $includeDirective = new IncludeDirective($envReplacer);
 
-        $data   = Yaml::parse($envReplacer->replace($yaml), Yaml::PARSE_CUSTOM_TAGS);
-        $import = new \stdClass();
+        $data = Yaml::parse($envReplacer->replace($yaml), Yaml::PARSE_CUSTOM_TAGS);
+        if (empty($data) || !is_array($data)) {
+            return;
+        }
 
         if (empty($basePath)) {
             $basePath = getcwd();
@@ -93,6 +95,7 @@ class Deploy
         }
 
         // run transformer
+        $import = new \stdClass();
         foreach ($transformers as $type => $transformer) {
             /** @var TransformerInterface $transformer */
             $transformer->transform($data, $import, $basePath);
