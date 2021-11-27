@@ -27,11 +27,11 @@ use Fusio\Cli\Exception\TransportException;
 use Fusio\Cli\Transport\ResponseParser;
 use Fusio\Cli\Transport\TransportInterface;
 use PSX\Http\Environment\HttpResponseInterface;
-use PSX\Schema\InvalidSchemaException;
+use PSX\Schema\Exception\InvalidSchemaException;
+use PSX\Schema\Exception\ValidationException;
 use PSX\Schema\SchemaManager;
 use PSX\Schema\SchemaManagerInterface;
 use PSX\Schema\SchemaTraverser;
-use PSX\Schema\ValidationException;
 use PSX\Schema\Visitor\TypeVisitor;
 use Symfony\Component\Yaml\Yaml;
 
