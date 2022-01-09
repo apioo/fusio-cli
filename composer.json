@@ -1,13 +1,13 @@
 {
   "name": "fusio/cli",
   "description": "Fusio CLI",
-  "homepage": "http://fusio-project.org",
+  "homepage": "https://www.fusio-project.org",
   "license": "AGPL-3.0-only",
   "authors": [
     {
       "name": "Christoph Kappestein",
       "email": "christoph.kappestein@gmail.com",
-      "homepage": "http://christoph.kappestein.com"
+      "homepage": "https://chrisk.app/"
     }
   ],
   "scripts": {
@@ -15,12 +15,12 @@
     "psalm": "@php vendor/vimeo/psalm/psalm"
   },
   "require": {
-    "php": ">=7.2",
-    "psr/log": "^1.0",
+    "php": ">=8.0",
+    "psr/log": "^1.0|^2.0|^3.0",
     "fusio/model": "^0.1",
-    "psx/schema": "^3.0",
-    "psx/http": "^2.0",
-    "guzzlehttp/guzzle": "^6.2",
+    "psx/schema": "^4.0",
+    "psx/http": "^3.0",
+    "guzzlehttp/guzzle": "^7.0",
     "symfony/console": "^4.0|^5.0",
     "symfony/yaml": "^4.0|^5.0"
   },
