@@ -39,14 +39,8 @@ class Setup
     /**
      * Adds all CLI commands to an application. The transport interface defines whether we send actual HTTP requests or
      * only internal requests. The base path contains the path to the Fusio app. 
-     * 
-     * @param Application $application
-     * @param TransportInterface $transport
-     * @param string $basePath
-     * @param EnvReplacerInterface $envReplacer
-     * @param ImportResolver $importResolver
      */
-    public static function appendCommands(Application $application, TransportInterface $transport, string $basePath, EnvReplacerInterface $envReplacer, ImportResolver $importResolver)
+    public static function appendCommands(Application $application, TransportInterface $transport, string $basePath, EnvReplacerInterface $envReplacer, ImportResolver $importResolver): void
     {
         $authenticator = new Service\Authenticator($transport, $basePath);
         $client = new Service\Client($authenticator, $transport);
