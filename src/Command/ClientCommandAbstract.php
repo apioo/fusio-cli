@@ -33,10 +33,7 @@ use Symfony\Component\Console\Command\Command;
  */
 abstract class ClientCommandAbstract extends Command
 {
-    /**
-     * @var Client
-     */
-    protected $client;
+    protected Client $client;
 
     public function __construct(Client $client)
     {

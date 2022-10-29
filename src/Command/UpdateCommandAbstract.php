@@ -50,7 +50,7 @@ abstract class UpdateCommandAbstract extends ClientCommandAbstract
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $type = $this->getType();
-        $modelClass = '\\Fusio\\Model\\Backend\\' . ucfirst($type) . '_Update';
+        $modelClass = '\\Fusio\\Model\\Backend\\' . ucfirst($type) . 'Update';
 
         try {
             $data = $this->client->get(

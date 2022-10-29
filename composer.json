@@ -17,7 +17,7 @@
   "require": {
     "php": ">=8.0",
     "psr/log": "^1.0|^2.0|^3.0",
-    "fusio/model": "^1.0",
+    "fusio/model": "^2.0",
     "psx/schema": "^4.0",
     "psx/http": "^3.0",
     "guzzlehttp/guzzle": "^7.0",
