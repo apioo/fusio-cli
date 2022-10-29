@@ -99,9 +99,9 @@ class Import
 
         try {
             if (isset($existing['id'])) {
-                $response = $this->client->update($type, $existing['id'], \json_encode($data), $modelClass . '_Update');
+                $response = $this->client->update($type, $existing['id'], \json_encode($data), $modelClass . 'Update');
             } else {
-                $response = $this->client->create($type, \json_encode($data), $modelClass . '_Create');
+                $response = $this->client->create($type, \json_encode($data), $modelClass . 'Create');
             }
 
             if (isset($response['success']) && $response['success'] === false) {

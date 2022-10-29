@@ -44,25 +44,10 @@ use Symfony\Component\Yaml\Yaml;
  */
 class Client
 {
-    /**
-     * @var Authenticator
-     */
-    private $authenticator;
-
-    /**
-     * @var TransportInterface
-     */
-    private $transport;
-
-    /**
-     * @var SchemaManagerInterface
-     */
-    private $schemaManager;
-
-    /**
-     * @var SchemaTraverser
-     */
-    private $schemaTraverser;
+    private Authenticator $authenticator;
+    private TransportInterface $transport;
+    private SchemaManagerInterface $schemaManager;
+    private SchemaTraverser $schemaTraverser;
 
     public function __construct(Authenticator $authenticator, TransportInterface $transport)
     {
@@ -73,13 +58,6 @@ class Client
     }
 
     /**
-     * @param string $type
-     * @param int|null $startIndex
-     * @param int|null $count
-     * @param string|null $search
-     * @param string|null $sortBy
-     * @param int|null $sortOrder
-     * @return array
      * @throws TokenException
      * @throws TransportException
      */
@@ -99,9 +77,6 @@ class Client
     }
 
     /**
-     * @param string $type
-     * @param string $id
-     * @return array
      * @throws TokenException
      * @throws TransportException
      */
@@ -116,9 +91,6 @@ class Client
     }
 
     /**
-     * @param string $type
-     * @param int $id
-     * @return array
      * @throws TokenException
      * @throws TransportException
      */
@@ -130,9 +102,6 @@ class Client
     }
 
     /**
-     * @param string $type
-     * @param string $name
-     * @return array
      * @throws TokenException
      * @throws TransportException
      */
@@ -144,10 +113,6 @@ class Client
     }
 
     /**
-     * @param string $type
-     * @param string $payload
-     * @param string $modelClass
-     * @return array
      * @throws InputException
      * @throws TokenException
      * @throws TransportException
@@ -161,11 +126,6 @@ class Client
     }
 
     /**
-     * @param string $type
-     * @param int $id
-     * @param string $payload
-     * @param string $modelClass
-     * @return array
      * @throws InputException
      * @throws TokenException
      * @throws TransportException
@@ -179,9 +139,6 @@ class Client
     }
 
     /**
-     * @param string $type
-     * @param int $id
-     * @return array
      * @throws TokenException
      * @throws TransportException
      */
@@ -193,9 +150,6 @@ class Client
     }
 
     /**
-     * @param string $payload
-     * @param string $modelClass
-     * @return \JsonSerializable
      * @throws InputException
      */
     private function parsePayload(string $payload, string $modelClass): \JsonSerializable
@@ -228,14 +182,9 @@ class Client
     }
 
     /**
-     * @param string $method
-     * @param string $path
-     * @param array|null $query
-     * @param mixed $body
-     * @return HttpResponseInterface
      * @throws TokenException
      */
-    private function request(string $method, string $path, ?array $query = null, $body = null): HttpResponseInterface
+    private function request(string $method, string $path, ?array $query = null, mixed $body = null): HttpResponseInterface
     {
         $headers = [
             'Authorization' => 'Bearer ' . $this->authenticator->getAccessToken()
