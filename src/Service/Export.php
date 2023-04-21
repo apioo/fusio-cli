@@ -35,25 +35,19 @@ use stdClass;
  */
 class Export
 {
-    /**
-     * @var Client
-     */
-    private $client;
+    private Client $client;
 
-    /**
-     * @param Client $client
-     */
     public function __construct(Client $client)
     {
         $this->client = $client;
     }
 
     /**
-     * @return string
-     * @throws TokenException
      * @throws TransportException
+     * @throws TokenException
+     * @throws \JsonException
      */
-    public function export()
+    public function export(): string
     {
         $data = new stdClass();
 
@@ -71,13 +65,10 @@ class Export
     }
 
     /**
-     * @param string $type
-     * @param int $index
-     * @param array $result
      * @throws TokenException
      * @throws TransportException
      */
-    private function exportType(string $type, int $index, array &$result)
+    private function exportType(string $type, int $index, array &$result): void
     {
         $data    = $this->client->getAll($type, $index, Types::COLLECTION_SIZE, null, 'id', 0);
         $count   = $data['totalResults'] ?? 0;

@@ -40,27 +40,13 @@ use Symfony\Component\Yaml\Yaml;
  */
 class Deploy
 {
-    /**
-     * @var Import
-     */
-    private $import;
+    private Import $import;
 
-    /**
-     * @param Import $import
-     */
     public function __construct(Import $import)
     {
         $this->import = $import;
     }
 
-    /**
-     * @param string $yaml
-     * @param EnvReplacerInterface $envReplacer
-     * @param ImportResolver $importResolver
-     * @param string|null $basePath
-     * @return \Generator
-     * @throws TokenException
-     */
     public function deploy(string $yaml, EnvReplacerInterface $envReplacer, ImportResolver $importResolver, ?string $basePath = null): \Generator
     {
         $includeDirective = new IncludeDirective($envReplacer);
@@ -106,11 +92,6 @@ class Deploy
         yield from $this->import->import(json_encode($import));
     }
 
-    /**
-     * @param string $class
-     * @param array $arguments
-     * @return TransformerInterface
-     */
     private function newTransformer(string $class, array $arguments = []): TransformerInterface
     {
         $transformer = new $class(...$arguments);

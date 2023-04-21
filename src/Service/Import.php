@@ -37,24 +37,13 @@ use stdClass;
  */
 class Import
 {
-    /**
-     * @var Client
-     */
-    private $client;
+    private Client $client;
 
-    /**
-     * @param Client $client
-     */
     public function __construct(Client $client)
     {
         $this->client = $client;
     }
 
-    /**
-     * @param string $data
-     * @return \Generator
-     * @throws TokenException
-     */
     public function import(string $data): \Generator
     {
         $data = Parser::decode($data, false);
@@ -65,7 +54,7 @@ class Import
         foreach (Types::getTypes() as $type => $config) {
             [$id, $modelClass] = $config;
 
-            $entries = isset($data->{$type}) ? $data->{$type} : null;
+            $entries = $data->{$type} ?? null;
             if (is_array($entries)) {
                 foreach ($entries as $entry) {
                     if (!$entry instanceof stdClass) {

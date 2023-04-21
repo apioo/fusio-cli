@@ -57,7 +57,7 @@ class IncludeDirective
     {
         if ($data instanceof TaggedValue) {
             if ($data->getTag() === 'include') {
-                $file = new Uri($data->getValue());
+                $file = Uri::parse($data->getValue());
                 $path = $basePath . '/' . $file->getPath();
 
                 if (is_file($path)) {

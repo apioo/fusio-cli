@@ -46,10 +46,7 @@ class Types
     public const TYPE_SCHEMA = 'schema';
     public const TYPE_SCOPE = 'scope';
 
-    /**
-     * @var array
-     */
-    private static $types = [
+    private static array $types = [
         self::TYPE_ACTION     => ['name', Backend\Action::class],
         self::TYPE_CONFIG     => ['name', Backend\Config::class],
         self::TYPE_CONNECTION => ['name', Backend\Connection::class],

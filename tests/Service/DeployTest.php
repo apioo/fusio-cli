@@ -68,6 +68,7 @@ class DeployTest extends TestCase
             '[CREATED] event New-Event',
             '[CREATED] plan Plan-A',
             '[CREATED] rate New-Rate',
+            '[CREATED] role Dev-Role',
             '[CREATED] schema Parameters',
             '[CREATED] schema Request-Schema',
             '[CREATED] schema Response-Schema',
@@ -82,7 +83,7 @@ class DeployTest extends TestCase
             ['https://api.acme.com', 'POST', 'authorization/token', null, ['Authorization' => 'Basic Zm9vOmJhcg==', 'Content-Type' => 'application/x-www-form-urlencoded'], 'grant_type=client_credentials'],
         ];
 
-        $this->assertEquals(31, count($transport->getRequests()));
+        $this->assertEquals(33, count($transport->getRequests()));
         $this->assertEquals($expect[0], $transport->getRequests()[0]);
 
         $authenticator->removeAccessToken();
@@ -157,6 +158,8 @@ class DeployTest extends TestCase
         $transport->addResponse(new HttpResponse(200, [], \json_encode(['success' => true])));
         $transport->addResponse(new HttpResponse(404, [], \json_encode(['not_found' => true])));
         $transport->addResponse(new HttpResponse(200, [], \json_encode(['success' => true])));
+        $transport->addResponse(new HttpResponse(404, [], \json_encode(['not_found' => true])));
+        $transport->addResponse(new HttpResponse(200, [], \json_encode(['success' => true])));
 
         return $transport;
     }
@@ -188,6 +191,7 @@ class DeployTest extends TestCase
             '[UPDATED] event New-Event',
             '[UPDATED] plan Plan-A',
             '[UPDATED] rate New-Rate',
+            '[UPDATED] role Dev-Role',
             '[UPDATED] schema Parameters',
             '[UPDATED] schema Request-Schema',
             '[UPDATED] schema Response-Schema',
@@ -202,7 +206,7 @@ class DeployTest extends TestCase
             ['https://api.acme.com', 'POST', 'authorization/token', null, ['Authorization' => 'Basic Zm9vOmJhcg==', 'Content-Type' => 'application/x-www-form-urlencoded'], 'grant_type=client_credentials'],
         ];
 
-        $this->assertEquals(31, count($transport->getRequests()));
+        $this->assertEquals(33, count($transport->getRequests()));
         $this->assertEquals($expect[0], $transport->getRequests()[0]);
 
         $authenticator->removeAccessToken();
@@ -260,6 +264,8 @@ class DeployTest extends TestCase
         $transport->addResponse(new HttpResponse(200, [], \json_encode($plan)));
         $transport->addResponse(new HttpResponse(200, [], \json_encode(['success' => true])));
         $transport->addResponse(new HttpResponse(200, [], \json_encode($rate)));
+        $transport->addResponse(new HttpResponse(200, [], \json_encode(['success' => true])));
+        $transport->addResponse(new HttpResponse(200, [], \json_encode($role)));
         $transport->addResponse(new HttpResponse(200, [], \json_encode(['success' => true])));
         $transport->addResponse(new HttpResponse(200, [], \json_encode($role)));
         $transport->addResponse(new HttpResponse(200, [], \json_encode(['success' => true])));
