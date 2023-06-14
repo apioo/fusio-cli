@@ -18,40 +18,16 @@
  * limitations under the License.
  */
 
-namespace Fusio\Cli\Deploy\Transformer;
-
-use Fusio\Cli\Deploy\NameGenerator;
-use Fusio\Cli\Deploy\TransformerAbstract;
-use Fusio\Cli\Service\Import\Types;
+namespace Fusio\Cli\Config;
 
 /**
- * Cronjob
+ * ConfigInterface
  *
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://fusio-project.org
  */
-class Cronjob extends TransformerAbstract
+interface ConfigInterface
 {
-    public function transform(array $data, \stdClass $import, ?string $basePath): void
-    {
-        $cronjob = $data[Types::TYPE_CRONJOB] ?? [];
-
-        if (!empty($cronjob) && is_array($cronjob)) {
-            $result = [];
-            foreach ($cronjob as $name => $entry) {
-                $result[] = $this->transformCronjob($name, $entry, $basePath);
-            }
-            $import->cronjob = $result;
-        }
-    }
-
-    protected function transformCronjob(string $name, mixed $data, ?string $basePath): array
-    {
-        $data = $this->includeDirective->resolve($data, $basePath, Types::TYPE_CRONJOB);
-        $data['name'] = $name;
-        $data['action'] = NameGenerator::getActionNameFromSource($data['action']);
-
-        return $data;
-    }
+    public function getBaseDir(): string;
 }

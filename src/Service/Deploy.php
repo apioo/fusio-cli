@@ -25,6 +25,7 @@ use Fusio\Cli\Deploy\IncludeDirective;
 use Fusio\Cli\Deploy\Transformer;
 use Fusio\Cli\Deploy\TransformerInterface;
 use Fusio\Cli\Service\Import\Result;
+use Fusio\Cli\Service\Import\Types;
 use PSX\Schema\SchemaManagerInterface;
 use Symfony\Component\Yaml\Yaml;
 

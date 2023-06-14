@@ -18,7 +18,7 @@
  * limitations under the License.
  */
 
-namespace Fusio\Cli\Service;
+namespace Fusio\Cli\Service\Import;
 
 use Fusio\Model\Backend;
 

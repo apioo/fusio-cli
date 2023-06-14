@@ -21,6 +21,7 @@
 namespace Fusio\Cli\Command\Deploy;
 
 use Fusio\Cli\Command\ErrorRenderer;
+use Fusio\Cli\Config\ConfigInterface;
 use Fusio\Cli\Deploy\EnvReplacerInterface;
 use Fusio\Cli\Exception\TransportException;
 use Fusio\Cli\Service\Deploy;
@@ -41,15 +42,15 @@ use Symfony\Component\Console\Output\OutputInterface;
 class DeployCommand extends Command
 {
     private Deploy $deploy;
-    private string $basePath;
+    private ConfigInterface $config;
     private EnvReplacerInterface $envReplacer;
 
-    public function __construct(Deploy $deploy, string $basePath, EnvReplacerInterface $envReplacer)
+    public function __construct(Deploy $deploy, ConfigInterface $config, EnvReplacerInterface $envReplacer)
     {
         parent::__construct();
 
         $this->deploy = $deploy;
-        $this->basePath = $basePath;
+        $this->config = $config;
         $this->envReplacer = $envReplacer;
     }
 
@@ -66,7 +67,7 @@ class DeployCommand extends Command
     {
         $file = $input->getArgument('file');
         if (empty($file) || !is_string($file)) {
-            $file = $this->basePath . '/.fusio.yml';
+            $file = $this->config->getBaseDir() . '/.fusio.yml';
         }
 
         if (!is_file($file)) {

@@ -22,7 +22,7 @@ namespace Fusio\Cli\Deploy\Transformer;
 
 use Fusio\Cli\Deploy\NameGenerator;
 use Fusio\Cli\Deploy\TransformerAbstract;
-use Fusio\Cli\Service\Types;
+use Fusio\Cli\Service\Import\Types;
 
 /**
  * Operation

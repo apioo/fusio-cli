@@ -20,9 +20,9 @@
 
 namespace Fusio\Cli\Service;
 
-use Fusio\Cli\Exception\TokenException;
 use Fusio\Cli\Exception\TransportException;
 use Fusio\Cli\Service\Import\Result;
+use Fusio\Cli\Service\Import\Types;
 use PSX\Json\Parser;
 use RuntimeException;
 use stdClass;
