@@ -2,6 +2,7 @@ bar:
   description: Example bar GET method
   httpMethod: GET
   httpPath: /bar
+  httpCode: 200
   parameters:
     foo:
       type: string

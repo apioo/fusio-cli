@@ -3,9 +3,9 @@ config: !include config.yaml
 connection: !include connections.yaml
 cronjob: !include cronjobs.yaml
 event: !include events.yaml
+operation: !include operations.yaml
 plan: !include plans.yaml
 rate: !include rates.yaml
 role: !include roles.yaml
-routes: !include routes.yaml
 schema: !include schemas.yaml
 scope: !include scopes.yaml

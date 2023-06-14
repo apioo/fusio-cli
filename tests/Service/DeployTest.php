@@ -73,7 +73,7 @@ class DeployTest extends TestCase
             '[CREATED] schema Error-Schema',
             '[CREATED] scope Scope-A',
             '[CREATED] scope Scope-B',
-            '[CREATED] routes /bar',
+            '[CREATED] operation bar',
         ];
         $this->assertEquals($expect, $results);
 
@@ -195,7 +195,7 @@ class DeployTest extends TestCase
             '[UPDATED] schema Error-Schema',
             '[UPDATED] scope Scope-A',
             '[UPDATED] scope Scope-B',
-            '[UPDATED] routes /bar',
+            '[UPDATED] operation bar',
         ];
         $this->assertEquals($expect, $results);
 

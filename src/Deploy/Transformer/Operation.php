@@ -42,7 +42,7 @@ class Operation extends TransformerAbstract
             foreach ($operation as $name => $entry) {
                 $result[] = $this->transformOperation($name, $entry, $basePath);
             }
-            $import->routes = $result;
+            $import->operation = $result;
         }
     }
 
