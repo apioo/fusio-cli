@@ -1,22 +1,21 @@
 <?php
 /*
- * Fusio
- * A web-application to create dynamically RESTful APIs
+ * Fusio is an open source API management platform which helps to create innovative API solutions.
+ * For the current version and information visit <https://www.fusio-project.org/>
  *
- * Copyright (C) 2015-2020 Christoph Kappestein <christoph.kappestein@gmail.com>
+ * Copyright 2015-2023 Christoph Kappestein <christoph.kappestein@gmail.com>
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * any later version.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 namespace Fusio\Cli\Service\Import;
@@ -27,7 +26,7 @@ use PSX\Http\Environment\HttpResponseInterface;
  * Result
  *
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
- * @license http://www.gnu.org/licenses/agpl-3.0
+ * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://fusio-project.org
  */
 class Result
@@ -36,25 +35,10 @@ class Result
     public const ACTION_UPDATED = 'UPDATED';
     public const ACTION_CREATED = 'CREATED';
 
-    /**
-     * @var string
-     */
-    private $type;
-
-    /**
-     * @var string
-     */
-    private $action;
-
-    /**
-     * @var string
-     */
-    private $message;
-
-    /**
-     * @var HttpResponseInterface|null
-     */
-    private $response;
+    private string $type;
+    private string $action;
+    private string $message;
+    private ?HttpResponseInterface $response;
 
     public function __construct(string $type, string $action, string $message, ?HttpResponseInterface $response = null)
     {
@@ -64,33 +48,21 @@ class Result
         $this->response = $response;
     }
 
-    /**
-     * @return string
-     */
     public function getType(): string
     {
         return $this->type;
     }
 
-    /**
-     * @return string
-     */
     public function getAction(): string
     {
         return $this->action;
     }
 
-    /**
-     * @return string
-     */
     public function getMessage(): string
     {
         return $this->message;
     }
 
-    /**
-     * @return HttpResponseInterface|null
-     */
     public function getResponse(): ?HttpResponseInterface
     {
         return $this->response;
@@ -101,7 +73,7 @@ class Result
         return '[' . $this->getAction() . '] ' . $this->getType() . ' ' . $this->getMessage();
     }
 
-    public function __toString()
+    public function __toString(): string
     {
         return $this->toString();
     }

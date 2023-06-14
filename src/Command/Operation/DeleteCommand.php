@@ -18,21 +18,21 @@
  * limitations under the License.
  */
 
-namespace Fusio\Cli\Command\Plan;
+namespace Fusio\Cli\Command\Operation;
 
-use Fusio\Cli\Command\DetailCommandAbstract;
+use Fusio\Cli\Command\DeleteCommandAbstract;
 
 /**
- * DetailCommand
+ * DeleteCommand
  *
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://fusio-project.org
  */
-class DetailCommand extends DetailCommandAbstract
+class DeleteCommand extends DeleteCommandAbstract
 {
     protected function getType(): string
     {
-        return 'plan';
+        return 'operation';
     }
 }

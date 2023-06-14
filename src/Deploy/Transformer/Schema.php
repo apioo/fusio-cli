@@ -1,72 +1,55 @@
 <?php
 /*
- * Fusio
- * A web-application to create dynamically RESTful APIs
+ * Fusio is an open source API management platform which helps to create innovative API solutions.
+ * For the current version and information visit <https://www.fusio-project.org/>
  *
- * Copyright (C) 2015-2020 Christoph Kappestein <christoph.kappestein@gmail.com>
+ * Copyright 2015-2023 Christoph Kappestein <christoph.kappestein@gmail.com>
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * any later version.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 namespace Fusio\Cli\Deploy\Transformer;
 
 use Fusio\Cli\Deploy\IncludeDirective;
-use Fusio\Cli\Deploy\NameGenerator;
 use Fusio\Cli\Deploy\TransformerAbstract;
 use Fusio\Cli\Service\Types;
-use Fusio\Impl\Backend;
 use PSX\Schema\Generator;
-use PSX\Schema\Parser;
+use PSX\Schema\SchemaManagerInterface;
 use PSX\Schema\SchemaResolver;
 use RuntimeException;
 use Symfony\Component\Yaml\Tag\TaggedValue;
-use Symfony\Component\Yaml\Yaml;
 
 /**
  * Schema
  *
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
- * @license http://www.gnu.org/licenses/agpl-3.0
+ * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://fusio-project.org
  */
 class Schema extends TransformerAbstract
 {
-    /**
-     * @var Parser\TypeSchema\ImportResolver
-     */
-    private $importResolver;
+    private SchemaManagerInterface $schemaManager;
 
-    public function __construct(IncludeDirective $includeDirective, Parser\TypeSchema\ImportResolver $importResolver)
+    public function __construct(IncludeDirective $includeDirective, SchemaManagerInterface $schemaManager)
     {
         parent::__construct($includeDirective);
 
-        $this->importResolver = $importResolver;
+        $this->schemaManager = $schemaManager;
     }
 
-    public function transform(array $data, \stdClass $import, $basePath)
+    public function transform(array $data, \stdClass $import, ?string $basePath): void
     {
-        $resolvedSchemas = $this->resolveSchemasFromRoutes($data, $basePath);
-
-        $schema = isset($data[Types::TYPE_SCHEMA]) ? $data[Types::TYPE_SCHEMA] : [];
-
-        if (!empty($resolvedSchemas)) {
-            if (is_array($schema)) {
-                $schema = array_merge($schema, $resolvedSchemas);
-            } else {
-                $schema = $resolvedSchemas;
-            }
-        }
+        $schema = $data[Types::TYPE_SCHEMA] ?? [];
 
         if (!empty($schema) && is_array($schema)) {
             $result = [];
@@ -77,7 +60,7 @@ class Schema extends TransformerAbstract
         }
     }
 
-    protected function transformSchema($name, $schema, $basePath)
+    protected function transformSchema(string $name, mixed $schema, ?string $basePath): array
     {
         return [
             'name'   => $name,
@@ -85,7 +68,7 @@ class Schema extends TransformerAbstract
         ];
     }
 
-    private function resolveSchema($data, $basePath)
+    private function resolveSchema(mixed $data, ?string $basePath)
     {
         if ($data instanceof TaggedValue) {
             if ($data->getTag() === 'include') {
@@ -112,95 +95,13 @@ class Schema extends TransformerAbstract
         }
     }
 
-    /**
-     * @param string $file
-     * @return string
-     */
     private function resolveFile(string $file): string
     {
-        if (!is_file($file)) {
-            throw new RuntimeException('Could not resolve schema ' . $file);
-        }
-
-        $basePath  = pathinfo($file, PATHINFO_DIRNAME);
-        $extension = pathinfo($file, PATHINFO_EXTENSION);
-
-        if (in_array($extension, ['yaml', 'yml'])) {
-            $data = \json_encode(Yaml::parse(file_get_contents($file)));
-        } else {
-            $data = file_get_contents($file);
-        }
-
-        $schema = (new Parser\TypeSchema($this->importResolver, $basePath))->parse($data);
+        $schema = $this->schemaManager->getSchema($file);
 
         // remove not needed schemas from the definitions
         (new SchemaResolver())->resolve($schema);
 
         return (string) (new Generator\TypeSchema())->generate($schema);
-    }
-
-    /**
-     * In case the routes contains an include as request/response schemas we
-     * automatically create a fitting schema entry
-     *
-     * @param array $data
-     * @param string $basePath
-     * @return array
-     */
-    private function resolveSchemasFromRoutes(array $data, $basePath)
-    {
-        $schemas = [];
-        $type    = Types::TYPE_ROUTE;
-
-        if (isset($data[$type]) && is_array($data[$type])) {
-            foreach ($data[$type] as $name => $row) {
-                // resolve includes
-                $row = $this->includeDirective->resolve($row, $basePath, $type);
-
-                if (isset($row['methods']) && is_array($row['methods'])) {
-                    foreach ($row['methods'] as $method => $config) {
-                        // parameters
-                        if (isset($config['parameters']) && !$this->isName($config['parameters'])) {
-                            $schema = $this->resolveSchema($config['parameters'], $basePath);
-                            $name   = NameGenerator::getSchemaNameFromSource($config['parameters']);
-
-                            $schemas[$name] = $schema;
-                        }
-
-                        // request
-                        if (isset($config['request']) && !$this->isName($config['request'])) {
-                            $schema = $this->resolveSchema($config['request'], $basePath);
-                            $name   = NameGenerator::getSchemaNameFromSource($config['request']);
-
-                            $schemas[$name] = $schema;
-                        }
-
-                        // responses
-                        if (isset($config['response']) && !$this->isName($config['response'])) {
-                            $schema = $this->resolveSchema($config['response'], $basePath);
-                            $name   = NameGenerator::getSchemaNameFromSource($config['response']);
-
-                            $schemas[$name] = $schema;
-                        } elseif (isset($config['responses']) && is_array($config['responses'])) {
-                            foreach ($config['responses'] as $code => $response) {
-                                if (!$this->isName($response)) {
-                                    $schema = $this->resolveSchema($response, $basePath);
-                                    $name   = NameGenerator::getSchemaNameFromSource($response);
-
-                                    $schemas[$name] = $schema;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        return $schemas;
-    }
-
-    private function isName($schema)
-    {
-        return is_string($schema) && preg_match('/^[a-zA-Z0-9\-\_]{3,255}$/', $schema);
     }
 }

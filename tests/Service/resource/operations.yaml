@@ -1,0 +1,15 @@
+bar:
+  description: Example bar GET method
+  httpMethod: GET
+  httpPath: /bar
+  parameters:
+    foo:
+      type: string
+  incoming: Request-Schema
+  outgoing: Response-Schema
+  throws:
+    500: Error-Schema
+  action: Test-Action
+  scopes:
+    - foo
+    - bar

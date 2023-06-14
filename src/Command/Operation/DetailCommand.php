@@ -18,7 +18,7 @@
  * limitations under the License.
  */
 
-namespace Fusio\Cli\Command\Plan;
+namespace Fusio\Cli\Command\Operation;
 
 use Fusio\Cli\Command\DetailCommandAbstract;
 
@@ -33,6 +33,6 @@ class DetailCommand extends DetailCommandAbstract
 {
     protected function getType(): string
     {
-        return 'plan';
+        return 'operation';
     }
 }

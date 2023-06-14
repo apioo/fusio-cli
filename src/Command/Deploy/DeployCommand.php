@@ -1,22 +1,21 @@
 <?php
 /*
- * Fusio
- * A web-application to create dynamically RESTful APIs
+ * Fusio is an open source API management platform which helps to create innovative API solutions.
+ * For the current version and information visit <https://www.fusio-project.org/>
  *
- * Copyright (C) 2015-2020 Christoph Kappestein <christoph.kappestein@gmail.com>
+ * Copyright 2015-2023 Christoph Kappestein <christoph.kappestein@gmail.com>
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * any later version.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 namespace Fusio\Cli\Command\Deploy;
@@ -27,7 +26,6 @@ use Fusio\Cli\Exception\TransportException;
 use Fusio\Cli\Service\Deploy;
 use Fusio\Cli\Service\Import\Result;
 use PSX\Http\Environment\HttpResponseInterface;
-use PSX\Schema\Parser\TypeSchema\ImportResolver;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -37,42 +35,25 @@ use Symfony\Component\Console\Output\OutputInterface;
  * DeployCommand
  *
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
- * @license http://www.gnu.org/licenses/agpl-3.0
+ * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://fusio-project.org
  */
 class DeployCommand extends Command
 {
-    /**
-     * @var Deploy
-     */
-    private $deploy;
+    private Deploy $deploy;
+    private string $basePath;
+    private EnvReplacerInterface $envReplacer;
 
-    /**
-     * @var string
-     */
-    private $basePath;
-
-    /**
-     * @var EnvReplacerInterface
-     */
-    private $envReplacer;
-
-    /**
-     * @var ImportResolver
-     */
-    private $importResolver;
-
-    public function __construct(Deploy $deploy, string $basePath, EnvReplacerInterface $envReplacer, ImportResolver $importResolver)
+    public function __construct(Deploy $deploy, string $basePath, EnvReplacerInterface $envReplacer)
     {
         parent::__construct();
 
         $this->deploy = $deploy;
         $this->basePath = $basePath;
         $this->envReplacer = $envReplacer;
-        $this->importResolver = $importResolver;
     }
 
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('deploy:deploy')
@@ -81,7 +62,7 @@ class DeployCommand extends Command
             ->addArgument('file', InputArgument::OPTIONAL, 'Optional the definition file');
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $file = $input->getArgument('file');
         if (empty($file) || !is_string($file)) {
@@ -93,7 +74,7 @@ class DeployCommand extends Command
         }
 
         try {
-            $results = $this->deploy->deploy(file_get_contents($file), $this->envReplacer, $this->importResolver, dirname($file));
+            $results = $this->deploy->deploy(file_get_contents($file), $this->envReplacer, dirname($file));
             $count = 0;
             foreach ($results as $result) {
                 if ($result->getType() === Result::ACTION_FAILED) {
@@ -122,7 +103,6 @@ class DeployCommand extends Command
             return ErrorRenderer::render($e, $output);
         }
 
-        return 0;
+        return self::SUCCESS;
     }
-
 }

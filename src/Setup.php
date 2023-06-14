@@ -1,22 +1,21 @@
 <?php
 /*
- * Fusio
- * A web-application to create dynamically RESTful APIs
+ * Fusio is an open source API management platform which helps to create innovative API solutions.
+ * For the current version and information visit <https://www.fusio-project.org/>
  *
- * Copyright (C) 2015-2020 Christoph Kappestein <christoph.kappestein@gmail.com>
+ * Copyright 2015-2023 Christoph Kappestein <christoph.kappestein@gmail.com>
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * any later version.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 namespace Fusio\Cli;
@@ -24,14 +23,14 @@ namespace Fusio\Cli;
 use Fusio\Cli\Deploy\EnvReplacerInterface;
 use Fusio\Cli\Service;
 use Fusio\Cli\Transport\TransportInterface;
-use PSX\Schema\Parser\TypeSchema\ImportResolver;
+use PSX\Schema\SchemaManagerInterface;
 use Symfony\Component\Console\Application;
 
 /**
  * Setup
  *
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
- * @license http://www.gnu.org/licenses/agpl-3.0
+ * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://fusio-project.org
  */
 class Setup
@@ -40,13 +39,13 @@ class Setup
      * Adds all CLI commands to an application. The transport interface defines whether we send actual HTTP requests or
      * only internal requests. The base path contains the path to the Fusio app. 
      */
-    public static function appendCommands(Application $application, TransportInterface $transport, string $basePath, EnvReplacerInterface $envReplacer, ImportResolver $importResolver): void
+    public static function appendCommands(Application $application, TransportInterface $transport, string $basePath, EnvReplacerInterface $envReplacer, SchemaManagerInterface $schemaManager): void
     {
         $authenticator = new Service\Authenticator($transport, $basePath);
         $client = new Service\Client($authenticator, $transport);
         $import = new Service\Import($client);
         $export = new Service\Export($client);
-        $deploy = new Service\Deploy($import);
+        $deploy = new Service\Deploy($import, $schemaManager);
 
         $application->add(new Command\Action\ListCommand($client));
         $application->add(new Command\Action\DetailCommand($client));
@@ -82,7 +81,7 @@ class Setup
         $application->add(new Command\Cronjob\UpdateCommand($client));
         $application->add(new Command\Cronjob\DeleteCommand($client));
 
-        $application->add(new Command\Deploy\DeployCommand($deploy, $basePath, $envReplacer, $importResolver));
+        $application->add(new Command\Deploy\DeployCommand($deploy, $basePath, $envReplacer));
         $application->add(new Command\Deploy\ExportCommand($export));
         $application->add(new Command\Deploy\ImportCommand($import));
 
@@ -113,11 +112,11 @@ class Setup
         $application->add(new Command\Role\UpdateCommand($client));
         $application->add(new Command\Role\DeleteCommand($client));
 
-        $application->add(new Command\Route\ListCommand($client));
-        $application->add(new Command\Route\DetailCommand($client));
-        $application->add(new Command\Route\CreateCommand($client));
-        $application->add(new Command\Route\UpdateCommand($client));
-        $application->add(new Command\Route\DeleteCommand($client));
+        $application->add(new Command\Operation\ListCommand($client));
+        $application->add(new Command\Operation\DetailCommand($client));
+        $application->add(new Command\Operation\CreateCommand($client));
+        $application->add(new Command\Operation\UpdateCommand($client));
+        $application->add(new Command\Operation\DeleteCommand($client));
 
         $application->add(new Command\Schema\ListCommand($client));
         $application->add(new Command\Schema\DetailCommand($client));

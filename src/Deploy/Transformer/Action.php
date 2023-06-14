@@ -1,27 +1,25 @@
 <?php
 /*
- * Fusio
- * A web-application to create dynamically RESTful APIs
+ * Fusio is an open source API management platform which helps to create innovative API solutions.
+ * For the current version and information visit <https://www.fusio-project.org/>
  *
- * Copyright (C) 2015-2020 Christoph Kappestein <christoph.kappestein@gmail.com>
+ * Copyright 2015-2023 Christoph Kappestein <christoph.kappestein@gmail.com>
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * any later version.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 namespace Fusio\Cli\Deploy\Transformer;
 
-use Fusio\Cli\Deploy\NameGenerator;
 use Fusio\Cli\Deploy\TransformerAbstract;
 use Fusio\Cli\Service\Types;
 use Symfony\Component\Yaml\Tag\TaggedValue;
@@ -30,24 +28,14 @@ use Symfony\Component\Yaml\Tag\TaggedValue;
  * Action
  *
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
- * @license http://www.gnu.org/licenses/agpl-3.0
+ * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://fusio-project.org
  */
 class Action extends TransformerAbstract
 {
-    public function transform(array $data, \stdClass $import, $basePath)
+    public function transform(array $data, \stdClass $import, ?string $basePath): void
     {
-        $resolvedActions = $this->resolveActionsFromRoutes($data, $basePath);
-
-        $action = isset($data[Types::TYPE_ACTION]) ? $data[Types::TYPE_ACTION] : [];
-
-        if (!empty($resolvedActions)) {
-            if (is_array($action)) {
-                $action = array_merge($action, $resolvedActions);
-            } else {
-                $action = $resolvedActions;
-            }
-        }
+        $action = $data[Types::TYPE_ACTION] ?? [];
 
         if (!empty($action) && is_array($action)) {
             $result = [];
@@ -58,7 +46,7 @@ class Action extends TransformerAbstract
         }
     }
 
-    protected function transformAction($name, $data, $basePath)
+    protected function transformAction(string $name, mixed $data, ?string $basePath): array
     {
         $data = $this->includeDirective->resolve($data, $basePath, Types::TYPE_ACTION);
         $data['name'] = $name;
@@ -82,46 +70,5 @@ class Action extends TransformerAbstract
         }
 
         return $data;
-    }
-
-    /**
-     * In case the routes contains a class as action we automatically create a
-     * fitting action entry
-     *
-     * @param array $data
-     * @return array
-     */
-    private function resolveActionsFromRoutes(array $data, $basePath)
-    {
-        $actions = [];
-        $type    = Types::TYPE_ROUTE;
-
-        if (isset($data[$type]) && is_array($data[$type])) {
-            foreach ($data[$type] as $name => $row) {
-                // resolve includes
-                $row = $this->includeDirective->resolve($row, $basePath, $type);
-
-                if (isset($row['methods']) && is_array($row['methods'])) {
-                    foreach ($row['methods'] as $method => $config) {
-                        // action
-                        if (isset($config['action']) && !$this->isName($config['action'])) {
-                            $name = NameGenerator::getActionNameFromSource($config['action']);
-
-                            $actions[$name] = [
-                                'class'  => $config['action'],
-                                'config' => new \stdClass()
-                            ];
-                        }
-                    }
-                }
-            }
-        }
-
-        return $actions;
-    }
-
-    private function isName($schema)
-    {
-        return is_string($schema) && preg_match('/^[a-zA-Z0-9\-\_]{3,255}$/', $schema);
     }
 }

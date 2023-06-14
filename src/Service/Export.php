@@ -1,22 +1,21 @@
 <?php
 /*
- * Fusio
- * A web-application to create dynamically RESTful APIs
+ * Fusio is an open source API management platform which helps to create innovative API solutions.
+ * For the current version and information visit <https://www.fusio-project.org/>
  *
- * Copyright (C) 2015-2020 Christoph Kappestein <christoph.kappestein@gmail.com>
+ * Copyright 2015-2023 Christoph Kappestein <christoph.kappestein@gmail.com>
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * any later version.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 namespace Fusio\Cli\Service;
@@ -30,7 +29,7 @@ use stdClass;
  * Export
  *
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
- * @license http://www.gnu.org/licenses/agpl-3.0
+ * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://fusio-project.org
  */
 class Export
@@ -107,8 +106,8 @@ class Export
             return $this->transformRate($entity);
         } elseif ($type === Types::TYPE_ROLE) {
             return $this->transformRole($entity);
-        } elseif ($type === Types::TYPE_ROUTE) {
-            return $this->transformRoute($entity);
+        } elseif ($type === Types::TYPE_OPERATION) {
+            return $this->transformOperation($entity);
         } elseif ($type === Types::TYPE_SCHEMA) {
             return $this->transformSchema($entity);
         } elseif ($type === Types::TYPE_SCOPE) {
@@ -118,7 +117,7 @@ class Export
         }
     }
 
-    private function transformAction(array $entity)
+    private function transformAction(array $entity): array
     {
         unset($entity['id']);
         unset($entity['status']);
@@ -126,21 +125,21 @@ class Export
         return $entity;
     }
 
-    private function transformConfig(array $entity)
+    private function transformConfig(array $entity): array
     {
         unset($entity['id']);
 
         return $entity;
     }
 
-    private function transformConnection(array $entity)
+    private function transformConnection(array $entity): array
     {
         unset($entity['id']);
 
         return $entity;
     }
 
-    private function transformCronjob(array $entity)
+    private function transformCronjob(array $entity): array
     {
         unset($entity['id']);
         unset($entity['status']);
@@ -151,21 +150,21 @@ class Export
         return $entity;
     }
 
-    private function transformEvent(array $entity)
+    private function transformEvent(array $entity): array
     {
         unset($entity['id']);
 
         return $entity;
     }
 
-    private function transformPlan(array $entity)
+    private function transformPlan(array $entity): array
     {
         unset($entity['id']);
 
         return $entity;
     }
 
-    private function transformRate(array $entity)
+    private function transformRate(array $entity): array
     {
         unset($entity['id']);
         unset($entity['status']);
@@ -173,21 +172,21 @@ class Export
         return $entity;
     }
 
-    private function transformRole(array $entity)
+    private function transformRole(array $entity): array
     {
         unset($entity['id']);
 
         return $entity;
     }
 
-    private function transformRoute(array $entity)
+    private function transformOperation(array $entity): array
     {
         unset($entity['id']);
 
         return $entity;
     }
 
-    private function transformSchema(array $entity)
+    private function transformSchema(array $entity): array
     {
         unset($entity['id']);
         unset($entity['status']);
@@ -195,10 +194,10 @@ class Export
         return $entity;
     }
 
-    private function transformScope(array $entity)
+    private function transformScope(array $entity): array
     {
         unset($entity['id']);
-        unset($entity['routes']);
+        unset($entity['operations']);
 
         return $entity;
     }

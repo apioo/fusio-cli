@@ -1,42 +1,41 @@
 <?php
 /*
- * Fusio
- * A web-application to create dynamically RESTful APIs
+ * Fusio is an open source API management platform which helps to create innovative API solutions.
+ * For the current version and information visit <https://www.fusio-project.org/>
  *
- * Copyright (C) 2015-2020 Christoph Kappestein <christoph.kappestein@gmail.com>
+ * Copyright 2015-2023 Christoph Kappestein <christoph.kappestein@gmail.com>
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * any later version.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 namespace Fusio\Cli\Tests\Service;
 
 use Fusio\Cli\Deploy\EnvReplacer;
-use Fusio\Model\Backend;
 use Fusio\Cli\Service\Authenticator;
 use Fusio\Cli\Service\Client;
 use Fusio\Cli\Service\Deploy;
 use Fusio\Cli\Service\Import;
 use Fusio\Cli\Transport\Memory;
+use Fusio\Model\Backend;
 use PHPUnit\Framework\TestCase;
 use PSX\Http\Environment\HttpResponse;
-use PSX\Schema\Parser\TypeSchema\ImportResolver;
+use PSX\Schema\SchemaManager;
 
 /**
  * DeployTest
  *
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
- * @license http://www.gnu.org/licenses/agpl-3.0
+ * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://fusio-project.org
  */
 class DeployTest extends TestCase
@@ -49,14 +48,13 @@ class DeployTest extends TestCase
         $authenticator->requestAccessToken('https://api.acme.com', 'foo', 'bar');
 
         $client = new Client(new Authenticator($transport), $transport);
-        $deploy = new Deploy(new Import($client));
+        $deploy = new Deploy(new Import($client), new SchemaManager());
 
         $file = __DIR__ . '/resource/.fusio.yml';
         $yaml = file_get_contents($file);
         $envReplacer = new EnvReplacer();
-        $importResolver = ImportResolver::createDefault();
 
-        $results = iterator_to_array($deploy->deploy($yaml, $envReplacer, $importResolver, dirname($file)), false);
+        $results = iterator_to_array($deploy->deploy($yaml, $envReplacer, dirname($file)), false);
         $results = array_map('strval', $results);
 
         $expect = [
@@ -115,8 +113,8 @@ class DeployTest extends TestCase
         $role = new Backend\Role();
         $role->setId(1);
 
-        $route = new Backend\Route();
-        $route->setId(1);
+        $operation = new Backend\Operation();
+        $operation->setId(1);
 
         $schema = new Backend\Schema();
         $schema->setId(1);
@@ -172,14 +170,13 @@ class DeployTest extends TestCase
         $authenticator->requestAccessToken('https://api.acme.com', 'foo', 'bar');
 
         $client = new Client(new Authenticator($transport), $transport);
-        $deploy = new Deploy(new Import($client));
+        $deploy = new Deploy(new Import($client), new SchemaManager());
 
         $file = __DIR__ . '/resource/.fusio.yml';
         $yaml = file_get_contents($file);
         $envReplacer = new EnvReplacer();
-        $importResolver = ImportResolver::createDefault();
 
-        $results = iterator_to_array($deploy->deploy($yaml, $envReplacer, $importResolver, dirname($file)), false);
+        $results = iterator_to_array($deploy->deploy($yaml, $envReplacer, dirname($file)), false);
         $results = array_map('strval', $results);
 
         $expect = [
@@ -238,7 +235,7 @@ class DeployTest extends TestCase
         $role = new Backend\Role();
         $role->setId(1);
 
-        $route = new Backend\Route();
+        $route = new Backend\Operation();
         $route->setId(1);
 
         $schema = new Backend\Schema();
