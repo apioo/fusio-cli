@@ -32,7 +32,7 @@ class EnvReplacer implements EnvReplacerInterface
     /**
      * @var \Closure[] 
      */
-    private $properties;
+    private array $properties;
 
     public function __construct(?array $env = null)
     {
@@ -41,7 +41,7 @@ class EnvReplacer implements EnvReplacerInterface
         });
     }
 
-    public function addProperties(string $category, \Closure $resolver)
+    public function addProperties(string $category, \Closure $resolver): void
     {
         $this->properties[$category] = $resolver;
     }
