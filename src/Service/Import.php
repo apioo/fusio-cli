@@ -43,9 +43,12 @@ class Import
         $this->client = $client;
     }
 
+    /**
+     * @throws \JsonException
+     */
     public function import(string $data): \Generator
     {
-        $data = Parser::decode($data, false);
+        $data = Parser::decode($data);
         if (!$data instanceof stdClass) {
             throw new RuntimeException('Data must be an object');
         }
@@ -78,15 +81,15 @@ class Import
         }
 
         try {
-            if (isset($existing['id'])) {
-                $response = $this->client->update($type, $existing['id'], \json_encode($data), $modelClass . 'Update');
+            if (isset($existing->id)) {
+                $response = $this->client->update($type, $existing->id, \json_encode($data), $modelClass . 'Update');
             } else {
                 $response = $this->client->create($type, \json_encode($data), $modelClass . 'Create');
             }
 
-            if (isset($response['success']) && $response['success'] === false) {
-                yield new Result($type, Result::ACTION_FAILED, $name . ': ' . $response['message']);
-            } elseif (isset($existing['id'])) {
+            if (isset($response->success) && $response->success === false) {
+                yield new Result($type, Result::ACTION_FAILED, $name . ': ' . $response->message);
+            } elseif (isset($existing->id)) {
                 yield new Result($type, Result::ACTION_UPDATED, $name);
             } else {
                 yield new Result($type, Result::ACTION_CREATED, $name);

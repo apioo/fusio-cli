@@ -60,7 +60,7 @@ class Client
      * @throws TokenException
      * @throws TransportException
      */
-    public function getAll(string $type, ?int $startIndex = null, ?int $count = null, ?string $search = null, ?string $sortBy = null, ?int $sortOrder = null): array
+    public function getAll(string $type, ?int $startIndex = null, ?int $count = null, ?string $search = null, ?string $sortBy = null, ?int $sortOrder = null): object
     {
         $query = array_filter([
             'startIndex' => $startIndex,
@@ -79,7 +79,7 @@ class Client
      * @throws TokenException
      * @throws TransportException
      */
-    public function get(string $type, string $id): array
+    public function get(string $type, string $id): object
     {
         $actualId = (int) $id;
         if ($actualId === 0) {
@@ -93,7 +93,7 @@ class Client
      * @throws TokenException
      * @throws TransportException
      */
-    public function getById(string $type, int $id): array
+    public function getById(string $type, int $id): object
     {
         $response = $this->request('GET', $type . '/' . $id);
 
@@ -104,7 +104,7 @@ class Client
      * @throws TokenException
      * @throws TransportException
      */
-    public function getByName(string $type, string $name): array
+    public function getByName(string $type, string $name): object
     {
         $response = $this->request('GET', $type . '/~' . urlencode($name));
 
@@ -116,7 +116,7 @@ class Client
      * @throws TokenException
      * @throws TransportException
      */
-    public function create(string $type, string $payload, string $modelClass): array
+    public function create(string $type, string $payload, string $modelClass): object
     {
         $body     = $this->parsePayload($payload, $modelClass);
         $response = $this->request('POST', $type, null, $body);
@@ -129,7 +129,7 @@ class Client
      * @throws TokenException
      * @throws TransportException
      */
-    public function update(string $type, int $id, string $payload, string $modelClass): array
+    public function update(string $type, int $id, string $payload, string $modelClass): object
     {
         $body     = $this->parsePayload($payload, $modelClass);
         $response = $this->request('PUT', $type . '/' . $id, null, $body);
@@ -141,7 +141,7 @@ class Client
      * @throws TokenException
      * @throws TransportException
      */
-    public function delete(string $type, int $id): array
+    public function delete(string $type, int $id): object
     {
         $response = $this->request('DELETE', $type . '/' . $id);
 

@@ -71,8 +71,8 @@ class Export
     private function exportType(string $type, int $index, array &$result): void
     {
         $data    = $this->client->getAll($type, $index, Types::COLLECTION_SIZE, null, 'id', 0);
-        $count   = $data['totalResults'] ?? 0;
-        $entries = $data['entry'] ?? [];
+        $count   = $data->totalResults ?? 0;
+        $entries = $data->entry ?? [];
 
         if (!is_array($entries)) {
             return;
@@ -89,7 +89,7 @@ class Export
         }
     }
 
-    private function transform(string $type, array $entity): array
+    private function transform(string $type, object $entity): object
     {
         if ($type === Types::TYPE_ACTION) {
             return $this->transformAction($entity);
@@ -118,87 +118,87 @@ class Export
         }
     }
 
-    private function transformAction(array $entity): array
+    private function transformAction(object $entity): object
     {
-        unset($entity['id']);
-        unset($entity['status']);
+        unset($entity->id);
+        unset($entity->status);
 
         return $entity;
     }
 
-    private function transformConfig(array $entity): array
+    private function transformConfig(object $entity): object
     {
-        unset($entity['id']);
+        unset($entity->id);
 
         return $entity;
     }
 
-    private function transformConnection(array $entity): array
+    private function transformConnection(object $entity): object
     {
-        unset($entity['id']);
+        unset($entity->id);
 
         return $entity;
     }
 
-    private function transformCronjob(array $entity): array
+    private function transformCronjob(object $entity): object
     {
-        unset($entity['id']);
-        unset($entity['status']);
-        unset($entity['executeDate']);
-        unset($entity['exitCode']);
-        unset($entity['errors']);
+        unset($entity->id);
+        unset($entity->status);
+        unset($entity->executeDate);
+        unset($entity->exitCode);
+        unset($entity->errors);
 
         return $entity;
     }
 
-    private function transformEvent(array $entity): array
+    private function transformEvent(object $entity): object
     {
-        unset($entity['id']);
+        unset($entity->id);
 
         return $entity;
     }
 
-    private function transformPlan(array $entity): array
+    private function transformPlan(object $entity): object
     {
-        unset($entity['id']);
+        unset($entity->id);
 
         return $entity;
     }
 
-    private function transformRate(array $entity): array
+    private function transformRate(object $entity): object
     {
-        unset($entity['id']);
-        unset($entity['status']);
+        unset($entity->id);
+        unset($entity->status);
 
         return $entity;
     }
 
-    private function transformRole(array $entity): array
+    private function transformRole(object $entity): object
     {
-        unset($entity['id']);
+        unset($entity->id);
 
         return $entity;
     }
 
-    private function transformOperation(array $entity): array
+    private function transformOperation(object $entity): object
     {
-        unset($entity['id']);
+        unset($entity->id);
 
         return $entity;
     }
 
-    private function transformSchema(array $entity): array
+    private function transformSchema(object $entity): object
     {
-        unset($entity['id']);
-        unset($entity['status']);
+        unset($entity->id);
+        unset($entity->status);
 
         return $entity;
     }
 
-    private function transformScope(array $entity): array
+    private function transformScope(object $entity): object
     {
-        unset($entity['id']);
-        unset($entity['operations']);
+        unset($entity->id);
+        unset($entity->operations);
 
         return $entity;
     }

@@ -63,11 +63,11 @@ class Authenticator
         );
 
         $data = ResponseParser::parse($response);
-        if (!isset($data['access_token'])) {
+        if (!isset($data->access_token)) {
             throw new TransportException($response, 'Could not find access token in body');
         }
 
-        $data['base_uri'] = $baseUri;
+        $data->base_uri = $baseUri;
 
         $tokenFile = $this->getTokenFile();
         $bytes = file_put_contents($tokenFile, \json_encode($data));
@@ -75,7 +75,7 @@ class Authenticator
             throw new TokenException('Could not write token to file ' . $tokenFile);
         }
 
-        return $data['access_token'];
+        return $data->access_token;
     }
 
     public function isRemote(): bool

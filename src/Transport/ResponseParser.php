@@ -21,7 +21,9 @@
 namespace Fusio\Cli\Transport;
 
 use Fusio\Cli\Exception\TransportException;
+use JsonException;
 use PSX\Http\Environment\HttpResponseInterface;
+use PSX\Json\Parser;
 
 /**
  * ResponseParser
@@ -34,15 +36,16 @@ class ResponseParser
 {
     /**
      * @throws TransportException
+     * @throws JsonException
      */
-    public static function parse(HttpResponseInterface $response): array
+    public static function parse(HttpResponseInterface $response): object
     {
         if ($response->getStatusCode() >= 400) {
             throw new TransportException($response, 'API returned a non successful status code ' . $response->getStatusCode());
         }
 
-        $data = \json_decode((string) $response->getBody(), true);
-        if (!is_array($data)) {
+        $data = Parser::decode((string) $response->getBody());
+        if (!$data instanceof \stdClass) {
             throw new TransportException($response, 'API returned an invalid response body');
         }
 

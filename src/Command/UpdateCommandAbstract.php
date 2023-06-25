@@ -59,7 +59,7 @@ abstract class UpdateCommandAbstract extends ClientCommandAbstract
 
             $response = $this->client->update(
                 $type,
-                $data['id'],
+                $data->id,
                 $this->toString($input->getArgument('payload')) ?? '',
                 $modelClass
             );
