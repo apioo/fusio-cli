@@ -143,8 +143,9 @@ class Authenticator
     /**
      * @throws TokenException
      * @throws TransportException
+     * @throws \JsonException
      */
-    public function whoami(): array
+    public function whoami(): object
     {
         $response = $this->transport->request(
             $this->getBaseUri(),
