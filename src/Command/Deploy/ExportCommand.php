@@ -24,6 +24,7 @@ use Fusio\Cli\Command\ErrorRenderer;
 use Fusio\Cli\Exception\TransportException;
 use Fusio\Cli\Service\Export;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -36,10 +37,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class ExportCommand extends Command
 {
-    /**
-     * @var Export
-     */
-    private $export;
+    private Export $export;
 
     public function __construct(Export $import)
     {
@@ -48,15 +46,16 @@ class ExportCommand extends Command
         $this->export = $import;
     }
 
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('deploy:export')
             ->setAliases(['export'])
-            ->setDescription('Exports the complete Fusio configuration to stdout');
+            ->setDescription('Exports the complete Fusio configuration')
+            ->addArgument('file', InputArgument::OPTIONAL, 'The target export file or stdout if no file was provided');
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         try {
             $export = $this->export->export();
@@ -64,10 +63,19 @@ class ExportCommand extends Command
             return ErrorRenderer::render($e, $output);
         }
 
-        $output->writeln('');
-        $output->writeln($export);
-        $output->writeln('');
+        $file = $input->getArgument('file');
+        if (!empty($file)) {
+            $bytes = file_put_contents($file, $export);
 
-        return 0;
+            $output->writeln('');
+            $output->writeln('Export successful, wrote ' . $bytes . ' bytes');
+            $output->writeln('');
+        } else {
+            $output->writeln('');
+            $output->writeln($export);
+            $output->writeln('');
+        }
+
+        return self::SUCCESS;
     }
 }
