@@ -45,6 +45,7 @@ class Import
 
     /**
      * @throws \JsonException
+     * @return \Generator<Result>
      */
     public function import(string $data): \Generator
     {

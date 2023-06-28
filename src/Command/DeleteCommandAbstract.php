@@ -35,7 +35,7 @@ use Symfony\Component\Yaml\Yaml;
  */
 abstract class DeleteCommandAbstract extends ClientCommandAbstract
 {
-    protected function configure()
+    protected function configure(): void
     {
         $type = $this->getType();
 
@@ -45,7 +45,7 @@ abstract class DeleteCommandAbstract extends ClientCommandAbstract
             ->addArgument('id', InputArgument::REQUIRED, 'The id of the existing ' . $type);
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $type = $this->getType();
 
@@ -67,7 +67,7 @@ abstract class DeleteCommandAbstract extends ClientCommandAbstract
         $output->writeln(Yaml::dump($response));
         $output->writeln('');
 
-        return 0;
+        return self::SUCCESS;
     }
 
     abstract protected function getType(): string;

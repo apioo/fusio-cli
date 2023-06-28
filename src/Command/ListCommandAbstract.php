@@ -35,7 +35,7 @@ use Symfony\Component\Yaml\Yaml;
  */
 abstract class ListCommandAbstract extends ClientCommandAbstract
 {
-    protected function configure()
+    protected function configure(): void
     {
         $type = $this->getType();
 
@@ -47,7 +47,7 @@ abstract class ListCommandAbstract extends ClientCommandAbstract
             ->addArgument('count', InputArgument::OPTIONAL, 'The count of the result set');
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $type = $this->getType();
 
@@ -66,7 +66,7 @@ abstract class ListCommandAbstract extends ClientCommandAbstract
         $output->writeln(Yaml::dump($response, 4));
         $output->writeln('');
 
-        return 0;
+        return self::SUCCESS;
     }
 
     abstract protected function getType(): string;

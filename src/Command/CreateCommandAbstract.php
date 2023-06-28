@@ -35,7 +35,7 @@ use Symfony\Component\Yaml\Yaml;
  */
 abstract class CreateCommandAbstract extends ClientCommandAbstract
 {
-    protected function configure()
+    protected function configure(): void
     {
         $type = $this->getType();
 
@@ -45,7 +45,7 @@ abstract class CreateCommandAbstract extends ClientCommandAbstract
             ->addArgument('payload', InputArgument::REQUIRED, 'A YAML or JSON file containing the payload of the ' . $type);
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $type = $this->getType();
         $modelClass = '\\Fusio\\Model\\Backend\\' . ucfirst($type) . 'Create';
@@ -64,7 +64,7 @@ abstract class CreateCommandAbstract extends ClientCommandAbstract
         $output->writeln(Yaml::dump($response));
         $output->writeln('');
 
-        return 0;
+        return self::SUCCESS;
     }
 
     abstract protected function getType(): string;

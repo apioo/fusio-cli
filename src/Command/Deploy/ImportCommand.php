@@ -38,10 +38,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class ImportCommand extends Command
 {
-    /**
-     * @var Import
-     */
-    private $import;
+    private Import $import;
 
     public function __construct(Import $import)
     {
@@ -50,7 +47,7 @@ class ImportCommand extends Command
         $this->import = $import;
     }
 
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('deploy:import')
@@ -59,7 +56,7 @@ class ImportCommand extends Command
             ->addArgument('file', InputArgument::REQUIRED, 'Exports a Fusio configuration file');
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $file = $input->getArgument('file');
         if (!is_string($file) || !is_file($file)) {
@@ -90,6 +87,6 @@ class ImportCommand extends Command
             return ErrorRenderer::render($e, $output);
         }
 
-        return 0;
+        return self::SUCCESS;
     }
 }
