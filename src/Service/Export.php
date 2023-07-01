@@ -50,6 +50,7 @@ class Export
     public function export(): string
     {
         $data = new stdClass();
+        $data->version = $this->client->getVersion();
 
         foreach (Types::getTypes() as $type => $config) {
             $result = [];

@@ -111,6 +111,15 @@ class Client
         return ResponseParser::parse($response);
     }
 
+    public function getVersion(): ?string
+    {
+        $response = $this->transport->request($this->authenticator->getBaseUri(), 'GET', 'system/about');
+        $data = ResponseParser::parse($response);
+        $version = $data->apiVersion ?? null;
+
+        return is_string($version) ? $version : null;
+    }
+
     /**
      * @throws InputException
      * @throws TokenException

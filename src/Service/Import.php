@@ -54,6 +54,11 @@ class Import
             throw new RuntimeException('Data must be an object');
         }
 
+        $version = $data->version ?? null;
+        if (!empty($version)) {
+            // @TODO in the future we could transform the data depending on the provided version
+        }
+
         foreach (Types::getTypes() as $type => $config) {
             [$id, $modelClass] = $config;
 
