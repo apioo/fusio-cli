@@ -20,12 +20,8 @@
 
 namespace Fusio\Cli\Deploy\Transformer;
 
-use Fusio\Cli\Deploy\IncludeDirective;
 use Fusio\Cli\Deploy\TransformerAbstract;
 use Fusio\Cli\Service\Import\Types;
-use PSX\Schema\Generator;
-use PSX\Schema\SchemaManagerInterface;
-use PSX\Schema\SchemaResolver;
 use RuntimeException;
 use Symfony\Component\Yaml\Tag\TaggedValue;
 
@@ -38,15 +34,6 @@ use Symfony\Component\Yaml\Tag\TaggedValue;
  */
 class Schema extends TransformerAbstract
 {
-    private SchemaManagerInterface $schemaManager;
-
-    public function __construct(IncludeDirective $includeDirective, SchemaManagerInterface $schemaManager)
-    {
-        parent::__construct($includeDirective);
-
-        $this->schemaManager = $schemaManager;
-    }
-
     public function transform(array $data, \stdClass $import, ?string $basePath): void
     {
         $schema = $data[Types::TYPE_SCHEMA] ?? [];
@@ -75,7 +62,7 @@ class Schema extends TransformerAbstract
                 $file = $basePath . '/' . $data->getValue();
 
                 if (is_file($file)) {
-                    return \json_decode($this->resolveFile($file));
+                    return \json_decode($file);
                 } else {
                     throw new RuntimeException('Could not resolve file: ' . $file);
                 }
@@ -83,25 +70,11 @@ class Schema extends TransformerAbstract
                 throw new RuntimeException('Invalid tag provide: ' . $data->getTag());
             }
         } elseif (is_string($data)) {
-            if (class_exists($data)) {
-                return (object) ['$class' => $data];
-            } else {
-                return \json_decode($data);
-            }
+            return \json_decode($data);
         } elseif (is_array($data) || $data instanceof \stdClass) {
             return $data;
         } else {
             throw new RuntimeException('Schema must be a string or array');
         }
-    }
-
-    private function resolveFile(string $file): string
-    {
-        $schema = $this->schemaManager->getSchema($file);
-
-        // remove not needed schemas from the definitions
-        (new SchemaResolver())->resolve($schema);
-
-        return (string) (new Generator\TypeSchema())->generate($schema);
     }
 }

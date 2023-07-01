@@ -29,9 +29,5 @@ namespace Fusio\Cli\Deploy;
  */
 interface EnvReplacerInterface
 {
-    /**
-     * @param string $data
-     * @return string
-     */
     public function replace(string $data): string;
 }

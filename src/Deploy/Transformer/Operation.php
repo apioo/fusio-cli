@@ -20,7 +20,7 @@
 
 namespace Fusio\Cli\Deploy\Transformer;
 
-use Fusio\Cli\Deploy\NameGenerator;
+use Fusio\Cli\Deploy\SchemeBuilder;
 use Fusio\Cli\Deploy\TransformerAbstract;
 use Fusio\Cli\Service\Import\Types;
 
@@ -52,27 +52,27 @@ class Operation extends TransformerAbstract
         $data['name'] = $name;
 
         if (isset($data['incoming'])) {
-            $data['incoming'] = NameGenerator::getSchemaNameFromSource($data['incoming']);
-        } elseif ($data['httpMethod'] !== 'GET') {
-            $data['incoming'] = 'Passthru';
+            $data['incoming'] = SchemeBuilder::forSchema($data['incoming']);
+        } elseif (!in_array($data['httpMethod'], ['GET', 'DELETE'])) {
+            $data['incoming'] = 'schema://Passthru';
         }
 
         if (isset($data['outgoing'])) {
-            $data['outgoing'] = NameGenerator::getSchemaNameFromSource($data['outgoing']);
+            $data['outgoing'] = SchemeBuilder::forSchema($data['outgoing']);
         } else {
-            $data['outgoing'] = 'Passthru';
+            $data['outgoing'] = 'schema://Passthru';
         }
 
         if (isset($data['throws']) && is_array($data['throws'])) {
             $throws = [];
             foreach ($data['throws'] as $code => $schema) {
-                $throws[$code] = NameGenerator::getSchemaNameFromSource($schema);
+                $throws[$code] = SchemeBuilder::forSchema($schema);
             }
             $data['throws'] = $throws;
         }
 
         if (isset($data['action'])) {
-            $data['action'] = NameGenerator::getActionNameFromSource($data['action']);
+            $data['action'] = SchemeBuilder::forAction($data['action']);
         }
 
         return $data;

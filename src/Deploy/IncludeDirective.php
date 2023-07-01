@@ -36,15 +36,8 @@ use Symfony\Component\Yaml\Yaml;
  */
 class IncludeDirective
 {
-    /**
-     * @var EnvReplacerInterface
-     */
-    private $envReplacer;
-
-    /**
-     * @var Parser
-     */
-    private $parser;
+    private EnvReplacerInterface $envReplacer;
+    private Parser $parser;
 
     public function __construct(EnvReplacerInterface $envReplacer)
     {

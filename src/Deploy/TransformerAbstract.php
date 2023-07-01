@@ -20,8 +20,6 @@
 
 namespace Fusio\Cli\Deploy;
 
-use Fusio\Impl\Backend;
-
 /**
  * TransformerAbstract
  *
@@ -31,10 +29,7 @@ use Fusio\Impl\Backend;
  */
 abstract class TransformerAbstract implements TransformerInterface
 {
-    /**
-     * @var IncludeDirective
-     */
-    protected $includeDirective;
+    protected IncludeDirective $includeDirective;
 
     public function __construct(IncludeDirective $includeDirective)
     {

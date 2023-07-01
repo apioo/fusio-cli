@@ -20,6 +20,7 @@
 
 namespace Fusio\Cli\Deploy\Transformer;
 
+use Fusio\Cli\Deploy\SchemeBuilder;
 use Fusio\Cli\Deploy\TransformerAbstract;
 use Fusio\Cli\Service\Import\Types;
 
@@ -49,6 +50,10 @@ class Event extends TransformerAbstract
     {
         $data = $this->includeDirective->resolve($data, $basePath, Types::TYPE_EVENT);
         $data['name'] = $name;
+
+        if (isset($data['schema'])) {
+            $data['schema'] = SchemeBuilder::forSchema($data['schema']);
+        }
 
         return $data;
     }

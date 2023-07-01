@@ -18,43 +18,40 @@
  * limitations under the License.
  */
 
-namespace Fusio\Cli\Deploy\Transformer;
-
-use Fusio\Cli\Deploy\SchemeBuilder;
-use Fusio\Cli\Deploy\TransformerAbstract;
-use Fusio\Cli\Service\Import\Types;
+namespace Fusio\Cli\Deploy;
 
 /**
- * Cronjob
+ * SchemeBuilder
  *
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    https://www.fusio-project.org/
  */
-class Cronjob extends TransformerAbstract
+class SchemeBuilder
 {
-    public function transform(array $data, \stdClass $import, ?string $basePath): void
+    public static function forSchema(string $schema): string
     {
-        $cronjob = $data[Types::TYPE_CRONJOB] ?? [];
+        if (str_contains($schema, '://')) {
+            return $schema;
+        }
 
-        if (!empty($cronjob) && is_array($cronjob)) {
-            $result = [];
-            foreach ($cronjob as $name => $entry) {
-                $result[] = $this->transformCronjob($name, $entry, $basePath);
-            }
-            $import->cronjob = $result;
+        if (class_exists(str_replace('.', '\\', $schema))) {
+            return 'php+class://' . str_replace('\\', '.', $schema);
+        } else {
+            return 'schema://' . $schema;
         }
     }
 
-    protected function transformCronjob(string $name, mixed $data, ?string $basePath): array
+    public static function forAction(string $action): string
     {
-        $data = $this->includeDirective->resolve($data, $basePath, Types::TYPE_CRONJOB);
-        $data['name'] = $name;
-
-        if (isset($data['action'])) {
-            $data['action'] = SchemeBuilder::forAction($data['action']);
+        if (str_contains($action, '://')) {
+            return $action;
         }
 
-        return $data;
+        if (class_exists(str_replace('.', '\\', $action))) {
+            return 'php+class://' . str_replace('\\', '.', $action);
+        } else {
+            return 'action://' . $action;
+        }
     }
 }
