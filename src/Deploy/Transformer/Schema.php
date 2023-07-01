@@ -62,7 +62,7 @@ class Schema extends TransformerAbstract
                 $file = $basePath . '/' . $data->getValue();
 
                 if (is_file($file)) {
-                    return \json_decode($file);
+                    return \json_decode(file_get_contents($file));
                 } else {
                     throw new RuntimeException('Could not resolve file: ' . $file);
                 }
