@@ -20,6 +20,7 @@
 
 namespace Fusio\Cli\Tests\Service;
 
+use Fusio\Cli\Config\Config;
 use Fusio\Cli\Deploy\EnvReplacer;
 use Fusio\Cli\Service\Authenticator;
 use Fusio\Cli\Service\Client;
@@ -44,10 +45,13 @@ class DeployTest extends TestCase
     {
         $transport = $this->newTransportCreate();
 
-        $authenticator = new Authenticator($transport);
+        $config = new Config();
+        $config->setBaseDir(__DIR__);
+
+        $authenticator = new Authenticator($transport, $config);
         $authenticator->requestAccessToken('https://api.acme.com', 'foo', 'bar');
 
-        $client = new Client(new Authenticator($transport), $transport);
+        $client = new Client(new Authenticator($transport, $config), $transport);
         $deploy = new Deploy(new Import($client), new SchemaManager());
 
         $file = __DIR__ . '/resource/.fusio.yml';
@@ -166,10 +170,13 @@ class DeployTest extends TestCase
     {
         $transport = $this->newTransportUpdate();
 
-        $authenticator = new Authenticator($transport);
+        $config = new Config();
+        $config->setBaseDir(__DIR__);
+
+        $authenticator = new Authenticator($transport, $config);
         $authenticator->requestAccessToken('https://api.acme.com', 'foo', 'bar');
 
-        $client = new Client(new Authenticator($transport), $transport);
+        $client = new Client(new Authenticator($transport, $config), $transport);
         $deploy = new Deploy(new Import($client), new SchemaManager());
 
         $file = __DIR__ . '/resource/.fusio.yml';

@@ -20,6 +20,7 @@
 
 namespace Fusio\Cli\Service;
 
+use Fusio\Cli\Config\ConfigInterface;
 use Fusio\Cli\Exception\TokenException;
 use Fusio\Cli\Exception\TransportException;
 use Fusio\Cli\Transport\Http;
@@ -36,12 +37,12 @@ use Fusio\Cli\Transport\TransportInterface;
 class Authenticator
 {
     private TransportInterface $transport;
-    private ?string $basePath;
+    private ConfigInterface $config;
 
-    public function __construct(TransportInterface $transport, ?string $basePath = null)
+    public function __construct(TransportInterface $transport, ConfigInterface $config)
     {
         $this->transport = $transport;
-        $this->basePath = $basePath;
+        $this->config = $config;
     }
 
     /**
@@ -201,8 +202,9 @@ class Authenticator
 
     private function getHomeDir(): string
     {
-        if (!empty($this->basePath)) {
-            return $this->basePath;
+        $baseDir = $this->config->getBaseDir();
+        if (!empty($baseDir)) {
+            return $baseDir;
         }
 
         $homeDir = getenv('HOME');
