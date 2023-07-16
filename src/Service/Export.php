@@ -80,7 +80,7 @@ class Export
         }
 
         foreach ($entries as $entry) {
-            $entity = $this->client->get($type, $entry['id']);
+            $entity = $this->client->get($type, $entry->id);
 
             $result[] = $this->transform($type, $entity);
         }
