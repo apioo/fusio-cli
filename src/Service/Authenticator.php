@@ -70,6 +70,12 @@ class Authenticator
 
         $data->base_uri = $baseUri;
 
+        if (isset($data->expires_in) && $data->expires_in < 529196400) {
+            // in case the expires in is lower than 1986-10-09 we assume that the field represents the duration in seconds
+            // otherwise it is probably a timestamp
+            $data->expires_in = time() + $data->expires_in;
+        }
+
         $tokenFile = $this->getTokenFile();
         $bytes = file_put_contents($tokenFile, \json_encode($data));
         if (empty($bytes)) {
