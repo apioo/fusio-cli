@@ -1,11 +1,11 @@
 <?php
 
-use Fusio\Cli\CommandCollection;
 use Fusio\Cli\Config\Config;
 use Fusio\Cli\Config\ConfigInterface;
 use Fusio\Cli\Deploy\EnvReplacer;
 use Fusio\Cli\Deploy\EnvReplacerInterface;
 use Fusio\Cli\Service\Authenticator;
+use Fusio\Cli\Service\AuthenticatorInterface;
 use Fusio\Cli\Service\Client;
 use Fusio\Cli\Service\Deploy;
 use Fusio\Cli\Service\Export;
@@ -26,6 +26,8 @@ return static function (ContainerConfigurator $container) {
         ->tag('psx.command');
 
     $services->set(Authenticator::class);
+    $services->alias(AuthenticatorInterface::class, Authenticator::class);
+
     $services->set(Client::class);
     $services->set(Deploy::class);
     $services->set(Export::class);
