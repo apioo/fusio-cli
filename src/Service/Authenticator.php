@@ -34,7 +34,7 @@ use Fusio\Cli\Transport\TransportInterface;
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    https://www.fusio-project.org/
  */
-class Authenticator
+class Authenticator implements AuthenticatorInterface
 {
     private TransportInterface $transport;
     private ConfigInterface $config;

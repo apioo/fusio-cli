@@ -43,17 +43,22 @@ use Symfony\Component\Yaml\Yaml;
  */
 class Client
 {
-    private Authenticator $authenticator;
+    private AuthenticatorInterface $authenticator;
     private TransportInterface $transport;
     private SchemaManagerInterface $schemaManager;
     private SchemaTraverser $schemaTraverser;
 
-    public function __construct(Authenticator $authenticator, TransportInterface $transport)
+    public function __construct(AuthenticatorInterface $authenticator, TransportInterface $transport)
     {
         $this->authenticator = $authenticator;
         $this->transport = $transport;
         $this->schemaManager = new SchemaManager();
         $this->schemaTraverser = new SchemaTraverser();
+    }
+
+    public function setAuthenticator(AuthenticatorInterface $authenticator): void
+    {
+        $this->authenticator = $authenticator;
     }
 
     /**
