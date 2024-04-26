@@ -20,45 +20,22 @@
 
 namespace Fusio\Cli\Command;
 
-use Fusio\Cli\Exception\TransportException;
-use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * DetailCommandAbstract
+ * ResponseRenderer
  *
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    https://www.fusio-project.org/
  */
-abstract class DetailCommandAbstract extends ClientCommandAbstract
+class ResponseRenderer
 {
-    protected function configure(): void
+    public static function render(object $data, OutputInterface $output): int
     {
-        $type = $this->getType();
+        $output->writeln(\json_encode($data, \JSON_PRETTY_PRINT));
 
-        $this
-            ->setName($type . ':detail')
-            ->setDescription('Shows details of a specific ' . $type)
-            ->addArgument('id', InputArgument::REQUIRED, 'The id of the existing ' . $type);
+        return Command::SUCCESS;
     }
-
-    protected function execute(InputInterface $input, OutputInterface $output): int
-    {
-        $type = $this->getType();
-
-        try {
-            $response = $this->client->get(
-                $type,
-                $this->toString($input->getArgument('id')) ?? ''
-            );
-        } catch (TransportException $e) {
-            return ErrorRenderer::render($e, $output);
-        }
-
-        return ResponseRenderer::render($response, $output);
-    }
-
-    abstract protected function getType(): string;
 }

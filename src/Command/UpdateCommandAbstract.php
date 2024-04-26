@@ -24,7 +24,6 @@ use Fusio\Cli\Exception\TransportException;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Yaml\Yaml;
 
 /**
  * UpdateCommandAbstract
@@ -67,11 +66,7 @@ abstract class UpdateCommandAbstract extends ClientCommandAbstract
             return ErrorRenderer::render($e, $output);
         }
 
-        $output->writeln('');
-        $output->writeln(Yaml::dump($response));
-        $output->writeln('');
-
-        return self::SUCCESS;
+        return ResponseRenderer::render($response, $output);
     }
 
     abstract protected function getType(): string;
