@@ -37,10 +37,7 @@ use Symfony\Component\Yaml\Yaml;
  */
 class WhoamiCommand extends Command
 {
-    /**
-     * @var Authenticator
-     */
-    private $authenticator;
+    private Authenticator $authenticator;
 
     public function __construct(Authenticator $authenticator)
     {
@@ -49,7 +46,7 @@ class WhoamiCommand extends Command
         $this->authenticator = $authenticator;
     }
 
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('auth:whoami')
@@ -57,7 +54,7 @@ class WhoamiCommand extends Command
             ->setDescription('Returns the current logged in user');
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         try {
             $response = $this->authenticator->whoami();
@@ -69,6 +66,6 @@ class WhoamiCommand extends Command
         $output->writeln(Yaml::dump($response));
         $output->writeln('');
 
-        return 0;
+        return self::SUCCESS;
     }
 }

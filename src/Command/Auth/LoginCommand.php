@@ -39,10 +39,7 @@ use Symfony\Component\Console\Question\Question;
  */
 class LoginCommand extends Command
 {
-    /**
-     * @var Authenticator
-     */
-    private $authenticator;
+    private Authenticator $authenticator;
 
     public function __construct(Authenticator $authenticator)
     {
@@ -51,7 +48,7 @@ class LoginCommand extends Command
         $this->authenticator = $authenticator;
     }
 
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('auth:login')
@@ -62,7 +59,7 @@ class LoginCommand extends Command
             ->addOption('password', 'p', InputOption::VALUE_OPTIONAL, 'The password');
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         /** @var QuestionHelper $helper */
         $helper = $this->getHelper('question');
@@ -103,6 +100,6 @@ class LoginCommand extends Command
         $output->writeln('Login successful');
         $output->writeln('');
 
-        return 0;
+        return self::SUCCESS;
     }
 }

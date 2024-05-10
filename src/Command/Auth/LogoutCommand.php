@@ -36,10 +36,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class LogoutCommand extends Command
 {
-    /**
-     * @var Authenticator
-     */
-    private $authenticator;
+    private Authenticator $authenticator;
 
     public function __construct(Authenticator $authenticator)
     {
@@ -48,7 +45,7 @@ class LogoutCommand extends Command
         $this->authenticator = $authenticator;
     }
 
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('auth:logout')
@@ -56,7 +53,7 @@ class LogoutCommand extends Command
             ->setDescription('Logout from the remote instance');
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         try {
             $this->authenticator->removeAccessToken();
@@ -68,6 +65,6 @@ class LogoutCommand extends Command
         $output->writeln('Logout successful');
         $output->writeln('');
 
-        return 0;
+        return self::SUCCESS;
     }
 }
