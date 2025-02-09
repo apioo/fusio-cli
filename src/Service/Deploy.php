@@ -72,10 +72,10 @@ class Deploy
             Types::TYPE_EVENT      => $this->newTransformer(Transformer\Event::class, [$includeDirective]),
             Types::TYPE_PLAN       => $this->newTransformer(Transformer\Plan::class, [$includeDirective]),
             Types::TYPE_RATE       => $this->newTransformer(Transformer\Rate::class, [$includeDirective]),
-            Types::TYPE_ROLE       => $this->newTransformer(Transformer\Role::class, [$includeDirective]),
-            Types::TYPE_OPERATION  => $this->newTransformer(Transformer\Operation::class, [$includeDirective]),
-            Types::TYPE_SCHEMA     => $this->newTransformer(Transformer\Schema::class, [$includeDirective, $this->schemaManager]),
             Types::TYPE_SCOPE      => $this->newTransformer(Transformer\Scope::class, [$includeDirective]),
+            Types::TYPE_ROLE       => $this->newTransformer(Transformer\Role::class, [$includeDirective]),
+            Types::TYPE_SCHEMA     => $this->newTransformer(Transformer\Schema::class, [$includeDirective, $this->schemaManager]),
+            Types::TYPE_OPERATION  => $this->newTransformer(Transformer\Operation::class, [$includeDirective]),
         ];
 
         // resolve includes
