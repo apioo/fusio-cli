@@ -53,9 +53,9 @@ class Types
         self::TYPE_EVENT      => ['name', Backend\Event::class],
         self::TYPE_PLAN       => ['name', Backend\Plan::class],
         self::TYPE_RATE       => ['name', Backend\Rate::class],
-        self::TYPE_ROLE       => ['name', Backend\Role::class],
         self::TYPE_SCHEMA     => ['name', Backend\Schema::class],
         self::TYPE_SCOPE      => ['name', Backend\Scope::class],
+        self::TYPE_ROLE       => ['name', Backend\Role::class],
         self::TYPE_OPERATION  => ['name', Backend\Operation::class],
     ];
 
