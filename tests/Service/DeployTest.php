@@ -70,13 +70,13 @@ class DeployTest extends TestCase
             '[CREATED] event New-Event',
             '[CREATED] plan Plan-A',
             '[CREATED] rate New-Rate',
-            '[CREATED] role Dev-Role',
             '[CREATED] schema Parameters',
             '[CREATED] schema Request-Schema',
             '[CREATED] schema Response-Schema',
             '[CREATED] schema Error-Schema',
             '[CREATED] scope Scope-A',
             '[CREATED] scope Scope-B',
+            '[CREATED] role Dev-Role',
             '[CREATED] operation bar',
         ];
         $this->assertEquals($expect, $results);
@@ -195,13 +195,13 @@ class DeployTest extends TestCase
             '[UPDATED] event New-Event',
             '[UPDATED] plan Plan-A',
             '[UPDATED] rate New-Rate',
-            '[UPDATED] role Dev-Role',
             '[UPDATED] schema Parameters',
             '[UPDATED] schema Request-Schema',
             '[UPDATED] schema Response-Schema',
             '[UPDATED] schema Error-Schema',
             '[UPDATED] scope Scope-A',
             '[UPDATED] scope Scope-B',
+            '[UPDATED] role Dev-Role',
             '[UPDATED] operation bar',
         ];
         $this->assertEquals($expect, $results);
