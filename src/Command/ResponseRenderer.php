@@ -20,6 +20,7 @@
 
 namespace Fusio\Cli\Command;
 
+use PSX\Json\Parser;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -34,7 +35,7 @@ class ResponseRenderer
 {
     public static function render(object $data, OutputInterface $output): int
     {
-        $output->writeln(\json_encode($data, \JSON_PRETTY_PRINT));
+        $output->writeln(Parser::encode($data, \JSON_PRETTY_PRINT));
 
         return Command::SUCCESS;
     }

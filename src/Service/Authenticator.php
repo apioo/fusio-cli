@@ -26,6 +26,7 @@ use Fusio\Cli\Exception\TransportException;
 use Fusio\Cli\Transport\Http;
 use Fusio\Cli\Transport\ResponseParser;
 use Fusio\Cli\Transport\TransportInterface;
+use PSX\Json\Parser;
 
 /**
  * Authenticator
@@ -77,7 +78,7 @@ class Authenticator implements AuthenticatorInterface
         }
 
         $tokenFile = $this->getTokenFile();
-        $bytes = file_put_contents($tokenFile, \json_encode($data));
+        $bytes = file_put_contents($tokenFile, Parser::encode($data));
         if (empty($bytes)) {
             throw new TokenException('Could not write token to file ' . $tokenFile);
         }
@@ -175,7 +176,7 @@ class Authenticator implements AuthenticatorInterface
             throw new TokenException('Found no existing token, please request a token through the login command');
         }
 
-        $data = \json_decode(file_get_contents($tokenFile), true);
+        $data = Parser::decode((string) file_get_contents($tokenFile), true);
         if (!isset($data[$key])) {
             throw new TokenException('Could not find ' . $key . ' in token');
         }

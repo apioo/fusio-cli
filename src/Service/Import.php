@@ -88,9 +88,9 @@ class Import
 
         try {
             if (isset($existing->id)) {
-                $response = $this->client->update($type, $existing->id, \json_encode($data), $modelClass . 'Update');
+                $response = $this->client->update($type, $existing->id, Parser::encode($data), $modelClass . 'Update');
             } else {
-                $response = $this->client->create($type, \json_encode($data), $modelClass . 'Create');
+                $response = $this->client->create($type, Parser::encode($data), $modelClass . 'Create');
             }
 
             if (isset($response->success) && $response->success === false) {

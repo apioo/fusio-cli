@@ -33,7 +33,11 @@ class Config implements ConfigInterface
 
     public function getBaseDir(): string
     {
-        return $this->baseDir ?? getcwd();
+        if ($this->baseDir === null) {
+            return (string) getcwd();
+        } else {
+            return $this->baseDir;
+        }
     }
 
     public function setBaseDir(?string $baseDir): void

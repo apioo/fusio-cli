@@ -22,6 +22,7 @@ namespace Fusio\Cli\Tests\Deploy;
 
 use Fusio\Cli\Deploy\EnvReplacer;
 use Fusio\Cli\Deploy\IncludeDirective;
+use Fusio\Cli\Service\Import\Types;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Yaml\Tag\TaggedValue;
 
@@ -41,6 +42,14 @@ class IncludeDirectiveTest extends TestCase
 
         $this->assertEquals('my_tag', $data['foo']['bar']->getTag());
         $this->assertEquals('test', $data['foo']['bar']->getValue());
+    }
+
+    public function testResolveTaggedValuePHP()
+    {
+        $include = $this->newIncludeDirective();
+        $data = $include->resolve(new TaggedValue('include', 'Resource/test.php'), __DIR__, Types::TYPE_OPERATION);
+
+        $this->assertEquals(['description' => 'foobar', 'parameters' => [], 'throws' => []], $data);
     }
 
     public function testResolveTaggedValuePointer()

@@ -75,7 +75,7 @@ class DeployCommand extends Command
         }
 
         try {
-            $results = $this->deploy->deploy(file_get_contents($file), $this->envReplacer, dirname($file));
+            $results = $this->deploy->deploy((string) file_get_contents($file), $this->envReplacer, dirname($file));
             $count = 0;
             foreach ($results as $result) {
                 if ($result->getType() === Result::ACTION_FAILED) {

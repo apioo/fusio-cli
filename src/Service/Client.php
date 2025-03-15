@@ -26,6 +26,7 @@ use Fusio\Cli\Exception\TransportException;
 use Fusio\Cli\Transport\ResponseParser;
 use Fusio\Cli\Transport\TransportInterface;
 use PSX\Http\Environment\HttpResponseInterface;
+use PSX\Json\Parser;
 use PSX\Schema\Exception\InvalidSchemaException;
 use PSX\Schema\Exception\ValidationException;
 use PSX\Schema\SchemaManager;
@@ -168,13 +169,13 @@ class Client
     private function parsePayload(string $payload, string $modelClass): \JsonSerializable
     {
         if (is_file($payload)) {
-            $payload = file_get_contents($payload);
+            $payload = (string) file_get_contents($payload);
         }
 
-        $data = \json_decode($payload);
+        $data = Parser::decode($payload);
         if (empty($data)) {
             // try parse as yaml
-            $data = \json_decode(\json_encode(Yaml::parse($payload)));
+            $data = Parser::decode(Parser::encode(Yaml::parse($payload)));
         }
 
         if (!$data instanceof \stdClass) {

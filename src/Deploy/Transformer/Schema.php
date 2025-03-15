@@ -22,6 +22,7 @@ namespace Fusio\Cli\Deploy\Transformer;
 
 use Fusio\Cli\Deploy\TransformerAbstract;
 use Fusio\Cli\Service\Import\Types;
+use PSX\Json\Parser;
 use RuntimeException;
 use Symfony\Component\Yaml\Tag\TaggedValue;
 
@@ -62,7 +63,7 @@ class Schema extends TransformerAbstract
                 $file = $basePath . '/' . $data->getValue();
 
                 if (is_file($file)) {
-                    return \json_decode(file_get_contents($file));
+                    return Parser::decode((string) file_get_contents($file));
                 } else {
                     throw new RuntimeException('Could not resolve file: ' . $file);
                 }
@@ -70,7 +71,7 @@ class Schema extends TransformerAbstract
                 throw new RuntimeException('Invalid tag provide: ' . $data->getTag());
             }
         } elseif (is_string($data)) {
-            return \json_decode($data);
+            return Parser::decode($data);
         } elseif (is_array($data) || $data instanceof \stdClass) {
             return $data;
         } else {

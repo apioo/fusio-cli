@@ -26,6 +26,7 @@ use Fusio\Cli\Deploy\Transformer;
 use Fusio\Cli\Deploy\TransformerInterface;
 use Fusio\Cli\Service\Import\Result;
 use Fusio\Cli\Service\Import\Types;
+use PSX\Json\Parser;
 use PSX\Schema\SchemaManagerInterface;
 use Symfony\Component\Yaml\Yaml;
 
@@ -61,7 +62,7 @@ class Deploy
         }
 
         if (empty($basePath)) {
-            $basePath = getcwd();
+            $basePath = (string) getcwd();
         }
 
         $transformers = [
@@ -93,7 +94,7 @@ class Deploy
         }
 
         // import definition
-        yield from $this->import->import(json_encode($import));
+        yield from $this->import->import(Parser::encode($import));
     }
 
     private function newTransformer(string $class, array $arguments = []): TransformerInterface

@@ -65,7 +65,7 @@ class ExportCommand extends Command
 
         $file = $input->getArgument('file');
         if (!empty($file)) {
-            $bytes = file_put_contents($file, $export);
+            $bytes = (int) file_put_contents($file, $export);
 
             $output->writeln('');
             $output->writeln('Export successful, wrote ' . $bytes . ' bytes');

@@ -64,7 +64,7 @@ class ImportCommand extends Command
         }
 
         try {
-            $results = $this->import->import(file_get_contents($file));
+            $results = $this->import->import((string) file_get_contents($file));
             $count = 0;
             foreach ($results as $result) {
                 if ($result->getType() === Result::ACTION_FAILED) {
