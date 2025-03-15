@@ -18,18 +18,16 @@
  * limitations under the License.
  */
 
-namespace Fusio\Cli\Deploy;
+namespace Fusio\Cli\Builder;
 
 /**
- * EnvReplacerInterface
+ * BuilderInterface
  *
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    https://www.fusio-project.org/
  */
-interface EnvReplacerInterface
+interface BuilderInterface
 {
-    public function getVars(): array;
-
-    public function replace(string $data): string;
+    public function toArray(): array;
 }

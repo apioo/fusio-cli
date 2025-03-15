@@ -18,18 +18,20 @@
  * limitations under the License.
  */
 
-namespace Fusio\Cli\Deploy;
+namespace Fusio\Cli\Builder\Operation;
 
 /**
- * EnvReplacerInterface
+ * HttpMethod
  *
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    https://www.fusio-project.org/
  */
-interface EnvReplacerInterface
+enum HttpMethod: string
 {
-    public function getVars(): array;
-
-    public function replace(string $data): string;
+    case GET = 'GET';
+    case POST = 'POST';
+    case PUT = 'PUT';
+    case PATCH = 'PATCH';
+    case DELETE = 'DELETE';
 }

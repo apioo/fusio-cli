@@ -20,6 +20,8 @@
 
 namespace Fusio\Cli\Deploy;
 
+use Fusio\Cli\Builder;
+use Fusio\Cli\Service\Import\Types;
 use PSX\Json\Pointer;
 use PSX\Uri\Uri;
 use RuntimeException;
@@ -48,30 +50,57 @@ class IncludeDirective
     public function resolve(mixed $data, ?string $basePath, string $type): array
     {
         if ($data instanceof TaggedValue) {
-            if ($data->getTag() === 'include') {
-                $file = Uri::parse($data->getValue());
-                $path = $basePath . '/' . $file->getPath();
-
-                if (is_file($path)) {
-                    $fragment = $file->getFragment();
-                    $data     = $this->parser->parse($this->envReplacer->replace(file_get_contents($path)), Yaml::PARSE_CUSTOM_TAGS);
-
-                    if (!empty($fragment)) {
-                        $pointer = new Pointer($fragment);
-                        return $pointer->evaluate($data);
-                    } else {
-                        return $data;
-                    }
-                } else {
-                    throw new RuntimeException('Could not resolve file: ' . $path);
-                }
-            } else {
+            if ($data->getTag() !== 'include') {
                 throw new RuntimeException('Invalid tag provide: ' . $data->getTag());
             }
+
+            $file = Uri::parse($data->getValue());
+            $path = $basePath . '/' . $file->getPath();
+
+            if (!is_file($path)) {
+                throw new RuntimeException('Could not resolve file: ' . $path);
+            }
+
+            $extension = pathinfo($path, PATHINFO_EXTENSION);
+            if ($extension === 'php') {
+                $data = $this->resolvePHPFile($path, $type);
+            } else {
+                $data = $this->parser->parse($this->envReplacer->replace((string) file_get_contents($path)), Yaml::PARSE_CUSTOM_TAGS);
+
+                $fragment = $file->getFragment();
+                if (!empty($fragment)) {
+                    $data = (new Pointer($fragment))->evaluate($data);
+                }
+            }
+
+            return $data;
         } elseif (is_array($data)) {
             return $data;
         } else {
             throw new RuntimeException(ucfirst($type) . ' must be either an array or a string containing a "!include" directive');
         }
+    }
+
+    private function resolvePHPFile(string $path, string $type): array
+    {
+        $resolver = include $path;
+        if (!$resolver instanceof \Closure) {
+            throw new RuntimeException('File ' . $path . ' must return a closure');
+        }
+
+        $builder = $this->newBuilderForType($type);
+        $env = new Builder\Context($this->envReplacer->getVars());
+
+        call_user_func_array($resolver, [$builder, $env]);
+
+        return $builder->toArray();
+    }
+
+    private function newBuilderForType(string $type): Builder\BuilderInterface
+    {
+        return match($type) {
+            Types::TYPE_OPERATION => new Builder\Operation(),
+            default => throw new RuntimeException('Builder are not supported for type ' . $type),
+        };
     }
 }

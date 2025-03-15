@@ -18,18 +18,23 @@
  * limitations under the License.
  */
 
-namespace Fusio\Cli\Deploy;
+namespace Fusio\Cli\Builder;
 
 /**
- * EnvReplacerInterface
+ * Context
  *
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    https://www.fusio-project.org/
  */
-interface EnvReplacerInterface
+class Context
 {
-    public function getVars(): array;
+    public function __construct(private readonly array $vars)
+    {
+    }
 
-    public function replace(string $data): string;
+    public function getEnv(string $name): mixed
+    {
+        return $this->vars['env'][$name] ?? null;
+    }
 }

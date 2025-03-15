@@ -20,6 +20,8 @@
 
 namespace Fusio\Cli\Deploy;
 
+use PSX\Json\Parser;
+
 /**
  * EnvReplacer
  *
@@ -46,10 +48,7 @@ class EnvReplacer implements EnvReplacerInterface
         $this->properties[$category] = $resolver;
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function replace(string $data): string
+    public function getVars(): array
     {
         $vars = [];
         foreach ($this->properties as $category => $resolver) {
@@ -63,6 +62,13 @@ class EnvReplacer implements EnvReplacerInterface
             }
         }
 
+        return $vars;
+    }
+
+    public function replace(string $data): string
+    {
+        $vars = $this->getVars();
+
         // replace
         $data = preg_replace_callback('/\$\{([0-9A-Za-z_]+).([0-9A-Za-z_]+)\}/', function(array $matches) use ($vars): string {
             $type = strtolower($matches[1]);
@@ -73,7 +79,7 @@ class EnvReplacer implements EnvReplacerInterface
                     $value = $vars[$type][$key];
 
                     if (is_string($value)) {
-                        $value = trim(json_encode($value), '"');
+                        $value = trim(Parser::encode($value), '"');
                     }
 
                     return (string) $value;
@@ -85,6 +91,6 @@ class EnvReplacer implements EnvReplacerInterface
             }
         }, $data);
 
-        return $data;
+        return (string) $data;
     }
 }

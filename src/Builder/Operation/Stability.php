@@ -18,18 +18,19 @@
  * limitations under the License.
  */
 
-namespace Fusio\Cli\Deploy;
+namespace Fusio\Cli\Builder\Operation;
 
 /**
- * EnvReplacerInterface
+ * Stability
  *
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    https://www.fusio-project.org/
  */
-interface EnvReplacerInterface
+enum Stability: int
 {
-    public function getVars(): array;
-
-    public function replace(string $data): string;
+    case DEPRECATED = 0;
+    case EXPERIMENTAL = 1;
+    case STABLE = 2;
+    case LEGACY = 3;
 }
