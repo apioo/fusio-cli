@@ -49,7 +49,7 @@ class IncludeDirectiveTest extends TestCase
         $include = $this->newIncludeDirective();
         $data = $include->resolve(new TaggedValue('include', 'Resource/test.php'), __DIR__, Types::TYPE_OPERATION);
 
-        $this->assertEquals(['description' => 'foobar', 'parameters' => [], 'throws' => []], $data);
+        $this->assertEquals(['description' => 'foobar', 'parameters' => (object) [], 'throws' => (object) []], $data);
     }
 
     public function testResolveTaggedValuePointer()
