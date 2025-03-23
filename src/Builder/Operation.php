@@ -116,10 +116,10 @@ class Operation implements BuilderInterface
             'httpMethod' => $this->httpMethod,
             'httpPath' => $this->httpPath,
             'httpCode' => $this->httpCode,
-            'parameters' => $this->parameters,
+            'parameters' => (object) $this->parameters,
             'incoming' => $this->incoming,
             'outgoing' => $this->outgoing,
-            'throws' => $this->throws,
+            'throws' => (object) $this->throws,
             'action' => $this->action,
         ], fn ($value) => $value !== null);
     }
