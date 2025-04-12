@@ -28,11 +28,10 @@ use Fusio\Cli\Transport\TransportInterface;
 use PSX\Http\Environment\HttpResponseInterface;
 use PSX\Json\Parser;
 use PSX\Schema\Exception\InvalidSchemaException;
-use PSX\Schema\Exception\ValidationException;
+use PSX\Schema\Exception\MappingException;
+use PSX\Schema\ObjectMapper;
 use PSX\Schema\SchemaManager;
-use PSX\Schema\SchemaManagerInterface;
-use PSX\Schema\SchemaTraverser;
-use PSX\Schema\Visitor\TypeVisitor;
+use PSX\Schema\SchemaSource;
 use Symfony\Component\Yaml\Yaml;
 
 /**
@@ -46,15 +45,13 @@ class Client
 {
     private AuthenticatorInterface $authenticator;
     private TransportInterface $transport;
-    private SchemaManagerInterface $schemaManager;
-    private SchemaTraverser $schemaTraverser;
+    private ObjectMapper $objectMapper;
 
     public function __construct(AuthenticatorInterface $authenticator, TransportInterface $transport)
     {
         $this->authenticator = $authenticator;
         $this->transport = $transport;
-        $this->schemaManager = new SchemaManager();
-        $this->schemaTraverser = new SchemaTraverser();
+        $this->objectMapper = new ObjectMapper(new SchemaManager());
     }
 
     public function setAuthenticator(AuthenticatorInterface $authenticator): void
@@ -117,6 +114,10 @@ class Client
         return ResponseParser::parse($response);
     }
 
+    /**
+     * @throws TransportException
+     * @throws TokenException
+     */
     public function getVersion(): ?string
     {
         $response = $this->transport->request($this->authenticator->getBaseUri(), 'GET', 'system/about');
@@ -127,9 +128,9 @@ class Client
     }
 
     /**
-     * @throws InputException
      * @throws TokenException
      * @throws TransportException
+     * @throws InputException
      */
     public function create(string $type, string $payload, string $modelClass): object
     {
@@ -140,9 +141,9 @@ class Client
     }
 
     /**
-     * @throws InputException
      * @throws TokenException
      * @throws TransportException
+     * @throws InputException
      */
     public function update(string $type, int $id, string $payload, string $modelClass): object
     {
@@ -153,8 +154,8 @@ class Client
     }
 
     /**
-     * @throws TokenException
      * @throws TransportException
+     * @throws TokenException
      */
     public function delete(string $type, int $id): object
     {
@@ -172,10 +173,15 @@ class Client
             $payload = (string) file_get_contents($payload);
         }
 
-        $data = Parser::decode($payload);
-        if (empty($data)) {
-            // try parse as yaml
-            $data = Parser::decode(Parser::encode(Yaml::parse($payload)));
+        try {
+            $data = Parser::decode($payload);
+        } catch (\JsonException) {
+            try {
+                // try parse as yaml
+                $data = Parser::decode(Parser::encode(Yaml::parse($payload)));
+            } catch (\JsonException $e) {
+                throw new InputException('Could not parse provided payload, got: ' . $e->getMessage(), previous: $e);
+            }
         }
 
         if (!$data instanceof \stdClass) {
@@ -183,15 +189,9 @@ class Client
         }
 
         try {
-            return $this->schemaTraverser->traverse(
-                $data,
-                $this->schemaManager->getSchema($modelClass),
-                new TypeVisitor()
-            );
-        } catch (InvalidSchemaException $e) {
-            throw new InputException('Provided an invalid schema ' . $modelClass . ', got: ' . $e->getMessage(), 0, $e);
-        } catch (ValidationException $e) {
-            throw new InputException('Could not insert data into model ' . $modelClass . ', got: ' . $e->getMessage(), 0, $e);
+            return $this->objectMapper->read($data, SchemaSource::fromClass($modelClass));
+        } catch (MappingException|InvalidSchemaException $e) {
+            throw new InputException('Provided an invalid payload for schema ' . $modelClass . ', got: ' . $e->getMessage(), 0, $e);
         }
     }
 

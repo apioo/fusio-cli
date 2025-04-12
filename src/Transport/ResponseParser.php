@@ -36,7 +36,6 @@ class ResponseParser
 {
     /**
      * @throws TransportException
-     * @throws JsonException
      */
     public static function parse(HttpResponseInterface $response): object
     {
@@ -44,7 +43,12 @@ class ResponseParser
             throw new TransportException($response, 'API returned a non successful status code ' . $response->getStatusCode());
         }
 
-        $data = Parser::decode((string) $response->getBody());
+        try {
+            $data = Parser::decode((string) $response->getBody());
+        } catch (JsonException $e) {
+            throw new TransportException($response, 'Could not parser API response, got: ' . $e->getMessage(), previous: $e);
+        }
+
         if (!$data instanceof \stdClass) {
             throw new TransportException($response, 'API returned an invalid response body');
         }
