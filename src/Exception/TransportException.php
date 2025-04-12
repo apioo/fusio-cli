@@ -32,21 +32,15 @@ use Throwable;
  */
 class TransportException extends \Exception
 {
-    /**
-     * @var HttpResponseInterface
-     */
-    private $response;
+    private HttpResponseInterface $response;
 
-    public function __construct(HttpResponseInterface $response, $message = '', $code = 0, Throwable $previous = null)
+    public function __construct(HttpResponseInterface $response, $message = '', $code = 0, ?Throwable $previous = null)
     {
         parent::__construct($message, $code, $previous);
 
         $this->response = $response;
     }
 
-    /**
-     * @return HttpResponseInterface
-     */
     public function getResponse(): HttpResponseInterface
     {
         return $this->response;
