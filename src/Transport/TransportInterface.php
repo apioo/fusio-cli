@@ -20,7 +20,6 @@
 
 namespace Fusio\Cli\Transport;
 
-use Fusio\Cli\Exception\TransportException;
 use PSX\Http\Environment\HttpResponseInterface;
 
 /**
