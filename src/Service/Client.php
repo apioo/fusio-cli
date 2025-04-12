@@ -171,6 +171,8 @@ class Client
     {
         if (is_file($payload)) {
             $payload = (string) file_get_contents($payload);
+        } elseif ($payload === '-') {
+            $payload = $this->readStdin() ?? throw new InputException('Could not read from stdin');
         }
 
         try {
@@ -205,5 +207,22 @@ class Client
         ];
 
         return $this->transport->request($this->authenticator->getBaseUri(), $method, 'backend/' . $path, $query, $headers, $body);
+    }
+
+    private function readStdin(): ?string
+    {
+        $read = [STDIN];
+        $write = $except = null;
+        $changed = stream_select($read, $write, $except, 8);
+        if ($changed === false || $changed === 0) {
+            return null;
+        }
+
+        $return = stream_get_contents(STDIN);
+        if ($return === false) {
+            return null;
+        }
+
+        return $return;
     }
 }
