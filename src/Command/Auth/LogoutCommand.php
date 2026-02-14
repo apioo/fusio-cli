@@ -20,8 +20,6 @@
 
 namespace Fusio\Cli\Command\Auth;
 
-use Fusio\Cli\Command\ErrorRenderer;
-use Fusio\Cli\Exception\TransportException;
 use Fusio\Cli\Service\Authenticator;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -55,11 +53,7 @@ class LogoutCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        try {
-            $this->authenticator->removeAccessToken();
-        } catch (TransportException $e) {
-            return ErrorRenderer::render($e, $output);
-        }
+        $this->authenticator->removeAccessToken();
 
         $output->writeln('');
         $output->writeln('Logout successful');

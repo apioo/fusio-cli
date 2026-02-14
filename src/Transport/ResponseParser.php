@@ -24,6 +24,7 @@ use Fusio\Cli\Exception\TransportException;
 use JsonException;
 use PSX\Http\Environment\HttpResponseInterface;
 use PSX\Json\Parser;
+use stdClass;
 
 /**
  * ResponseParser
@@ -49,7 +50,7 @@ class ResponseParser
             throw new TransportException($response, 'Could not parser API response, got: ' . $e->getMessage(), previous: $e);
         }
 
-        if (!$data instanceof \stdClass) {
+        if (!$data instanceof stdClass) {
             throw new TransportException($response, 'API returned an invalid response body');
         }
 

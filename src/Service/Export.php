@@ -23,6 +23,7 @@ namespace Fusio\Cli\Service;
 use Fusio\Cli\Exception\TokenException;
 use Fusio\Cli\Exception\TransportException;
 use Fusio\Cli\Service\Import\Types;
+use JsonException;
 use PSX\Json\Parser;
 use stdClass;
 
@@ -45,7 +46,7 @@ class Export
     /**
      * @throws TransportException
      * @throws TokenException
-     * @throws \JsonException
+     * @throws JsonException
      */
     public function export(): string
     {

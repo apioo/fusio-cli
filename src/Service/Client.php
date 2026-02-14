@@ -71,7 +71,8 @@ class Client
             'search'     => $search,
             'sortBy'     => $sortBy,
             'sortOrder'  => $sortOrder,
-        ]);
+            'taxonomy'   => 0,
+        ], fn($value) => $value !== null);
 
         $response = $this->request('GET', $type, $query);
 

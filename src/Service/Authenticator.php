@@ -26,6 +26,7 @@ use Fusio\Cli\Exception\TransportException;
 use Fusio\Cli\Transport\Http;
 use Fusio\Cli\Transport\ResponseParser;
 use Fusio\Cli\Transport\TransportInterface;
+use JsonException;
 use PSX\Json\Parser;
 
 /**
@@ -151,7 +152,7 @@ class Authenticator implements AuthenticatorInterface
     /**
      * @throws TokenException
      * @throws TransportException
-     * @throws \JsonException
+     * @throws JsonException
      */
     public function whoami(): object
     {
@@ -168,6 +169,7 @@ class Authenticator implements AuthenticatorInterface
 
     /**
      * @throws TokenException
+     * @throws JsonException
      */
     public function getTokenValue(string $key): string
     {
