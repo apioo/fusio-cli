@@ -78,6 +78,7 @@ class DeployTest extends TestCase
             '[CREATED] scope Scope-B',
             '[CREATED] role Dev-Role',
             '[CREATED] operation bar',
+            '[CREATED] agent Test-Agent',
         ];
         $this->assertEquals($expect, $results);
 
@@ -85,7 +86,7 @@ class DeployTest extends TestCase
             ['https://api.acme.com', 'POST', 'authorization/token', null, ['Authorization' => 'Basic Zm9vOmJhcg==', 'Content-Type' => 'application/x-www-form-urlencoded'], 'grant_type=client_credentials'],
         ];
 
-        $this->assertEquals(33, count($transport->getRequests()));
+        $this->assertEquals(35, count($transport->getRequests()));
         $this->assertEquals($expect[0], $transport->getRequests()[0]);
 
         $authenticator->removeAccessToken();
@@ -93,38 +94,8 @@ class DeployTest extends TestCase
 
     private function newTransportCreate(): Memory
     {
-        $action = new Backend\Action();
-        $action->setId(1);
-
         $config = new Backend\Config();
         $config->setId(1);
-
-        $connection = new Backend\Connection();
-        $connection->setId(1);
-
-        $cronjob = new Backend\Cronjob();
-        $cronjob->setId(1);
-
-        $event = new Backend\Event();
-        $event->setId(1);
-
-        $plan = new Backend\Plan();
-        $plan->setId(1);
-
-        $rate = new Backend\Rate();
-        $rate->setId(1);
-
-        $role = new Backend\Role();
-        $role->setId(1);
-
-        $operation = new Backend\Operation();
-        $operation->setId(1);
-
-        $schema = new Backend\Schema();
-        $schema->setId(1);
-
-        $scope = new Backend\Scope();
-        $scope->setId(1);
 
         $transport = new Memory();
         $transport->addResponse(new HttpResponse(200, [], \json_encode(['access_token' => '2YotnFZFEjr1zCsicMWpAA', 'expires_in' => time() + 60])));
@@ -133,6 +104,8 @@ class DeployTest extends TestCase
         $transport->addResponse(new HttpResponse(200, [], \json_encode($config)));
         $transport->addResponse(new HttpResponse(200, [], \json_encode(['success' => true])));
         $transport->addResponse(new HttpResponse(200, [], \json_encode($config)));
+        $transport->addResponse(new HttpResponse(200, [], \json_encode(['success' => true])));
+        $transport->addResponse(new HttpResponse(404, [], \json_encode(['not_found' => true])));
         $transport->addResponse(new HttpResponse(200, [], \json_encode(['success' => true])));
         $transport->addResponse(new HttpResponse(404, [], \json_encode(['not_found' => true])));
         $transport->addResponse(new HttpResponse(200, [], \json_encode(['success' => true])));
@@ -203,6 +176,7 @@ class DeployTest extends TestCase
             '[UPDATED] scope Scope-B',
             '[UPDATED] role Dev-Role',
             '[UPDATED] operation bar',
+            '[UPDATED] agent Test-Agent',
         ];
         $this->assertEquals($expect, $results);
 
@@ -210,7 +184,7 @@ class DeployTest extends TestCase
             ['https://api.acme.com', 'POST', 'authorization/token', null, ['Authorization' => 'Basic Zm9vOmJhcg==', 'Content-Type' => 'application/x-www-form-urlencoded'], 'grant_type=client_credentials'],
         ];
 
-        $this->assertEquals(33, count($transport->getRequests()));
+        $this->assertEquals(35, count($transport->getRequests()));
         $this->assertEquals($expect[0], $transport->getRequests()[0]);
 
         $authenticator->removeAccessToken();
@@ -220,6 +194,9 @@ class DeployTest extends TestCase
     {
         $action = new Backend\Action();
         $action->setId(1);
+
+        $agent = new Backend\Agent();
+        $agent->setId(1);
 
         $config = new Backend\Config();
         $config->setId(1);
@@ -286,6 +263,8 @@ class DeployTest extends TestCase
         $transport->addResponse(new HttpResponse(200, [], \json_encode($scope)));
         $transport->addResponse(new HttpResponse(200, [], \json_encode(['success' => true])));
         $transport->addResponse(new HttpResponse(200, [], \json_encode($scope)));
+        $transport->addResponse(new HttpResponse(200, [], \json_encode(['success' => true])));
+        $transport->addResponse(new HttpResponse(200, [], \json_encode($agent)));
         $transport->addResponse(new HttpResponse(200, [], \json_encode(['success' => true])));
 
         return $transport;

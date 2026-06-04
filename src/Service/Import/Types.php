@@ -34,6 +34,7 @@ class Types
     public const COLLECTION_SIZE = 64;
 
     public const TYPE_ACTION = 'action';
+    public const TYPE_AGENT = 'agent';
     public const TYPE_CONFIG = 'config';
     public const TYPE_CONNECTION = 'connection';
     public const TYPE_CRONJOB = 'cronjob';
@@ -57,6 +58,7 @@ class Types
         self::TYPE_SCOPE      => ['name', Backend\Scope::class],
         self::TYPE_ROLE       => ['name', Backend\Role::class],
         self::TYPE_OPERATION  => ['name', Backend\Operation::class],
+        self::TYPE_AGENT      => ['name', Backend\Agent::class],
     ];
 
     public static function getTypes(): array

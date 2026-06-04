@@ -1,4 +1,5 @@
 action: !include actions.yaml
+agent: !include agents.yaml
 config: !include config.yaml
 connection: !include connections.yaml
 cronjob: !include cronjobs.yaml

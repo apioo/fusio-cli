@@ -1,0 +1,6 @@
+Test-Agent:
+  connection: 1
+  type: 1
+  description: "A simple test agent"
+  introduction: "You are a test agent which always respond with test"
+  outgoing: Response-Schema

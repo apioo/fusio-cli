@@ -95,6 +95,8 @@ class Export
     {
         if ($type === Types::TYPE_ACTION) {
             return $this->transformAction($entity);
+        } elseif ($type === Types::TYPE_AGENT) {
+            return $this->transformAgent($entity);
         } elseif ($type === Types::TYPE_CONFIG) {
             return $this->transformConfig($entity);
         } elseif ($type === Types::TYPE_CONNECTION) {
@@ -124,6 +126,13 @@ class Export
     {
         unset($entity->id);
         unset($entity->status);
+
+        return $entity;
+    }
+
+    private function transformAgent(object $entity): object
+    {
+        unset($entity->id);
 
         return $entity;
     }

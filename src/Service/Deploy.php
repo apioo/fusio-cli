@@ -77,6 +77,7 @@ class Deploy
             Types::TYPE_ROLE       => $this->newTransformer(Transformer\Role::class, [$includeDirective]),
             Types::TYPE_SCHEMA     => $this->newTransformer(Transformer\Schema::class, [$includeDirective, $this->schemaManager]),
             Types::TYPE_OPERATION  => $this->newTransformer(Transformer\Operation::class, [$includeDirective]),
+            Types::TYPE_AGENT      => $this->newTransformer(Transformer\Agent::class, [$includeDirective]),
         ];
 
         // resolve includes
