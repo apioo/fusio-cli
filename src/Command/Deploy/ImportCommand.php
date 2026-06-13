@@ -38,13 +38,9 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class ImportCommand extends Command
 {
-    private Import $import;
-
-    public function __construct(Import $import)
+    public function __construct(private readonly Import $import)
     {
         parent::__construct();
-
-        $this->import = $import;
     }
 
     protected function configure(): void

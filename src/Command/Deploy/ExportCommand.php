@@ -37,13 +37,9 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class ExportCommand extends Command
 {
-    private Export $export;
-
-    public function __construct(Export $import)
+    public function __construct(private readonly Export $export)
     {
         parent::__construct();
-
-        $this->export = $import;
     }
 
     protected function configure(): void

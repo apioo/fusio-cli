@@ -29,8 +29,8 @@ use Fusio\Cli\Service\Import\Result;
 use Fusio\Cli\Service\Import\Types;
 use Generator;
 use InvalidArgumentException;
+use JsonException;
 use PSX\Json\Parser;
-use PSX\Schema\SchemaManagerInterface;
 use stdClass;
 use Symfony\Component\Yaml\Yaml;
 
@@ -48,15 +48,17 @@ readonly class Deploy
         private Import $import,
         private Client $client,
         private IncludeDirective $includeDirective,
+        private EnvReplacerInterface $envReplacer,
     ) {
     }
 
     /**
      * @return Generator<Result>
+     * @throws JsonException
      */
-    public function deploy(string $yaml, EnvReplacerInterface $envReplacer, ?string $basePath = null): Generator
+    public function deploy(string $yaml, ?string $basePath = null): Generator
     {
-        $data = Yaml::parse($envReplacer->replace($yaml), Yaml::PARSE_CUSTOM_TAGS);
+        $data = Yaml::parse($this->envReplacer->replace($yaml), Yaml::PARSE_CUSTOM_TAGS);
         if (empty($data) || !is_array($data)) {
             return;
         }

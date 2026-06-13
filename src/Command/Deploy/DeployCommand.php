@@ -22,7 +22,6 @@ namespace Fusio\Cli\Command\Deploy;
 
 use Fusio\Cli\Command\ErrorRenderer;
 use Fusio\Cli\Config\ConfigInterface;
-use Fusio\Cli\Deploy\EnvReplacerInterface;
 use Fusio\Cli\Exception\TransportException;
 use Fusio\Cli\Service\Deploy;
 use Fusio\Cli\Service\Import\Result;
@@ -41,17 +40,11 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class DeployCommand extends Command
 {
-    private Deploy $deploy;
-    private ConfigInterface $config;
-    private EnvReplacerInterface $envReplacer;
-
-    public function __construct(Deploy $deploy, ConfigInterface $config, EnvReplacerInterface $envReplacer)
-    {
+    public function __construct(
+        private readonly Deploy $deploy,
+        private readonly ConfigInterface $config
+    ) {
         parent::__construct();
-
-        $this->deploy = $deploy;
-        $this->config = $config;
-        $this->envReplacer = $envReplacer;
     }
 
     protected function configure(): void
@@ -75,7 +68,7 @@ class DeployCommand extends Command
         }
 
         try {
-            $results = $this->deploy->deploy((string) file_get_contents($file), $this->envReplacer, dirname($file));
+            $results = $this->deploy->deploy((string) file_get_contents($file), dirname($file));
             $count = 0;
             foreach ($results as $result) {
                 if ($result->getType() === Result::ACTION_FAILED) {
