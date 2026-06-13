@@ -22,6 +22,7 @@ namespace Fusio\Cli\Tests\Service;
 
 use Fusio\Cli\Config\Config;
 use Fusio\Cli\Deploy\EnvReplacer;
+use Fusio\Cli\Deploy\IncludeDirective;
 use Fusio\Cli\Service\Authenticator;
 use Fusio\Cli\Service\Client;
 use Fusio\Cli\Service\Deploy;
@@ -30,7 +31,6 @@ use Fusio\Cli\Transport\Memory;
 use Fusio\Model\Backend;
 use PHPUnit\Framework\TestCase;
 use PSX\Http\Environment\HttpResponse;
-use PSX\Schema\SchemaManager;
 
 /**
  * DeployTest
@@ -51,12 +51,13 @@ class DeployTest extends TestCase
         $authenticator = new Authenticator($transport, $config);
         $authenticator->requestAccessToken('https://api.acme.com', 'foo', 'bar');
 
+        $envReplacer = new EnvReplacer();
+
         $client = new Client(new Authenticator($transport, $config), $transport);
-        $deploy = new Deploy(new Import($client), new SchemaManager());
+        $deploy = new Deploy(new Import($client), $client, new IncludeDirective($envReplacer));
 
         $file = __DIR__ . '/resource/.fusio.yml';
         $yaml = file_get_contents($file);
-        $envReplacer = new EnvReplacer();
 
         $results = iterator_to_array($deploy->deploy($yaml, $envReplacer, dirname($file)), false);
         $results = array_map('strval', $results);
@@ -149,12 +150,13 @@ class DeployTest extends TestCase
         $authenticator = new Authenticator($transport, $config);
         $authenticator->requestAccessToken('https://api.acme.com', 'foo', 'bar');
 
+        $envReplacer = new EnvReplacer();
+
         $client = new Client(new Authenticator($transport, $config), $transport);
-        $deploy = new Deploy(new Import($client), new SchemaManager());
+        $deploy = new Deploy(new Import($client), $client, new IncludeDirective($envReplacer));
 
         $file = __DIR__ . '/resource/.fusio.yml';
         $yaml = file_get_contents($file);
-        $envReplacer = new EnvReplacer();
 
         $results = iterator_to_array($deploy->deploy($yaml, $envReplacer, dirname($file)), false);
         $results = array_map('strval', $results);

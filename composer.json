@@ -15,7 +15,7 @@
     "psalm": "@php vendor/vimeo/psalm/psalm"
   },
   "require": {
-    "php": ">=8.1",
+    "php": ">=8.4",
     "psr/log": "^1.0|^2.0|^3.0",
     "fusio/model": "^4.0",
     "psx/schema": "^7.0",

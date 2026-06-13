@@ -25,6 +25,8 @@ use Fusio\Cli\Exception\TokenException;
 use Fusio\Cli\Exception\TransportException;
 use Fusio\Cli\Transport\ResponseParser;
 use Fusio\Cli\Transport\TransportInterface;
+use JsonException;
+use JsonSerializable;
 use PSX\Http\Environment\HttpResponseInterface;
 use PSX\Json\Parser;
 use PSX\Schema\Exception\InvalidSchemaException;
@@ -32,6 +34,7 @@ use PSX\Schema\Exception\MappingException;
 use PSX\Schema\ObjectMapper;
 use PSX\Schema\SchemaManager;
 use PSX\Schema\SchemaSource;
+use stdClass;
 use Symfony\Component\Yaml\Yaml;
 
 /**
@@ -85,11 +88,10 @@ class Client
      */
     public function get(string $type, string $id): object
     {
-        $actualId = (int) $id;
-        if ($actualId === 0) {
-            return $this->getByName($type, $id);
+        if (ctype_digit($id)) {
+            return $this->getById($type, (int) $id);
         } else {
-            return $this->getById($type, $actualId);
+            return $this->getByName($type, $id);
         }
     }
 
@@ -168,7 +170,7 @@ class Client
     /**
      * @throws InputException
      */
-    private function parsePayload(string $payload, string $modelClass): \JsonSerializable
+    private function parsePayload(string $payload, string $modelClass): JsonSerializable
     {
         if (is_file($payload)) {
             $payload = (string) file_get_contents($payload);
@@ -178,16 +180,16 @@ class Client
 
         try {
             $data = Parser::decode($payload);
-        } catch (\JsonException) {
+        } catch (JsonException) {
             try {
                 // try parse as yaml
                 $data = Parser::decode(Parser::encode(Yaml::parse($payload)));
-            } catch (\JsonException $e) {
+            } catch (JsonException $e) {
                 throw new InputException('Could not parse provided payload, got: ' . $e->getMessage(), previous: $e);
             }
         }
 
-        if (!$data instanceof \stdClass) {
+        if (!$data instanceof stdClass) {
             throw new InputException('Could not parse provided payload, must be either a YAML or JSON object');
         }
 

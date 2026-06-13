@@ -20,6 +20,9 @@
 
 namespace Fusio\Cli\Deploy;
 
+use Fusio\Cli\Exception\TransformException;
+use stdClass;
+
 /**
  * TransformerInterface
  *
@@ -29,5 +32,8 @@ namespace Fusio\Cli\Deploy;
  */
 interface TransformerInterface
 {
-    public function transform(array $data, \stdClass $import, ?string $basePath): void;
+    /**
+     * @throws TransformException
+     */
+    public function transform(array $data, stdClass $import, ?string $basePath): void;
 }

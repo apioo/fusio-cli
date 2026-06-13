@@ -22,7 +22,11 @@ namespace Fusio\Cli\Deploy\Transformer;
 
 use Fusio\Cli\Deploy\SchemeBuilder;
 use Fusio\Cli\Deploy\TransformerAbstract;
+use Fusio\Cli\Exception\TransformException;
 use Fusio\Cli\Service\Import\Types;
+use RuntimeException;
+use stdClass;
+use Throwable;
 
 /**
  * Agent
@@ -33,7 +37,7 @@ use Fusio\Cli\Service\Import\Types;
  */
 class Agent extends TransformerAbstract
 {
-    public function transform(array $data, \stdClass $import, ?string $basePath): void
+    public function transform(array $data, stdClass $import, ?string $basePath): void
     {
         $action = $data[Types::TYPE_AGENT] ?? [];
 
@@ -46,10 +50,31 @@ class Agent extends TransformerAbstract
         }
     }
 
+    /**
+     * @throws TransformException
+     */
     protected function transformAgent(string $name, mixed $data, ?string $basePath): array
     {
         $data = $this->includeDirective->resolve($data, $basePath, Types::TYPE_AGENT);
         $data['name'] = $name;
+
+        if (isset($data['connection']) && is_string($data['connection'])) {
+            try {
+                $agent = $this->client->get(Types::TYPE_AGENT, $data['connection']);
+                $id = $agent->id ?? null;
+                if (!is_int($id)) {
+                    throw new RuntimeException('Could not determine agent id');
+                }
+
+                $data['connection'] = $id;
+            } catch (Throwable $e) {
+                throw new TransformException($name, 'Could not resolve provided agent connection "' . $data['connection'] . '", please check whether it actually exists', previous: $e);
+            }
+        }
+
+        if (isset($data['introduction'])) {
+            $data['introduction'] = $this->includeDirective->resolveTextFile($data['introduction'], $basePath, Types::TYPE_AGENT);
+        }
 
         if (isset($data['outgoing'])) {
             $data['outgoing'] = SchemeBuilder::forSchema($data['outgoing']);

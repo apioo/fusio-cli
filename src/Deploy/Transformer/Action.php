@@ -22,6 +22,7 @@ namespace Fusio\Cli\Deploy\Transformer;
 
 use Fusio\Cli\Deploy\TransformerAbstract;
 use Fusio\Cli\Service\Import\Types;
+use stdClass;
 use Symfony\Component\Yaml\Tag\TaggedValue;
 
 /**
@@ -33,7 +34,7 @@ use Symfony\Component\Yaml\Tag\TaggedValue;
  */
 class Action extends TransformerAbstract
 {
-    public function transform(array $data, \stdClass $import, ?string $basePath): void
+    public function transform(array $data, stdClass $import, ?string $basePath): void
     {
         $action = $data[Types::TYPE_ACTION] ?? [];
 

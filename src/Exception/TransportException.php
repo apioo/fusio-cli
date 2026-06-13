@@ -20,6 +20,7 @@
 
 namespace Fusio\Cli\Exception;
 
+use Exception;
 use PSX\Http\Environment\HttpResponseInterface;
 use Throwable;
 
@@ -30,7 +31,7 @@ use Throwable;
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    https://www.fusio-project.org/
  */
-class TransportException extends \Exception
+class TransportException extends Exception
 {
     private HttpResponseInterface $response;
 

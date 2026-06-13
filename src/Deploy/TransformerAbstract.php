@@ -20,6 +20,8 @@
 
 namespace Fusio\Cli\Deploy;
 
+use Fusio\Cli\Service\Client;
+
 /**
  * TransformerAbstract
  *
@@ -29,10 +31,9 @@ namespace Fusio\Cli\Deploy;
  */
 abstract class TransformerAbstract implements TransformerInterface
 {
-    protected IncludeDirective $includeDirective;
-
-    public function __construct(IncludeDirective $includeDirective)
-    {
-        $this->includeDirective = $includeDirective;
+    public function __construct(
+        protected IncludeDirective $includeDirective,
+        protected Client $client,
+    ) {
     }
 }

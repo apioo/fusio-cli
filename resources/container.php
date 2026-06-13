@@ -4,6 +4,7 @@ use Fusio\Cli\Config\Config;
 use Fusio\Cli\Config\ConfigInterface;
 use Fusio\Cli\Deploy\EnvReplacer;
 use Fusio\Cli\Deploy\EnvReplacerInterface;
+use Fusio\Cli\Deploy\IncludeDirective;
 use Fusio\Cli\Service\Authenticator;
 use Fusio\Cli\Service\AuthenticatorInterface;
 use Fusio\Cli\Service\Client;
@@ -41,6 +42,8 @@ return static function (ContainerConfigurator $container) {
 
     $services->set(EnvReplacer::class);
     $services->alias(EnvReplacerInterface::class, EnvReplacer::class);
+
+    $services->set(IncludeDirective::class);
 
     $services->load('Fusio\\Cli\\Command\\', __DIR__ . '/../src/Command');
 

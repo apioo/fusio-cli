@@ -22,6 +22,7 @@ namespace Fusio\Cli\Deploy\Transformer;
 
 use Fusio\Cli\Deploy\TransformerAbstract;
 use Fusio\Cli\Service\Import\Types;
+use stdClass;
 
 /**
  * Scope
@@ -32,7 +33,7 @@ use Fusio\Cli\Service\Import\Types;
  */
 class Scope extends TransformerAbstract
 {
-    public function transform(array $data, \stdClass $import, ?string $basePath): void
+    public function transform(array $data, stdClass $import, ?string $basePath): void
     {
         $scope = $data[Types::TYPE_SCOPE] ?? [];
 

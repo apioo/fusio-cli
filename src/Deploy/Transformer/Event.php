@@ -23,6 +23,7 @@ namespace Fusio\Cli\Deploy\Transformer;
 use Fusio\Cli\Deploy\SchemeBuilder;
 use Fusio\Cli\Deploy\TransformerAbstract;
 use Fusio\Cli\Service\Import\Types;
+use stdClass;
 
 /**
  * Event
@@ -33,7 +34,7 @@ use Fusio\Cli\Service\Import\Types;
  */
 class Event extends TransformerAbstract
 {
-    public function transform(array $data, \stdClass $import, ?string $basePath): void
+    public function transform(array $data, stdClass $import, ?string $basePath): void
     {
         $event = $data[Types::TYPE_EVENT] ?? [];
 

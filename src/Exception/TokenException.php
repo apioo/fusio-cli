@@ -20,6 +20,8 @@
 
 namespace Fusio\Cli\Exception;
 
+use Exception;
+
 /**
  * TokenException
  *
@@ -27,6 +29,6 @@ namespace Fusio\Cli\Exception;
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    https://www.fusio-project.org/
  */
-class TokenException extends \Exception
+class TokenException extends Exception
 {
 }

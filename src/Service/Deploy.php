@@ -24,10 +24,14 @@ use Fusio\Cli\Deploy\EnvReplacerInterface;
 use Fusio\Cli\Deploy\IncludeDirective;
 use Fusio\Cli\Deploy\Transformer;
 use Fusio\Cli\Deploy\TransformerInterface;
+use Fusio\Cli\Exception\TransformException;
 use Fusio\Cli\Service\Import\Result;
 use Fusio\Cli\Service\Import\Types;
+use Generator;
+use InvalidArgumentException;
 use PSX\Json\Parser;
 use PSX\Schema\SchemaManagerInterface;
+use stdClass;
 use Symfony\Component\Yaml\Yaml;
 
 /**
@@ -38,24 +42,20 @@ use Symfony\Component\Yaml\Yaml;
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    https://www.fusio-project.org/
  */
-class Deploy
+readonly class Deploy
 {
-    private Import $import;
-    private SchemaManagerInterface $schemaManager;
-
-    public function __construct(Import $import, SchemaManagerInterface $schemaManager)
-    {
-        $this->import = $import;
-        $this->schemaManager = $schemaManager;
+    public function __construct(
+        private Import $import,
+        private Client $client,
+        private IncludeDirective $includeDirective,
+    ) {
     }
 
     /**
-     * @return \Generator<string, Result>
+     * @return Generator<Result>
      */
-    public function deploy(string $yaml, EnvReplacerInterface $envReplacer, ?string $basePath = null): \Generator
+    public function deploy(string $yaml, EnvReplacerInterface $envReplacer, ?string $basePath = null): Generator
     {
-        $includeDirective = new IncludeDirective($envReplacer);
-
         $data = Yaml::parse($envReplacer->replace($yaml), Yaml::PARSE_CUSTOM_TAGS);
         if (empty($data) || !is_array($data)) {
             return;
@@ -66,43 +66,48 @@ class Deploy
         }
 
         $transformers = [
-            Types::TYPE_ACTION     => $this->newTransformer(Transformer\Action::class, [$includeDirective]),
-            Types::TYPE_CONFIG     => $this->newTransformer(Transformer\Config::class, [$includeDirective]),
-            Types::TYPE_CONNECTION => $this->newTransformer(Transformer\Connection::class, [$includeDirective]),
-            Types::TYPE_CRONJOB    => $this->newTransformer(Transformer\Cronjob::class, [$includeDirective]),
-            Types::TYPE_EVENT      => $this->newTransformer(Transformer\Event::class, [$includeDirective]),
-            Types::TYPE_PLAN       => $this->newTransformer(Transformer\Plan::class, [$includeDirective]),
-            Types::TYPE_RATE       => $this->newTransformer(Transformer\Rate::class, [$includeDirective]),
-            Types::TYPE_SCOPE      => $this->newTransformer(Transformer\Scope::class, [$includeDirective]),
-            Types::TYPE_ROLE       => $this->newTransformer(Transformer\Role::class, [$includeDirective]),
-            Types::TYPE_SCHEMA     => $this->newTransformer(Transformer\Schema::class, [$includeDirective, $this->schemaManager]),
-            Types::TYPE_OPERATION  => $this->newTransformer(Transformer\Operation::class, [$includeDirective]),
-            Types::TYPE_AGENT      => $this->newTransformer(Transformer\Agent::class, [$includeDirective]),
+            Types::TYPE_ACTION     => $this->newTransformer(Transformer\Action::class),
+            Types::TYPE_CONFIG     => $this->newTransformer(Transformer\Config::class),
+            Types::TYPE_CONNECTION => $this->newTransformer(Transformer\Connection::class),
+            Types::TYPE_CRONJOB    => $this->newTransformer(Transformer\Cronjob::class),
+            Types::TYPE_EVENT      => $this->newTransformer(Transformer\Event::class),
+            Types::TYPE_PLAN       => $this->newTransformer(Transformer\Plan::class),
+            Types::TYPE_RATE       => $this->newTransformer(Transformer\Rate::class),
+            Types::TYPE_SCOPE      => $this->newTransformer(Transformer\Scope::class),
+            Types::TYPE_ROLE       => $this->newTransformer(Transformer\Role::class),
+            Types::TYPE_SCHEMA     => $this->newTransformer(Transformer\Schema::class),
+            Types::TYPE_OPERATION  => $this->newTransformer(Transformer\Operation::class),
+            Types::TYPE_AGENT      => $this->newTransformer(Transformer\Agent::class),
         ];
 
         // resolve includes
         foreach ($transformers as $type => $transformer) {
             if (isset($data[$type])) {
-                $data[$type] = $includeDirective->resolve($data[$type], $basePath, $type);
+                $data[$type] = $this->includeDirective->resolve($data[$type], $basePath, $type);
             }
         }
 
         // run transformer
-        $import = new \stdClass();
+        $import = new stdClass();
         foreach ($transformers as $type => $transformer) {
             /** @var TransformerInterface $transformer */
-            $transformer->transform($data, $import, $basePath);
+            try {
+                $transformer->transform($data, $import, $basePath);
+            } catch (TransformException $e) {
+                yield new Result($type, Result::ACTION_FAILED, $e->name . ': ' . $e->getMessage());
+            }
         }
 
         // import definition
         yield from $this->import->import(Parser::encode($import));
     }
 
-    private function newTransformer(string $class, array $arguments = []): TransformerInterface
+    private function newTransformer(string $class): TransformerInterface
     {
-        $transformer = new $class(...$arguments);
+        $transformer = new $class($this->includeDirective, $this->client);
+
         if (!$transformer instanceof TransformerInterface) {
-            throw new \InvalidArgumentException('Transformer must be an instance of ' . TransformerInterface::class);
+            throw new InvalidArgumentException('Transformer must be an instance of ' . TransformerInterface::class);
         }
 
         return $transformer;

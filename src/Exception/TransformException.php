@@ -18,39 +18,22 @@
  * limitations under the License.
  */
 
-namespace Fusio\Cli\Deploy\Transformer;
+namespace Fusio\Cli\Exception;
 
-use Fusio\Cli\Deploy\TransformerAbstract;
-use Fusio\Cli\Service\Import\Types;
-use stdClass;
+use Exception;
+use Throwable;
 
 /**
- * Plan
+ * TransformException
  *
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    https://www.fusio-project.org/
  */
-class Plan extends TransformerAbstract
+class TransformException extends Exception
 {
-    public function transform(array $data, stdClass $import, ?string $basePath): void
+    public function __construct(public string $name, string $message, ?Throwable $previous = null)
     {
-        $plan = $data[Types::TYPE_PLAN] ?? [];
-
-        if (!empty($plan) && is_array($plan)) {
-            $result = [];
-            foreach ($plan as $name => $entry) {
-                $result[] = $this->transformPlan($name, $entry, $basePath);
-            }
-            $import->plan = $result;
-        }
-    }
-
-    protected function transformPlan(string $name, mixed $data, ?string $basePath): array
-    {
-        $data = $this->includeDirective->resolve($data, $basePath, Types::TYPE_PLAN);
-        $data['name'] = $name;
-
-        return $data;
+        parent::__construct($message, 0, $previous);
     }
 }

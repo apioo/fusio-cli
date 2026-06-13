@@ -31,9 +31,9 @@ use PSX\Http\Environment\HttpResponseInterface;
  */
 class Result
 {
-    public const ACTION_FAILED  = 'FAILED';
-    public const ACTION_UPDATED = 'UPDATED';
-    public const ACTION_CREATED = 'CREATED';
+    public const string ACTION_FAILED  = 'FAILED';
+    public const string ACTION_UPDATED = 'UPDATED';
+    public const string ACTION_CREATED = 'CREATED';
 
     private string $type;
     private string $action;

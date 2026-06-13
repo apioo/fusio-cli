@@ -33,18 +33,18 @@ class Types
 {
     public const COLLECTION_SIZE = 64;
 
-    public const TYPE_ACTION = 'action';
-    public const TYPE_AGENT = 'agent';
-    public const TYPE_CONFIG = 'config';
-    public const TYPE_CONNECTION = 'connection';
-    public const TYPE_CRONJOB = 'cronjob';
-    public const TYPE_EVENT = 'event';
-    public const TYPE_OPERATION = 'operation';
-    public const TYPE_PLAN = 'plan';
-    public const TYPE_RATE = 'rate';
-    public const TYPE_ROLE = 'role';
-    public const TYPE_SCHEMA = 'schema';
-    public const TYPE_SCOPE = 'scope';
+    public const string TYPE_ACTION = 'action';
+    public const string TYPE_AGENT = 'agent';
+    public const string TYPE_CONFIG = 'config';
+    public const string TYPE_CONNECTION = 'connection';
+    public const string TYPE_CRONJOB = 'cronjob';
+    public const string TYPE_EVENT = 'event';
+    public const string TYPE_OPERATION = 'operation';
+    public const string TYPE_PLAN = 'plan';
+    public const string TYPE_RATE = 'rate';
+    public const string TYPE_ROLE = 'role';
+    public const string TYPE_SCHEMA = 'schema';
+    public const string TYPE_SCOPE = 'scope';
 
     private static array $types = [
         self::TYPE_ACTION     => ['name', Backend\Action::class],

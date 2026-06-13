@@ -20,11 +20,15 @@
 
 namespace Fusio\Cli\Deploy;
 
+use Closure;
 use Fusio\Cli\Builder;
 use Fusio\Cli\Service\Import\Types;
+use JsonException;
 use PSX\Json\Pointer;
+use PSX\Json\Parser as JsonParser;
 use PSX\Uri\Uri;
 use RuntimeException;
+use stdClass;
 use Symfony\Component\Yaml\Parser;
 use Symfony\Component\Yaml\Tag\TaggedValue;
 use Symfony\Component\Yaml\Yaml;
@@ -36,15 +40,13 @@ use Symfony\Component\Yaml\Yaml;
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    https://www.fusio-project.org/
  */
-class IncludeDirective
+readonly class IncludeDirective
 {
-    private EnvReplacerInterface $envReplacer;
     private Parser $parser;
 
-    public function __construct(EnvReplacerInterface $envReplacer)
+    public function __construct(private EnvReplacerInterface $envReplacer)
     {
-        $this->envReplacer = $envReplacer;
-        $this->parser      = new Parser();
+        $this->parser = new Parser();
     }
 
     public function resolve(mixed $data, ?string $basePath, string $type): array
@@ -69,7 +71,7 @@ class IncludeDirective
 
                 $fragment = $file->getFragment();
                 if (!empty($fragment)) {
-                    $data = (new Pointer($fragment))->evaluate($data);
+                    $data = new Pointer($fragment)->evaluate($data);
                 }
             }
 
@@ -84,7 +86,7 @@ class IncludeDirective
     private function resolvePHPFile(string $path, string $type): array
     {
         $resolver = include $path;
-        if (!$resolver instanceof \Closure) {
+        if (!$resolver instanceof Closure) {
             throw new RuntimeException('File ' . $path . ' must return a closure');
         }
 
@@ -94,6 +96,54 @@ class IncludeDirective
         call_user_func_array($resolver, [$builder, $env]);
 
         return $builder->toArray();
+    }
+
+    public function resolveTextFile(mixed $data, ?string $basePath, string $type): ?string
+    {
+        if ($data instanceof TaggedValue) {
+            if ($data->getTag() !== 'include') {
+                throw new RuntimeException('Invalid tag provide: ' . $data->getTag());
+            }
+
+            $file = Uri::parse($data->getValue());
+            $path = $basePath . '/' . $file->getPath();
+
+            if (!is_file($path)) {
+                throw new RuntimeException('Could not resolve file: ' . $path);
+            }
+
+            return (string) file_get_contents($path);
+        } elseif (is_string($data)) {
+            return $data;
+        } else {
+            throw new RuntimeException(ucfirst($type) . ' must be either a string or a string containing a "!include" directive pointing to a text file');
+        }
+    }
+
+    /**
+     * @throws JsonException
+     */
+    public function resolveJsonFile(mixed $data, ?string $basePath, string $type): mixed
+    {
+        if ($data instanceof TaggedValue) {
+            if ($data->getTag() === 'include') {
+                $file = $basePath . '/' . $data->getValue();
+
+                if (is_file($file)) {
+                    return JsonParser::decode((string) file_get_contents($file));
+                } else {
+                    throw new RuntimeException('Could not resolve file: ' . $file);
+                }
+            } else {
+                throw new RuntimeException('Invalid tag provide: ' . $data->getTag());
+            }
+        } elseif (is_string($data)) {
+            return JsonParser::decode($data);
+        } elseif (is_array($data) || $data instanceof stdClass) {
+            return $data;
+        } else {
+            throw new RuntimeException(ucfirst($type) . ' must be a string or array');
+        }
     }
 
     private function newBuilderForType(string $type): Builder\BuilderInterface

@@ -23,9 +23,12 @@ namespace Fusio\Cli\Service;
 use Fusio\Cli\Exception\TransportException;
 use Fusio\Cli\Service\Import\Result;
 use Fusio\Cli\Service\Import\Types;
+use Generator;
+use JsonException;
 use PSX\Json\Parser;
 use RuntimeException;
 use stdClass;
+use Throwable;
 
 /**
  * Import
@@ -34,20 +37,17 @@ use stdClass;
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    https://www.fusio-project.org/
  */
-class Import
+readonly class Import
 {
-    private Client $client;
-
-    public function __construct(Client $client)
+    public function __construct(private Client $client)
     {
-        $this->client = $client;
     }
 
     /**
-     * @throws \JsonException
-     * @return \Generator<Result>
+     * @throws JsonException
+     * @return Generator<Result>
      */
-    public function import(string $data): \Generator
+    public function import(string $data): Generator
     {
         $data = Parser::decode($data);
         if (!$data instanceof stdClass) {
@@ -75,7 +75,7 @@ class Import
         }
     }
 
-    private function importType(string $type, string $id, string $modelClass, stdClass $data): \Generator
+    private function importType(string $type, string $id, string $modelClass, stdClass $data): Generator
     {
         $name = $data->{$id};
 
@@ -102,7 +102,7 @@ class Import
             }
         } catch (TransportException $e) {
             yield new Result($type, Result::ACTION_FAILED, $name . ': ' . $e->getMessage(), $e->getResponse());
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             yield new Result($type, Result::ACTION_FAILED, $name . ': ' . $e->getMessage());
         }
     }
