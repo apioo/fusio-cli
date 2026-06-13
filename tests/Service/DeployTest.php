@@ -54,12 +54,12 @@ class DeployTest extends TestCase
         $envReplacer = new EnvReplacer();
 
         $client = new Client(new Authenticator($transport, $config), $transport);
-        $deploy = new Deploy(new Import($client), $client, new IncludeDirective($envReplacer));
+        $deploy = new Deploy(new Import($client), $client, new IncludeDirective($envReplacer), $envReplacer);
 
         $file = __DIR__ . '/resource/.fusio.yml';
         $yaml = file_get_contents($file);
 
-        $results = iterator_to_array($deploy->deploy($yaml, $envReplacer, dirname($file)), false);
+        $results = iterator_to_array($deploy->deploy($yaml, dirname($file)), false);
         $results = array_map('strval', $results);
 
         $expect = [
@@ -153,12 +153,12 @@ class DeployTest extends TestCase
         $envReplacer = new EnvReplacer();
 
         $client = new Client(new Authenticator($transport, $config), $transport);
-        $deploy = new Deploy(new Import($client), $client, new IncludeDirective($envReplacer));
+        $deploy = new Deploy(new Import($client), $client, new IncludeDirective($envReplacer), $envReplacer);
 
         $file = __DIR__ . '/resource/.fusio.yml';
         $yaml = file_get_contents($file);
 
-        $results = iterator_to_array($deploy->deploy($yaml, $envReplacer, dirname($file)), false);
+        $results = iterator_to_array($deploy->deploy($yaml, dirname($file)), false);
         $results = array_map('strval', $results);
 
         $expect = [
