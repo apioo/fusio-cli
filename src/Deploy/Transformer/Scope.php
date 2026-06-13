@@ -39,13 +39,13 @@ class Scope extends TransformerAbstract
         if (!empty($scope) && is_array($scope)) {
             $result = [];
             foreach ($scope as $name => $entry) {
-                $result[] = $this->transformUser($name, $entry, $basePath);
+                $result[] = $this->transformScope($name, $entry, $basePath);
             }
             $import->scope = $result;
         }
     }
 
-    protected function transformUser(string $name, mixed $data, ?string $basePath): array
+    protected function transformScope(string $name, mixed $data, ?string $basePath): array
     {
         $data = $this->includeDirective->resolve($data, $basePath, Types::TYPE_SCOPE);
         $data['name'] = $name;
