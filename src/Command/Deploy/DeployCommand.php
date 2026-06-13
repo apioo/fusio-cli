@@ -26,6 +26,7 @@ use Fusio\Cli\Exception\TransportException;
 use Fusio\Cli\Service\Deploy;
 use Fusio\Cli\Service\Import\Result;
 use PSX\Http\Environment\HttpResponseInterface;
+use RuntimeException;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -64,7 +65,7 @@ class DeployCommand extends Command
         }
 
         if (!is_file($file)) {
-            throw new \RuntimeException('File does not exists');
+            throw new RuntimeException('File does not exists');
         }
 
         try {

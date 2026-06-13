@@ -24,6 +24,7 @@ use Fusio\Cli\Command\ErrorRenderer;
 use Fusio\Cli\Exception\TransportException;
 use Fusio\Cli\Service\Import;
 use Fusio\Cli\Service\Import\Result;
+use RuntimeException;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -56,7 +57,7 @@ class ImportCommand extends Command
     {
         $file = $input->getArgument('file');
         if (!is_string($file) || !is_file($file)) {
-            throw new \RuntimeException('Provided file does not exist');
+            throw new RuntimeException('Provided file does not exist');
         }
 
         try {
