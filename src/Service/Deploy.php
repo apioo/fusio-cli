@@ -89,19 +89,25 @@ readonly class Deploy
             }
         }
 
-        // run transformer
-        $import = new stdClass();
-        foreach ($transformers as $type => $transformer) {
-            /** @var TransformerInterface $transformer */
-            try {
-                $transformer->transform($data, $import, $basePath);
-            } catch (TransformException $e) {
-                yield new Result($type, Result::ACTION_FAILED, $e->name . ': ' . $e->getMessage());
+        foreach (Types::getTypes() as $type => $config) {
+            [$id, $modelClass] = $config;
+
+            $entries = $data[$type] ?? [];
+            if (empty($entries) || !is_array($entries)) {
+                continue;
+            }
+
+            $transformer = $transformers[$type] ?? null;
+            if ($transformer instanceof TransformerInterface) {
+                try {
+                    foreach ($transformer->transform($entries, $basePath) as $entry) {
+                        yield from $this->import->importType($type, $id, $modelClass, $entry);
+                    }
+                } catch (TransformException $e) {
+                    yield new Result($type, Result::ACTION_FAILED, $e->name . ': ' . $e->getMessage());
+                }
             }
         }
-
-        // import definition
-        yield from $this->import->import(Parser::encode($import));
     }
 
     private function newTransformer(string $class): TransformerInterface

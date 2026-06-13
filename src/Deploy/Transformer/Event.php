@@ -23,6 +23,7 @@ namespace Fusio\Cli\Deploy\Transformer;
 use Fusio\Cli\Deploy\SchemeBuilder;
 use Fusio\Cli\Deploy\TransformerAbstract;
 use Fusio\Cli\Service\Import\Types;
+use Generator;
 use stdClass;
 
 /**
@@ -34,16 +35,10 @@ use stdClass;
  */
 class Event extends TransformerAbstract
 {
-    public function transform(array $data, stdClass $import, ?string $basePath): void
+    public function transform(array $entries, ?string $basePath): Generator
     {
-        $event = $data[Types::TYPE_EVENT] ?? [];
-
-        if (!empty($event) && is_array($event)) {
-            $result = [];
-            foreach ($event as $name => $entry) {
-                $result[] = $this->transformEvent($name, $entry, $basePath);
-            }
-            $import->event = $result;
+        foreach ($entries as $name => $entry) {
+            yield $this->transformEvent($name, $entry, $basePath);
         }
     }
 

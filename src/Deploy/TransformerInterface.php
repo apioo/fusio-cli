@@ -21,6 +21,7 @@
 namespace Fusio\Cli\Deploy;
 
 use Fusio\Cli\Exception\TransformException;
+use Generator;
 use stdClass;
 
 /**
@@ -35,5 +36,5 @@ interface TransformerInterface
     /**
      * @throws TransformException
      */
-    public function transform(array $data, stdClass $import, ?string $basePath): void;
+    public function transform(array $entries, ?string $basePath): Generator;
 }

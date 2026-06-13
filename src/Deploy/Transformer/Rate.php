@@ -22,7 +22,7 @@ namespace Fusio\Cli\Deploy\Transformer;
 
 use Fusio\Cli\Deploy\TransformerAbstract;
 use Fusio\Cli\Service\Import\Types;
-use stdClass;
+use Generator;
 
 /**
  * Rate
@@ -33,16 +33,10 @@ use stdClass;
  */
 class Rate extends TransformerAbstract
 {
-    public function transform(array $data, stdClass $import, ?string $basePath): void
+    public function transform(array $entries, ?string $basePath): Generator
     {
-        $rate = $data[Types::TYPE_RATE] ?? [];
-
-        if (!empty($rate) && is_array($rate)) {
-            $result = [];
-            foreach ($rate as $name => $entry) {
-                $result[] = $this->transformRate($name, $entry, $basePath);
-            }
-            $import->rate = $result;
+        foreach ($entries as $name => $entry) {
+            yield $this->transformRate($name, $entry, $basePath);
         }
     }
 

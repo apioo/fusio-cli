@@ -22,6 +22,7 @@ namespace Fusio\Cli\Deploy\Transformer;
 
 use Fusio\Cli\Deploy\TransformerAbstract;
 use Fusio\Cli\Service\Import\Types;
+use Generator;
 use stdClass;
 
 /**
@@ -33,16 +34,10 @@ use stdClass;
  */
 class Plan extends TransformerAbstract
 {
-    public function transform(array $data, stdClass $import, ?string $basePath): void
+    public function transform(array $entries, ?string $basePath): Generator
     {
-        $plan = $data[Types::TYPE_PLAN] ?? [];
-
-        if (!empty($plan) && is_array($plan)) {
-            $result = [];
-            foreach ($plan as $name => $entry) {
-                $result[] = $this->transformPlan($name, $entry, $basePath);
-            }
-            $import->plan = $result;
+        foreach ($entries as $name => $entry) {
+            yield $this->transformPlan($name, $entry, $basePath);
         }
     }
 

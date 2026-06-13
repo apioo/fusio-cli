@@ -23,7 +23,7 @@ namespace Fusio\Cli\Deploy\Transformer;
 use Fusio\Cli\Deploy\SchemeBuilder;
 use Fusio\Cli\Deploy\TransformerAbstract;
 use Fusio\Cli\Service\Import\Types;
-use stdClass;
+use Generator;
 
 /**
  * Cronjob
@@ -34,16 +34,10 @@ use stdClass;
  */
 class Cronjob extends TransformerAbstract
 {
-    public function transform(array $data, stdClass $import, ?string $basePath): void
+    public function transform(array $entries, ?string $basePath): Generator
     {
-        $cronjob = $data[Types::TYPE_CRONJOB] ?? [];
-
-        if (!empty($cronjob) && is_array($cronjob)) {
-            $result = [];
-            foreach ($cronjob as $name => $entry) {
-                $result[] = $this->transformCronjob($name, $entry, $basePath);
-            }
-            $import->cronjob = $result;
+        foreach ($entries as $name => $entry) {
+            yield $this->transformCronjob($name, $entry, $basePath);
         }
     }
 

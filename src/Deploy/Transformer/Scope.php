@@ -22,6 +22,7 @@ namespace Fusio\Cli\Deploy\Transformer;
 
 use Fusio\Cli\Deploy\TransformerAbstract;
 use Fusio\Cli\Service\Import\Types;
+use Generator;
 use stdClass;
 
 /**
@@ -33,16 +34,10 @@ use stdClass;
  */
 class Scope extends TransformerAbstract
 {
-    public function transform(array $data, stdClass $import, ?string $basePath): void
+    public function transform(array $entries, ?string $basePath): Generator
     {
-        $scope = $data[Types::TYPE_SCOPE] ?? [];
-
-        if (!empty($scope) && is_array($scope)) {
-            $result = [];
-            foreach ($scope as $name => $entry) {
-                $result[] = $this->transformScope($name, $entry, $basePath);
-            }
-            $import->scope = $result;
+        foreach ($entries as $name => $entry) {
+            yield $this->transformScope($name, $entry, $basePath);
         }
     }
 

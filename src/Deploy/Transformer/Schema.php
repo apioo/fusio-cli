@@ -22,6 +22,7 @@ namespace Fusio\Cli\Deploy\Transformer;
 
 use Fusio\Cli\Deploy\TransformerAbstract;
 use Fusio\Cli\Service\Import\Types;
+use Generator;
 use stdClass;
 
 /**
@@ -33,16 +34,10 @@ use stdClass;
  */
 class Schema extends TransformerAbstract
 {
-    public function transform(array $data, stdClass $import, ?string $basePath): void
+    public function transform(array $entries, ?string $basePath): Generator
     {
-        $schema = $data[Types::TYPE_SCHEMA] ?? [];
-
-        if (!empty($schema) && is_array($schema)) {
-            $result = [];
-            foreach ($schema as $name => $entry) {
-                $result[] = $this->transformSchema($name, $entry, $basePath);
-            }
-            $import->schema = $result;
+        foreach ($entries as $name => $entry) {
+            yield $this->transformSchema($name, $entry, $basePath);
         }
     }
 

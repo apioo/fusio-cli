@@ -22,6 +22,7 @@ namespace Fusio\Cli\Deploy\Transformer;
 
 use Fusio\Cli\Deploy\TransformerAbstract;
 use Fusio\Cli\Service\Import\Types;
+use Generator;
 use stdClass;
 
 /**
@@ -33,16 +34,10 @@ use stdClass;
  */
 class Connection extends TransformerAbstract
 {
-    public function transform(array $data, stdClass $import, ?string $basePath): void
+    public function transform(array $entries, ?string $basePath): Generator
     {
-        $connection = $data[Types::TYPE_CONNECTION] ?? [];
-
-        if (!empty($connection) && is_array($connection)) {
-            $result = [];
-            foreach ($connection as $name => $entry) {
-                $result[] = $this->transformConnection($name, $entry, $basePath);
-            }
-            $import->connection = $result;
+        foreach ($entries as $name => $entry) {
+            yield $this->transformConnection($name, $entry, $basePath);
         }
     }
 

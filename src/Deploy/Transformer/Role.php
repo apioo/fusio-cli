@@ -22,6 +22,7 @@ namespace Fusio\Cli\Deploy\Transformer;
 
 use Fusio\Cli\Deploy\TransformerAbstract;
 use Fusio\Cli\Service\Import\Types;
+use Generator;
 use stdClass;
 
 /**
@@ -33,16 +34,10 @@ use stdClass;
  */
 class Role extends TransformerAbstract
 {
-    public function transform(array $data, stdClass $import, ?string $basePath): void
+    public function transform(array $entries, ?string $basePath): Generator
     {
-        $role = $data[Types::TYPE_ROLE] ?? [];
-
-        if (!empty($role) && is_array($role)) {
-            $result = [];
-            foreach ($role as $name => $entry) {
-                $result[] = $this->transformRole($name, $entry, $basePath);
-            }
-            $import->role = $result;
+        foreach ($entries as $name => $entry) {
+            yield $this->transformRole($name, $entry, $basePath);
         }
     }
 

@@ -75,15 +75,21 @@ readonly class Import
         }
     }
 
-    private function importType(string $type, string $id, string $modelClass, stdClass $data): Generator
+    public function importType(string $type, string $id, string $modelClass, array|stdClass $data): Generator
     {
-        $name = $data->{$id};
+        if (is_array($data)) {
+            $name = $data[$id] ?? null;
+        } else {
+            $name = $data->{$id} ?? null;
+        }
 
         $existing = null;
-        try {
-            $existing = $this->client->get($type, $name);
-        } catch (TransportException $e) {
-            // 404 not found that means we can create the resource
+        if (!empty($name)) {
+            try {
+                $existing = $this->client->get($type, $name);
+            } catch (TransportException) {
+                // 404 not found that means we can create the resource
+            }
         }
 
         try {

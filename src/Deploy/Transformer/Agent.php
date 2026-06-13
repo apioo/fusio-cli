@@ -24,6 +24,7 @@ use Fusio\Cli\Deploy\SchemeBuilder;
 use Fusio\Cli\Deploy\TransformerAbstract;
 use Fusio\Cli\Exception\TransformException;
 use Fusio\Cli\Service\Import\Types;
+use Generator;
 use RuntimeException;
 use stdClass;
 use Throwable;
@@ -37,16 +38,10 @@ use Throwable;
  */
 class Agent extends TransformerAbstract
 {
-    public function transform(array $data, stdClass $import, ?string $basePath): void
+    public function transform(array $entries, ?string $basePath): Generator
     {
-        $action = $data[Types::TYPE_AGENT] ?? [];
-
-        if (!empty($action) && is_array($action)) {
-            $result = [];
-            foreach ($action as $name => $entry) {
-                $result[] = $this->transformAgent($name, $entry, $basePath);
-            }
-            $import->agent = $result;
+        foreach ($entries as $name => $entry) {
+            yield $this->transformAgent($name, $entry, $basePath);
         }
     }
 
