@@ -55,10 +55,11 @@ class Agent extends TransformerAbstract
 
         if (isset($data['connection']) && is_string($data['connection'])) {
             try {
-                $agent = $this->client->get(Types::TYPE_AGENT, $data['connection']);
-                $id = $agent->id ?? null;
+                $connection = $this->client->get(Types::TYPE_CONNECTION, $data['connection']);
+
+                $id = $connection->id ?? null;
                 if (!is_int($id)) {
-                    throw new RuntimeException('Could not determine agent id');
+                    throw new RuntimeException('Could not determine connection id');
                 }
 
                 $data['connection'] = $id;
