@@ -31,11 +31,23 @@ use PSX\Http\Environment\HttpResponseInterface;
  */
 class Memory implements TransportInterface
 {
+    /**
+     * @var list<list<mixed>>
+     */
     private array $requests = [];
+
+    /**
+     * @var list<HttpResponseInterface>
+     */
     private array $responses = [];
+
     private int $i = 0;
 
-    public function request(string $baseUri, string $method, string $path, ?array $query = null, ?array $headers = null, $body = null): HttpResponseInterface
+    /**
+     * @param array<string, string>|null $query
+     * @param array<string, string>|null $headers
+     */
+    public function request(string $baseUri, string $method, string $path, ?array $query = null, ?array $headers = null, mixed $body = null): HttpResponseInterface
     {
         $this->requests[] = func_get_args();
 
@@ -47,6 +59,9 @@ class Memory implements TransportInterface
         $this->responses[] = $response;
     }
 
+    /**
+     * @return list<list<mixed>>
+     */
     public function getRequests(): array
     {
         return $this->requests;

@@ -46,6 +46,9 @@ class Types
     public const string TYPE_SCHEMA = 'schema';
     public const string TYPE_SCOPE = 'scope';
 
+    /**
+     * @var array<string, array{string, string}>
+     */
     private static array $types = [
         self::TYPE_ACTION     => ['name', Backend\Action::class],
         self::TYPE_CONFIG     => ['name', Backend\Config::class],
@@ -61,6 +64,9 @@ class Types
         self::TYPE_AGENT      => ['name', Backend\Agent::class],
     ];
 
+    /**
+     * @return array<string, array{string, string}>
+     */
     public static function getTypes(): array
     {
         return self::$types;

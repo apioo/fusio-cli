@@ -46,6 +46,7 @@ class Agent extends TransformerAbstract
     }
 
     /**
+     * @return array<string, mixed>
      * @throws TransformException
      */
     protected function transformAgent(string $name, mixed $data, ?string $basePath): array

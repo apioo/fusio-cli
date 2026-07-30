@@ -41,7 +41,7 @@ abstract class ClientCommandAbstract extends Command
         $this->client = $client;
     }
 
-    protected function toInt($value): ?int
+    protected function toInt(mixed $value): ?int
     {
         if (is_array($value)) {
             throw new \InvalidArgumentException('Provided an invalid value');
@@ -54,7 +54,7 @@ abstract class ClientCommandAbstract extends Command
         return (int) $value;
     }
 
-    protected function toString($value): ?string
+    protected function toString(mixed $value): ?string
     {
         if (is_array($value)) {
             throw new \InvalidArgumentException('Provided an invalid value');

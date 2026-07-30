@@ -34,7 +34,7 @@ use Symfony\Component\Yaml\Yaml;
  */
 class EnvReplacerTest extends TestCase
 {
-    public function testReplace()
+    public function testReplace(): void
     {
         $envReplacer = $this->newEnvReplacer([
             'FOO' => 'bar'
@@ -47,7 +47,7 @@ class EnvReplacerTest extends TestCase
         $this->assertEquals($expect, $actual, $actual);
     }
 
-    public function testReplaceMultiple()
+    public function testReplaceMultiple(): void
     {
         $envReplacer = $this->newEnvReplacer([
             'APIOO_DB_NAME' => 'db_name',
@@ -78,7 +78,7 @@ YAML;
         $this->assertEquals('host', $config['host']);
     }
 
-    public function testReplaceCase()
+    public function testReplaceCase(): void
     {
         $envReplacer = $this->newEnvReplacer([
             'foo' => 'bar'
@@ -91,7 +91,7 @@ YAML;
         $this->assertEquals($expect, $actual, $actual);
     }
 
-    public function testReplaceEscape()
+    public function testReplaceEscape(): void
     {
         $envReplacer = $this->newEnvReplacer([
             'foo' => 'foo' . "\n" . 'bar"test'
@@ -104,7 +104,7 @@ YAML;
         $this->assertEquals($expect, $actual, $actual);
     }
 
-    public function testReplaceUnknownType()
+    public function testReplaceUnknownType(): void
     {
         $this->expectException(\RuntimeException::class);
 
@@ -112,7 +112,7 @@ YAML;
         $envReplacer->replace('dbname: "${foo.FOO}"');
     }
 
-    public function testReplaceUnknownKey()
+    public function testReplaceUnknownKey(): void
     {
         $this->expectException(\RuntimeException::class);
 
@@ -122,6 +122,9 @@ YAML;
         $envReplacer->replace('dbname: "${env.FOO}"');
     }
 
+    /**
+     * @param array<string, string>|null $env
+     */
     private function newEnvReplacer(?array $env = null): EnvReplacerInterface
     {
         return new EnvReplacer($env);

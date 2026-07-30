@@ -41,6 +41,9 @@ class Scope extends TransformerAbstract
         }
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     protected function transformScope(string $name, mixed $data, ?string $basePath): array
     {
         $data = $this->includeDirective->resolve($data, $basePath, Types::TYPE_SCOPE);

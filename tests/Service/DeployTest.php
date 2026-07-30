@@ -41,7 +41,7 @@ use PSX\Http\Environment\HttpResponse;
  */
 class DeployTest extends TestCase
 {
-    public function testDeployCreate()
+    public function testDeployCreate(): void
     {
         $transport = $this->newTransportCreate();
 
@@ -140,7 +140,7 @@ class DeployTest extends TestCase
         return $transport;
     }
 
-    public function testDeployUpdate()
+    public function testDeployUpdate(): void
     {
         $transport = $this->newTransportUpdate();
 

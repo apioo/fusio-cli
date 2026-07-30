@@ -64,6 +64,7 @@ readonly class Export
     }
 
     /**
+     * @param list<object> $result
      * @throws TokenException
      * @throws TransportException
      */

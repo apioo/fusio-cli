@@ -41,6 +41,9 @@ class Config extends TransformerAbstract
         }
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     protected function transformConfig(string $name, mixed $value, ?string $basePath): array
     {
         $data = [];

@@ -29,5 +29,8 @@ namespace Fusio\Cli\Builder;
  */
 interface BuilderInterface
 {
+    /**
+     * @return array<string, mixed>
+     */
     public function toArray(): array;
 }

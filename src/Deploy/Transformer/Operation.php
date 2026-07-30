@@ -42,6 +42,9 @@ class Operation extends TransformerAbstract
         }
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     protected function transformOperation(string $name, mixed $data, ?string $basePath): array
     {
         $data = $this->includeDirective->resolve($data, $basePath, Types::TYPE_OPERATION);

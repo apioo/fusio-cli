@@ -35,7 +35,7 @@ class TransportException extends Exception
 {
     private HttpResponseInterface $response;
 
-    public function __construct(HttpResponseInterface $response, $message = '', $code = 0, ?Throwable $previous = null)
+    public function __construct(HttpResponseInterface $response, string $message = '', int $code = 0, ?Throwable $previous = null)
     {
         parent::__construct($message, $code, $previous);
 

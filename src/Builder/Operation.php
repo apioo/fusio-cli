@@ -33,6 +33,9 @@ use PSX\Schema\Type\PropertyTypeAbstract;
  */
 class Operation implements BuilderInterface
 {
+    /**
+     * @var list<string>|null
+     */
     private ?array $scopes = null;
     private ?bool $public = null;
     private ?int $stability = null;
@@ -40,12 +43,21 @@ class Operation implements BuilderInterface
     private ?string $httpMethod = null;
     private ?string $httpPath = null;
     private ?int $httpCode = null;
+    /**
+     * @var array<string, array<string, mixed>>
+     */
     private array $parameters = [];
     private ?string $incoming = null;
     private ?string $outgoing = null;
+    /**
+     * @var array<int, string>
+     */
     private array $throws = [];
     private ?string $action = null;
 
+    /**
+     * @param list<string> $scopes
+     */
     public function setScopes(array $scopes): void
     {
         $this->scopes = $scopes;

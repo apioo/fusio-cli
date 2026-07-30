@@ -49,6 +49,9 @@ readonly class IncludeDirective
         $this->parser = new Parser();
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function resolve(mixed $data, ?string $basePath, string $type): array
     {
         if ($data instanceof TaggedValue) {
@@ -83,6 +86,9 @@ readonly class IncludeDirective
         }
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     private function resolvePHPFile(string $path, string $type): array
     {
         $resolver = include $path;

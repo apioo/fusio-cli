@@ -201,6 +201,7 @@ class Client
     }
 
     /**
+     * @param array<string, scalar>|null $query
      * @throws TokenException
      */
     private function request(string $method, string $path, ?array $query = null, mixed $body = null): HttpResponseInterface

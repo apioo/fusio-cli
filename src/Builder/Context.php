@@ -29,6 +29,9 @@ namespace Fusio\Cli\Builder;
  */
 class Context
 {
+    /**
+     * @param array<string, array<string, scalar>> $vars
+     */
     public function __construct(private readonly array $vars)
     {
     }

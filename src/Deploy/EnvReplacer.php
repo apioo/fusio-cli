@@ -20,6 +20,7 @@
 
 namespace Fusio\Cli\Deploy;
 
+use Closure;
 use PSX\Json\Parser;
 
 /**
@@ -32,10 +33,13 @@ use PSX\Json\Parser;
 class EnvReplacer implements EnvReplacerInterface
 {
     /**
-     * @var \Closure[] 
+     * @var array<string, Closure>
      */
     private array $properties;
 
+    /**
+     * @param array<string, string>|null $env
+     */
     public function __construct(?array $env = null)
     {
         $this->addProperties('env', function() use ($env){
@@ -43,7 +47,7 @@ class EnvReplacer implements EnvReplacerInterface
         });
     }
 
-    public function addProperties(string $category, \Closure $resolver): void
+    public function addProperties(string $category, Closure $resolver): void
     {
         $this->properties[$category] = $resolver;
     }

@@ -34,7 +34,11 @@ use PSX\Http\Environment\HttpResponseInterface;
  */
 class Http implements TransportInterface
 {
-    public function request(string $baseUri, string $method, string $path, ?array $query = null, ?array $headers = null, $body = null): HttpResponseInterface
+    /**
+     * @param array<string, string>|null $query
+     * @param array<string, string>|null $headers
+     */
+    public function request(string $baseUri, string $method, string $path, ?array $query = null, ?array $headers = null, mixed $body = null): HttpResponseInterface
     {
         $options = [];
 

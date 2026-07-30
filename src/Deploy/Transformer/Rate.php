@@ -40,6 +40,9 @@ class Rate extends TransformerAbstract
         }
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     protected function transformRate(string $name, mixed $data, ?string $basePath): array
     {
         $data = $this->includeDirective->resolve($data, $basePath, Types::TYPE_RATE);

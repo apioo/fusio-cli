@@ -41,6 +41,9 @@ class Role extends TransformerAbstract
         }
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     protected function transformRole(string $name, mixed $data, ?string $basePath): array
     {
         $data = $this->includeDirective->resolve($data, $basePath, Types::TYPE_ROLE);

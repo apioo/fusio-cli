@@ -41,6 +41,9 @@ class Schema extends TransformerAbstract
         }
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     protected function transformSchema(string $name, mixed $schema, ?string $basePath): array
     {
         return [

@@ -75,6 +75,9 @@ readonly class Import
         }
     }
 
+    /**
+     * @param array<string, mixed>|stdClass $data
+     */
     public function importType(string $type, string $id, string $modelClass, array|stdClass $data): Generator
     {
         if (is_array($data)) {

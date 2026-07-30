@@ -35,7 +35,7 @@ use Symfony\Component\Yaml\Tag\TaggedValue;
  */
 class IncludeDirectiveTest extends TestCase
 {
-    public function testResolveTaggedValue()
+    public function testResolveTaggedValue(): void
     {
         $include = $this->newIncludeDirective();
         $data = $include->resolve(new TaggedValue('include', 'Resource/test.yaml'), __DIR__, '');
@@ -44,7 +44,7 @@ class IncludeDirectiveTest extends TestCase
         $this->assertEquals('test', $data['foo']['bar']->getValue());
     }
 
-    public function testResolveTaggedValuePHP()
+    public function testResolveTaggedValuePHP(): void
     {
         $include = $this->newIncludeDirective();
         $data = $include->resolve(new TaggedValue('include', 'Resource/test.php'), __DIR__, Types::TYPE_OPERATION);
@@ -52,7 +52,7 @@ class IncludeDirectiveTest extends TestCase
         $this->assertEquals(['description' => 'foobar', 'parameters' => (object) [], 'throws' => (object) []], $data);
     }
 
-    public function testResolveTaggedValuePointer()
+    public function testResolveTaggedValuePointer(): void
     {
         $include = $this->newIncludeDirective();
         $data = $include->resolve(new TaggedValue('include', 'Resource/test.yaml#/foo'), __DIR__, '');
@@ -61,7 +61,7 @@ class IncludeDirectiveTest extends TestCase
         $this->assertEquals('test', $data['bar']->getValue());
     }
 
-    public function testResolveTaggedValueInvalidFile()
+    public function testResolveTaggedValueInvalidFile(): void
     {
         $this->expectException(\RuntimeException::class);
 
@@ -69,7 +69,7 @@ class IncludeDirectiveTest extends TestCase
         $include->resolve(new TaggedValue('include', 'Resource/foo.yaml'), __DIR__, '');
     }
 
-    public function testResolveTaggedValueInvalidTag()
+    public function testResolveTaggedValueInvalidTag(): void
     {
         $this->expectException(\RuntimeException::class);
 
@@ -77,7 +77,7 @@ class IncludeDirectiveTest extends TestCase
         $include->resolve(new TaggedValue('foo', 'Resource/test.yaml'), __DIR__, '');
     }
 
-    public function testResolveInvalidValue()
+    public function testResolveInvalidValue(): void
     {
         $this->expectException(\RuntimeException::class);
 
@@ -85,7 +85,7 @@ class IncludeDirectiveTest extends TestCase
         $include->resolve('foo', __DIR__, '');
     }
 
-    public function testResolveArray()
+    public function testResolveArray(): void
     {
         $include = $this->newIncludeDirective();
         $data = $include->resolve(['foo' => 'bar'], __DIR__, '');
@@ -93,7 +93,7 @@ class IncludeDirectiveTest extends TestCase
         $this->assertEquals(['foo' => 'bar'], $data);
     }
     
-    private function newIncludeDirective()
+    private function newIncludeDirective(): IncludeDirective
     {
         return new IncludeDirective(new EnvReplacer());
     }
